@@ -5,16 +5,10 @@ import com.LSH.client.LSHService;
 
 public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
 
-    private Shortner shortner;
-
-    public void Init () {
-        shortner = new Shortner();
-    }
-
     public String getMessage(String msg) {
 
-        shortner.hashCode();
+        String answer = Shortner.GetShort(Integer.parseInt(msg));
 
-        return "Client said: \"" + msg + "\"<br>Server answered: \"Hi!\"";
+        return "Id link \"" + msg + "\"<br>Short code: " + answer;
     }
 }

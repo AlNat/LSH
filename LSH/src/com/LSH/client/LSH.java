@@ -18,11 +18,12 @@ public class LSH implements EntryPoint {
     public void onModuleLoad() {
         final Button button = new Button("Click me");
         final Label label = new Label();
+        final TextBox tx = new TextBox();
 
         button.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if (label.getText().equals("")) {
-                    LSHService.App.getInstance().getMessage("Hello, World!", new MyAsyncCallback(label));
+                    LSHService.App.getInstance().getMessage(tx.getText(), new MyAsyncCallback(label));
                 } else {
                     label.setText("");
                 }
@@ -35,6 +36,7 @@ public class LSH implements EntryPoint {
         // elements with a particular CSS class and replace them with widgets.
         //
         RootPanel.get("slot1").add(button);
+        RootPanel.get("slot1").add(tx);
         RootPanel.get("slot2").add(label);
     }
 

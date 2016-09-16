@@ -9,8 +9,6 @@ public interface LSHService extends RemoteService {
 
     String getMessage(String msg);
 
-    void Init ();
-
     public static class App {
         private static LSHServiceAsync ourInstance = GWT.create(LSHService.class);
 
