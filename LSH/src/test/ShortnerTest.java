@@ -1,5 +1,4 @@
 package test;
-//package com.LSH.server;
 
 import com.LSH.server.Shortner;
 import org.testng.Assert;
