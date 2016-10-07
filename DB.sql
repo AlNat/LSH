@@ -1,4 +1,4 @@
-/* 
+﻿/* 
 	Файл структуры БД 
 	СУБД = PostgreSQL
 */
@@ -67,7 +67,6 @@ LANGUAGE plpgsql;
 -- Функция, возращающая набор user_id, которые валидные
 CREATE OR REPLACE FUNCTION calc_valid_id ()
 RETURNS INT[] AS  
-
 $$
 DECLARE t INT; -- Переменная в цикле
 DECLARE max INT; -- Кол-во шагов в цикле
@@ -97,17 +96,17 @@ BEGIN
 	RETURN res;
 END
 $$ 
-
 LANGUAGE plpgsql;
 
 
 -- Функция, запускающаяся по времени и инвалидирующая все записи, где время вышло 
 CREATE OR REPLACE FUNCTION check_time_valid ()
-RETURNS VOID
-AS  $$
+RETURNS VOID AS  
+$$
 BEGIN
 
 	UPDATE status SET valid = FALSE WHERE user_id != ALL (calc_valid_id() );
+	-- TODO Проверить что конструция != ALL эквивалентна NOT IN (massive[])
 
 END
 $$ 
