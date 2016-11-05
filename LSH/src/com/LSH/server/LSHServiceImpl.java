@@ -9,6 +9,20 @@ public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
 
         String answer = Shortner.GetShort(Integer.parseInt(msg));
 
-        return "Id link \"" + msg + "\"<br>Short code: " + answer;
+        answer = Normalizer.Normolize(answer);
+
+        if (!isOk(answer) ) {
+            return "Error Massage";
+        } else {
+            return "Id link \"" + msg + "\"<br>Short code: " + answer;
+        }
     }
+
+
+    // TODO струтура данных со стоп словами
+    private boolean isOk (String in) {
+
+        return true;
+    }
+
 }

@@ -111,3 +111,31 @@ BEGIN
 END
 $$ 
 LANGUAGE plpgsql;
+
+
+-- Заполение тестовыми данными
+/*
+CREATE OR REPLACE FUNCTION genRandText (inp INT) RETURNS TEXT AS
+$$
+DECLARE t CHAR; 
+DECLARE ans TEXT;
+BEGIN
+	FOR a IN 1..inp LOOP
+		t = ( (array['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','r','s','t','u','v','w','x','y','z','.','1','2','3','4','5','6','7','8','9','0']) [ceil( random() * 27 )] ) ;
+		ans = CONCAT (ans, t); -- А вот просто не рабоатет ans || t;
+	END LOOP;
+RETURN ans;
+END
+$$
+LANGUAGE plpgsql;
+*/
+
+--/*
+SELECT 
+generate_series(1, 1000),
+generate_series(1, 1000),
+genRandText(20) || '.' || genRandText(3),
+( now() + interval '1 day' * round(random()*200) )::timestamp,
+(random()*20)::int,
+(random()*20)::int;
+--*/
