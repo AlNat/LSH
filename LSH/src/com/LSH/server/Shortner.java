@@ -4,7 +4,6 @@ package com.LSH.server;
  * Created by @author AlNat on 14.09.2016.
  * Licensed by Apache License, Version 2.0
  *
- *
  * ShortURL.GetShort() takes an ID and turns it into a short string
  * ShortURL.GetURL() takes a short string and turns it into an ID
  *
@@ -16,7 +15,7 @@ package com.LSH.server;
  * Example output:
  * 123456789 <=> pgK8p
  */
-public class Shortner {
+public final class Shortner {
 
     private static final String ALPHABET = "23456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ-_";
     private static final int BASE = ALPHABET.length();
