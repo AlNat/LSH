@@ -1,5 +1,3 @@
-package test;
-
 import com.LSH.server.Shortner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -8,7 +6,7 @@ import org.testng.annotations.Test;
  * Created by @author AlNat on 24.05.2016.
  * Licensed by Apache License, Version 2.0
  */
-public class ShortnerTest {
+public class ShortnerTests {
 
     @Test(timeOut = 100)
     public void TestEncode() throws Exception {

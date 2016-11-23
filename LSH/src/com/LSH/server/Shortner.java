@@ -29,6 +29,7 @@ public final class Shortner {
 
         StringBuilder str = new StringBuilder();
         while (id > 0) {
+            // Переводим число в код по разрядам
             str.insert(0, ALPHABET.charAt(id % BASE));
             id = id / BASE;
         }

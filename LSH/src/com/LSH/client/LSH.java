@@ -16,7 +16,7 @@ public class LSH implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        final Button button = new Button("Click me");
+        final Button button = new Button( "Massage");
         final Label label = new Label();
         final TextBox tx = new TextBox();
 

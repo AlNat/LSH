@@ -11,11 +11,14 @@ public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
 
         answer = Normalizer.Normolize(answer);
 
+        return answer;
+
+        /*
         if (!isOk(answer) ) {
             return "Error Massage";
         } else {
             return "Id link \"" + msg + "\"<br>Short code: " + answer;
-        }
+        }*/
     }
 
 
