@@ -1,5 +1,7 @@
-Диплом.lnk
+﻿Диплом.lnk
 LSH/.idea/
 LSH/lib/
 *.class
 LSH/out/
+LSH/target/
+*.class
