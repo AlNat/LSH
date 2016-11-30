@@ -8,8 +8,6 @@ import java.util.ArrayList;
  */
 public class Normalizer {
 
-    // TODO Подумать как это долно быть реализованно
-
     private static ArrayList<String> stoplist = new ArrayList<>();
 
     private Normalizer () {
@@ -19,7 +17,7 @@ public class Normalizer {
         stoplist.add("TRUNK");
     }
 
-    public static String Normolize (String in) {
+    public static String Normalize (String in) {
 
         String s = "";
 

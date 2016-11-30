@@ -6,10 +6,10 @@ import org.testng.annotations.Test;
  * Created by @author AlNat on 23.11.2016.
  * Licensed by Apache License, Version 2.0
  */
-public class NormolizerTests {
+public class NormalizerTests {
 
     @Test(timeOut = 100)
-    public void TestSimpleNormolize() throws Exception {
+    public void TestSimpleNormalize() throws Exception {
         Assert.assertEquals ("pgK8p", Normalizer.Normolize("BigBrownFox"));
     }
 

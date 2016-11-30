@@ -3,12 +3,11 @@ package com.LSH.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 
 /**
- * Entry point classes define <code>onModuleLoad()</code>
+ * Класс UI
  */
 public class LSH implements EntryPoint {
 
@@ -16,7 +15,7 @@ public class LSH implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        final Button button = new Button( "Massage");
+        final Button button = new Button( "Message");
         final Label label = new Label();
         final TextBox tx = new TextBox();
 
@@ -30,14 +29,12 @@ public class LSH implements EntryPoint {
             }
         });
 
-        // Assume that the host HTML has elements defined whose
-        // IDs are "slot1", "slot2".  In a real app, you probably would not want
-        // to hard-code IDs.  Instead, you could, for example, search for all
-        // elements with a particular CSS class and replace them with widgets.
-        //
-        RootPanel.get("slot1").add(button);
-        RootPanel.get("slot1").add(tx);
-        RootPanel.get("slot2").add(label);
+        HorizontalPanel simpleShort = new HorizontalPanel();
+        simpleShort.add(button);
+        simpleShort.add(tx);
+        simpleShort.add(label);
+
+        RootPanel.get("SimpleShort").add(simpleShort);
     }
 
     private static class MyAsyncCallback implements AsyncCallback<String> {

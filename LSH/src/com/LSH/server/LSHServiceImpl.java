@@ -8,8 +8,9 @@ public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
     public String getMessage(String msg) {
 
         String answer = Shortner.GetShort(Integer.parseInt(msg));
+        // ToDo Ловить, что тут не числа, а ссылки
 
-        answer = Normalizer.Normolize(answer);
+        answer = Normalizer.Normalize(answer);
 
         return answer;
 
