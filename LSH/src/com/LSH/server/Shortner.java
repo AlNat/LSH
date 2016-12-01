@@ -5,7 +5,7 @@ package com.LSH.server;
  * Licensed by Apache License, Version 2.0
  *
  * ShortURL.GetShort() takes an ID and turns it into a short string
- * ShortURL.GetURL() takes a short string and turns it into an ID
+ * ShortURL.GetID() takes a short string and turns it into an ID
  *
  * Features:
  * + large alphabet (51 chars)
@@ -42,7 +42,7 @@ public final class Shortner {
      * @param code цифробуквенный код (короткая ссылка)
      * @return id записи в БД
      */
-    public static int GetURL(String code) {
+    public static int GetID(String code) {
 
         int link = 0;
         for (int i = 0; i < code.length(); i++) {

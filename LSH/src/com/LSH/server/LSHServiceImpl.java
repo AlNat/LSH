@@ -4,21 +4,23 @@ import com.LSH.client.Message;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.LSH.client.LSHService;
 
-// TODO Комментари + JavaDoc
-// TODO имплемантация
+// TODO Комментарии + JavaDoc
 public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
 
-    public String getSimpleShort(String msg) {
+    public String getShort(Message msg) {
 
         /*
-        String answer = Shortner.GetShort(Integer.parseInt(msg));
-        answer = Normalizer.Normalize(answer);
-        return answer;*/
+        // TODO расскоментировать
+        String link = msg.getOriginalLink();
+        String norm = Normalizer.Normalize(link);
 
-        return Shortner.GetShort(Integer.parseInt(msg));
-    }
-
-    public String getComplexShort(Message msg) {
+        if ( norm.equals("ERROR!") ) {
+            return "Sorry, but link are illegal!";
+        } else {
+            msg.setOriginalLink(norm);
+            return DBConnect.Put(msg);
+        }
+        */
         return Shortner.GetShort(Integer.parseInt(msg.getOriginalLink()));
     }
 
