@@ -1,13 +1,14 @@
 package com.LSH.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 
 /**
- * Класс UI
+ * Класс, отвечающий за главную страницу UI
  */
 public class LSH implements EntryPoint {
 
@@ -15,28 +16,54 @@ public class LSH implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        final Button button = new Button( "Message");
-        final Label label = new Label();
-        final TextBox tx = new TextBox();
 
-        button.addClickHandler(new ClickHandler() {
+        // TODO Сложную панель
+        // TODO Выравниваение и красату
+        HorizontalPanel simpleShortHP = new HorizontalPanel();
+        VerticalPanel simpleShortVP = new VerticalPanel();
+        final Button simpleButton = new Button("Get Short Link");
+        final HTML simpleError = new HTML("");
+        final TextBox simpleOriginalLink = new TextBox();
+        final HTML simpleShortLink = new HTML("");
+
+        simpleButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if (label.getText().equals("")) {
-                    LSHService.App.getInstance().getMessage(tx.getText(), new MyAsyncCallback(label));
+                if (simpleError.getText().equals("")) {
+                    LSHService.App.getInstance().getSimpleShort(simpleOriginalLink.getText(), new AsyncCallback<String>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            simpleError.setText("Cannot connect to server!");
+                        }
+                        @Override
+                        public void onSuccess(String result) {
+                            simpleShortLink.setText(result);
+
+                            // ToDO Классть ссылку в буфер обмена
+                            // TODO по enter тоже отлавливать
+                        }
+                    });
                 } else {
-                    label.setText("");
+                    simpleError.setText("Cannot connect");
                 }
             }
         });
 
-        HorizontalPanel simpleShort = new HorizontalPanel();
-        simpleShort.add(button);
-        simpleShort.add(tx);
-        simpleShort.add(label);
+        simpleShortHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        simpleShortHP.add(simpleOriginalLink);
+        simpleShortHP.add(simpleButton);
 
-        RootPanel.get("SimpleShort").add(simpleShort);
+        simpleShortVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        simpleShortVP.add(simpleShortHP);
+        simpleShortVP.add(simpleShortLink);
+        simpleShortVP.add(simpleError);
+
+
+
+        RootPanel.get("SimpleShort").add(simpleShortVP);
     }
 
+
+// TODO Вынести классы во вне
     private static class MyAsyncCallback implements AsyncCallback<String> {
         private Label label;
 
