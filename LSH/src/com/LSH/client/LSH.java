@@ -1,82 +1,200 @@
 package com.LSH.client;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
+
+//TODO Комментарии обычные и JavaDoc. Рефакторинг?
 
 /**
  * Класс, отвечающий за главную страницу UI
  */
 public class LSH implements EntryPoint {
 
+    // Набор полей в простом сокращении
+    private final TextBox simpleOriginalLink = new TextBox();
+    private final Button simpleButton = new Button("Get Short Link");
+    private final HTML simpleShortLink = new HTML("");
+
+    // Набор полей в управляемом сокращении
+    private final Button complexButton = new Button("Get Short Link");
+    private final HTML complexShortLink = new HTML("");
+
+    private final HTML complexText = new HTML("Link:");
+    private final TextBox complexOriginalLink = new TextBox();
+    private final HTML complexTimeText = new HTML("Set link live duration:");
+    private final ListBox complexTime = new ListBox();
+
+    private final HTML complexCountText = new HTML("Set count of visits:");
+    private final ListBox complexCount = new ListBox();
+    private final HTML complexNameText = new HTML("Customize link:");
+    private final TextBox complexName = new TextBox();
+
     /**
-     * This is the entry point method.
+     * Основной метод в UI - аналог конструктора в GWT
      */
     public void onModuleLoad() {
 
-        // TODO Сложную панель
-        // TODO Выравниваение и красату
-        HorizontalPanel simpleShortHP = new HorizontalPanel();
-        VerticalPanel simpleShortVP = new VerticalPanel();
-        final Button simpleButton = new Button("Get Short Link");
-        final HTML simpleError = new HTML("");
-        final TextBox simpleOriginalLink = new TextBox();
-        final HTML simpleShortLink = new HTML("");
+        // Создаем простое сокращение
+        final HorizontalPanel simpleShortHP = new HorizontalPanel();
+        final VerticalPanel simpleShortVP = new VerticalPanel();
 
-        simpleButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                if (simpleError.getText().equals("")) {
-                    LSHService.App.getInstance().getSimpleShort(simpleOriginalLink.getText(), new AsyncCallback<String>() {
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            simpleError.setText("Cannot connect to server!");
-                        }
-                        @Override
-                        public void onSuccess(String result) {
-                            simpleShortLink.setText(result);
-
-                            // ToDO Классть ссылку в буфер обмена
-                            // TODO по enter тоже отлавливать
-                        }
-                    });
-                } else {
-                    simpleError.setText("Cannot connect");
-                }
-            }
-        });
+        simpleButton.addClickHandler(new SimpleClickHandler() );
+        simpleOriginalLink.addKeyDownHandler(new EnterKeyListener(simpleButton));
 
         simpleShortHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        simpleShortHP.setSpacing(5);
+
         simpleShortHP.add(simpleOriginalLink);
         simpleShortHP.add(simpleButton);
 
         simpleShortVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        simpleShortVP.setSpacing(10);
+
         simpleShortVP.add(simpleShortHP);
         simpleShortVP.add(simpleShortLink);
-        simpleShortVP.add(simpleError);
 
 
+
+        // Создаем управляемое сокращение
+        final HorizontalPanel complexShortHP = new HorizontalPanel();
+        final HorizontalPanel complexShortHP2 = new HorizontalPanel(); // TODO Rename
+        final VerticalPanel complexShortVP = new VerticalPanel();
+        EnterKeyListener complexKey = new EnterKeyListener(complexButton);
+
+        // Заполняем данными
+        complexTime.addItem("1 hour");
+        complexTime.addItem("12 hours");
+        complexTime.addItem("1 day");
+        complexTime.addItem("1 week");
+        complexTime.addItem("1 month");
+        complexTime.addItem("Unlimited");
+        complexTime.setSelectedIndex(2);
+
+        complexCount.addItem("1");
+        complexCount.addItem("2");
+        complexCount.addItem("5");
+        complexCount.addItem("10");
+        complexCount.addItem("100");
+        complexCount.addItem("Unlimited");
+        complexTime.setSelectedIndex (0);
+
+        complexButton.addClickHandler(new ComplexClickHandler()); // Добавили хендлер наатия на кнопку
+        // Добавляем хендлер нажатия клавишы Enter ко всем полям
+        complexOriginalLink.addKeyDownHandler(complexKey);
+        complexName.addKeyDownHandler(complexKey);
+        complexCount.addKeyDownHandler(complexKey);
+        complexTime.addKeyDownHandler(complexKey);
+
+        complexShortHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexShortHP.setSpacing(8);
+
+        complexShortHP.add(complexText);
+        complexShortHP.add(complexOriginalLink);
+        complexShortHP.add(complexTimeText);
+        complexShortHP.add(complexTime);
+
+        complexShortHP2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexShortHP2.setSpacing(8);
+
+        complexShortHP2.add(complexCountText);
+        complexShortHP2.add(complexCount);
+        complexShortHP2.add(complexNameText);
+        complexShortHP2.add(complexName);
+
+        complexShortVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexShortVP.setSpacing(15);
+
+        complexShortVP.add(complexShortHP);
+        complexShortVP.add(complexShortHP2);
+        complexShortVP.add(complexButton);
+        complexShortVP.add(complexShortLink);
 
         RootPanel.get("SimpleShort").add(simpleShortVP);
+        RootPanel.get("ComplexShort").add(complexShortVP);
     }
 
-
-// TODO Вынести классы во вне
-    private static class MyAsyncCallback implements AsyncCallback<String> {
-        private Label label;
-
-        public MyAsyncCallback(Label label) {
-            this.label = label;
-        }
-
-        public void onSuccess(String result) {
-            label.getElement().setInnerHTML(result);
-        }
-
-        public void onFailure(Throwable throwable) {
-            label.setText("Failed to receive answer from server!");
+    /**
+     * Класс, который реагирует на клик на кнопку получить короткую ссылку
+     */
+    private class SimpleClickHandler implements ClickHandler {
+        public void onClick(ClickEvent event) {
+            LSHService.App.getInstance().getSimpleShort(simpleOriginalLink.getText(), new AsyncCallback<String>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    simpleShortLink.setText("Cannot connect to server!");
+                    }
+                @Override
+                public void onSuccess(String result) {
+                    // TODO Обработка ошибок от сервера
+                    simpleShortLink.setText("Your shortlink - " + result);
+                    copyToClipboard(result);
+                }
+            });
         }
     }
+
+    private class ComplexClickHandler implements ClickHandler {
+        public void onClick(ClickEvent event) {
+
+            // Формируем 'пакет' на сервер
+            Message message = new Message( complexOriginalLink.getText() );
+
+            // Обрабатываем кол-во переходов
+            Integer t;
+            if (complexCount.getSelectedValue().equals("Unlimited")) {
+                t = 0; // 0 для бесконечного кол-во переходов
+            } else {
+                t = Integer.parseInt(complexCount.getSelectedValue());
+            }
+            message.setMaxVisits( t );
+
+            message.setShortLink( complexName.getText() );
+            message.setTtl( complexTime.getSelectedItemText() );
+
+            // И отправляем его
+            LSHService.App.getInstance().getComplexShort(message, new AsyncCallback<String>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    complexShortLink.setText("Cannot connect to server!");
+                }
+                @Override
+                public void onSuccess(String result) {
+                    // TODO Обработка ошибок от сервера
+                    complexShortLink.setText("Your shortlink - " + result);
+                    copyToClipboard(result);
+                }
+            });
+        }
+    }
+
+    private static class EnterKeyListener implements KeyDownHandler {
+        Button button;
+
+        EnterKeyListener (Button button) {
+            this.button = button;
+        }
+
+        @Override
+        public void onKeyDown(KeyDownEvent event) {
+            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                button.click(); // Обрабатываем наатие на клавишу Enter вместо кнопки
+            }
+        }
+
+    }
+
+    // TODO Доделать
+    public static native void copyToClipboard(String result) /*-{
+        var selection = $wnd.getSelection();
+        var text = result;
+        var range = $doc.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        $doc.execCommand('copy');
+        selection.removeAllRanges();
+    }-*/;
+
 }
