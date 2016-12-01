@@ -10,12 +10,12 @@ public class NormalizerTests {
 
     @Test(timeOut = 100)
     public void TestSimpleNormalize() throws Exception {
-        Assert.assertEquals ("pgK8p", Normalizer.Normolize("BigBrownFox"));
+        Assert.assertEquals ("", Normalizer.Normalize("BigBrownFox"));
     }
 
     @Test(timeOut = 100)
     public void TestStopWords() throws Exception {
-        System.out.println(Normalizer.Normolize("CREATE"));
+        System.out.println(Normalizer.Normalize("CREATE"));
         //Assert.assertEquals(Normalizer.Normolize("CREATE"), "ERROR");
     }
 
