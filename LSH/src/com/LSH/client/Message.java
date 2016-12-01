@@ -17,11 +17,15 @@ public class Message implements Serializable {
         return originalLink;
     }
 
+    public void setOriginalLink(String originalLink) {
+        this.originalLink = originalLink;
+    }
+
     public String getShortLink() {
         return shortLink;
     }
 
-    void setShortLink(String shortLink) {
+    public void setShortLink(String shortLink) {
         if (!shortLink.isEmpty()) {
             this.shortLink = shortLink;
         }
@@ -31,7 +35,7 @@ public class Message implements Serializable {
         return ttl;
     }
 
-    void setTtl(String ttl) {
+    public void setTtl(String ttl) {
         this.ttl = ttl;
     }
 
@@ -39,15 +43,17 @@ public class Message implements Serializable {
         return maxVisits;
     }
 
-    void setMaxVisits(Integer maxVisits) {
+    public void setMaxVisits(Integer maxVisits) {
         this.maxVisits = maxVisits;
     }
 
+    /* Данные */
     private String originalLink;
     private String shortLink;
     private String ttl;
     private Integer maxVisits;
 
+    /* Конструкторы */
     Message () {
         originalLink = "NONE";
     }
@@ -56,7 +62,21 @@ public class Message implements Serializable {
         this.originalLink = originalLink;
         shortLink = "NONE"; // Кодовое слово
         ttl = "1 week"; // Неделю по дефолту
-        maxVisits = 0;
+        maxVisits = 0; // Бесконечное по дефолту
+    }
+
+    Message(String originalLink, String ttl, Integer maxVisits) {
+        this.originalLink = originalLink;
+        shortLink = "NONE"; // Кодовое слово
+        this.ttl = ttl;
+        this.maxVisits = maxVisits;
+    }
+
+    Message(String originalLink, String ttl, Integer maxVisits, String shortLink) {
+        this.originalLink = originalLink;
+        this.shortLink = shortLink;
+        this.ttl = ttl;
+        this.maxVisits = maxVisits;
     }
 
 

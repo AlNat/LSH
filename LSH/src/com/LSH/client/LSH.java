@@ -67,7 +67,7 @@ public class LSH implements EntryPoint {
         complexTime.addItem("1 hour");
         complexTime.addItem("12 hours");
         complexTime.addItem("1 day");
-        complexTime.addItem("1 week");
+        complexTime.addItem("1 week"); // TODO по дефолту выбирать эту строку
         complexTime.addItem("1 month");
         complexTime.addItem("Unlimited");
         complexTime.setSelectedIndex(2);
@@ -120,7 +120,10 @@ public class LSH implements EntryPoint {
      */
     private class SimpleClickHandler implements ClickHandler {
         public void onClick(ClickEvent event) {
-            LSHService.App.getInstance().getSimpleShort(simpleOriginalLink.getText(), new AsyncCallback<String>() {
+
+            Message message = new Message(simpleOriginalLink.getText());
+
+            LSHService.App.getInstance().getShort(message, new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     simpleShortLink.setText("Cannot connect to server!");
@@ -129,6 +132,8 @@ public class LSH implements EntryPoint {
                 public void onSuccess(String result) {
                     // TODO Обработка ошибок от сервера
                     simpleShortLink.setText("Your shortlink - " + result);
+                    simpleShortLink.getElement().setAttribute("id","simpleAnswer");
+                    copyToClipboard("simpleAnswer");
                     copyToClipboard(result);
                 }
             });
@@ -138,23 +143,23 @@ public class LSH implements EntryPoint {
     private class ComplexClickHandler implements ClickHandler {
         public void onClick(ClickEvent event) {
 
-            // Формируем 'пакет' на сервер
-            Message message = new Message( complexOriginalLink.getText() );
-
             // Обрабатываем кол-во переходов
             Integer t;
             if (complexCount.getSelectedValue().equals("Unlimited")) {
                 t = 0; // 0 для бесконечного кол-во переходов
-            } else {
+            } else { // Число для всего остального
                 t = Integer.parseInt(complexCount.getSelectedValue());
             }
-            message.setMaxVisits( t );
-
-            message.setShortLink( complexName.getText() );
-            message.setTtl( complexTime.getSelectedItemText() );
+            // Формируем 'пакет' данных на сервер
+            Message message;
+            if (complexName.getText().isEmpty()) { // Вызываем конструктор в зависимости от того, есть ли мнемоника
+                message = new Message( complexOriginalLink.getText(), complexTime.getSelectedItemText(), t);
+            } else {
+                message = new Message( complexOriginalLink.getText(), complexTime.getSelectedItemText(), t, complexName.getText());
+            }
 
             // И отправляем его
-            LSHService.App.getInstance().getComplexShort(message, new AsyncCallback<String>() {
+            LSHService.App.getInstance().getShort(message, new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     complexShortLink.setText("Cannot connect to server!");
@@ -163,7 +168,8 @@ public class LSH implements EntryPoint {
                 public void onSuccess(String result) {
                     // TODO Обработка ошибок от сервера
                     complexShortLink.setText("Your shortlink - " + result);
-                    copyToClipboard(result);
+                    complexShortLink.getElement().setAttribute("id","complexAnswer");
+                    copyToClipboard("complexAnswer");
                 }
             });
         }
@@ -185,16 +191,12 @@ public class LSH implements EntryPoint {
 
     }
 
-    // TODO Доделать
+    // TODO Доделать - а нужно ли?
     public static native void copyToClipboard(String result) /*-{
-        var selection = $wnd.getSelection();
-        var text = result;
-        var range = $doc.createRange();
-        range.selectNodeContents(text);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        $doc.execCommand('copy');
-        selection.removeAllRanges();
+        var area = document.getElementById("simpleAnswer");
+        area.focus();
+        area.select();
+        document.execCommand("copy", false, null);
     }-*/;
 
 }
