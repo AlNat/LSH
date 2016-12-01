@@ -2,26 +2,46 @@ h1 {
     font-size: 3em;
     font-weight: bold;
     text-align: center;
-    font-family: "Trijan Pro", monospace;
-}
-
-h3 {
-    text-align: center;
-    font-family: "Trijan Pro", monospace;
+    vertical-align: center;
+    font-family: "Segoe UI Symbol", monospace;
+    margin: 0;
+    padding: 2%;
 }
 
 p {
     font-weight: bold;
-    text-align: center;
     font-family: Verdana, Geneva, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+body {
+    font-family: Helvetica, sans-serif;
+    margin: 0;
 }
 
 div {
-    font-family: monospace;
-    white-space: pre;
+    align: center;
 }
 
-body, td, a {
-    font-family: Helvetica, sans-serif;
-    white-space: pre;
+.blockTitile {
+    background: #304FFE; /*304FFE*/
+    height: 20%;
+    border: none;
+    position: relative;
+}
+
+.blockSimple {
+    background: #2196F3; /*03A9F4, 2196F3*/
+    height: 35%;
+    border: none;    
+    position: relative;
+}
+
+.blockComplex {
+    background: #82B1FF;  /*009688, 607D8B*/
+    height: 45%;
+    border: none;
+    position: relative;
 }
