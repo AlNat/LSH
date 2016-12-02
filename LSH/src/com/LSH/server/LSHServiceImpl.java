@@ -4,9 +4,18 @@ import com.LSH.client.Message;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.LSH.client.LSHService;
 
-// TODO Комментарии + JavaDoc
+/**
+ * Основной класс сервера
+ */
 public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
 
+    private static String site = "www.site.com/"; // Префикс ссылки
+
+    /**
+     * Метод сокращающий ссылу
+     * @param msg сообщение с клиента с данными ссылки
+     * @return короткую ссылку
+     */
     public String getShort(Message msg) {
 
         /*
@@ -18,7 +27,7 @@ public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
             return "Sorry, but link are illegal!";
         } else {
             msg.setOriginalLink(norm);
-            return DBConnect.Put(msg);
+            return site + DBConnect.Put(msg);
         }
         */
         return Shortner.GetShort(Integer.parseInt(msg.getOriginalLink()));

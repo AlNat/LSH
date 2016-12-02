@@ -4,6 +4,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+/**
+ * Интрефейс для клиента
+ */
 @RemoteServiceRelativePath("LSHService")
 public interface LSHService extends RemoteService {
 

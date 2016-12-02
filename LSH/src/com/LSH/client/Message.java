@@ -55,7 +55,7 @@ public class Message implements Serializable {
 
     /* Конструкторы */
     Message () {
-        originalLink = "NONE";
+        originalLink = "";
     }
 
     Message(String originalLink) {
