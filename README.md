@@ -2,8 +2,6 @@
 
 The little shortner to URL with Java, GWT, PostgreSQL
 
-====
-
 #TODO
 - Design - Complete
 - UI - Complete
@@ -14,8 +12,6 @@ The little shortner to URL with Java, GWT, PostgreSQL
 - Сами короткие переходы по ссылке
 - Админка 
 - Вывод аналитики
-
-=====
 
 #QUESTIONS
 
