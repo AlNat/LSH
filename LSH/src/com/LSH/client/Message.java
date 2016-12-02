@@ -12,7 +12,6 @@ import java.io.Serializable;
 public class Message implements Serializable {
 
     /* Геттеры и сеттеры */
-
     public String getOriginalLink() {
         return originalLink;
     }
@@ -47,11 +46,13 @@ public class Message implements Serializable {
         this.maxVisits = maxVisits;
     }
 
+
     /* Данные */
-    private String originalLink;
-    private String shortLink;
-    private String ttl;
-    private Integer maxVisits;
+    private String originalLink; // Оригинальный линк
+    private String shortLink; // Короткая ссылка - мнемоническая
+    private String ttl; // Время жизни ссылки
+    private Integer maxVisits; // Максимальное кол-во визитов
+
 
     /* Конструкторы */
     Message () {
@@ -60,14 +61,14 @@ public class Message implements Serializable {
 
     Message(String originalLink) {
         this.originalLink = originalLink;
-        shortLink = "NONE"; // Кодовое слово
+        shortLink = "NULL"; // Кодовое слово
         ttl = "1 week"; // Неделю по дефолту
         maxVisits = 0; // Бесконечное по дефолту
     }
 
     Message(String originalLink, String ttl, Integer maxVisits) {
         this.originalLink = originalLink;
-        shortLink = "NONE"; // Кодовое слово
+        shortLink = "NULL"; // Кодовое слово
         this.ttl = ttl;
         this.maxVisits = maxVisits;
     }

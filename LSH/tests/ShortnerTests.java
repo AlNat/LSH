@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
  * Created by @author AlNat on 24.05.2016.
  * Licensed by Apache License, Version 2.0
  *
- * Тесты соращения
+ * Тесты сокращения
  */
 public class ShortnerTests {
 // TODO Еще тесты

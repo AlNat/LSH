@@ -3,9 +3,7 @@
 <module rename-to="LSH">
 
     <inherits name='com.google.gwt.user.User'/>
-
     <entry-point class='com.LSH.client.LSH'/>
-
     <servlet path='/LSHService' class='com.LSH.server.LSHServiceImpl'/>
 
 </module>

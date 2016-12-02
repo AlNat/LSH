@@ -23,7 +23,7 @@ public final class Normalizer {
         stoplist.add(" DELETE ");
         stoplist.add(" TRUNK ");
 
-        stoplist.add(" NONE ");
+        stoplist.add(" NULL ");
     }
 
     /**

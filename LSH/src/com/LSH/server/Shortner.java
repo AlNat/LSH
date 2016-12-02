@@ -4,16 +4,13 @@ package com.LSH.server;
  * Created by @author AlNat on 14.09.2016.
  * Licensed by Apache License, Version 2.0
  *
- * ShortURL.GetShort() takes an ID and turns it into a short string
- * ShortURL.GetID() takes a short string and turns it into an ID
+ * По сути класс перевод из одной системы исчисленя (10-ичной)
+ * в другую - мою. В ней набор символов - ALPHABET
  *
- * Features:
- * + large alphabet (51 chars)
- * + removed 'a', 'e', 'i', 'o' and 'u'
- * + removed 'I', 'l', '1', 'O' and '0'
- *
- * Example output:
- * 123456789 <=> pgK8p
+ * Из алфавита удалены:
+ * 'a', 'e', 'i', 'o', 'u'
+ * 'I', 'l', '1', 'O', '0'
+ * По причинам их похожести
  */
 public final class Shortner {
 
