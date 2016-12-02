@@ -24,6 +24,10 @@ public final class Shortner {
      */
     public static String GetShort(int id) {
 
+        if (id < 0) {
+            return "ERROR";
+        }
+
         StringBuilder str = new StringBuilder();
         while (id > 0) {
             // Переводим число в код по разрядам
@@ -37,13 +41,21 @@ public final class Shortner {
     /**
      * Функция преобразует код в id
      * @param code цифробуквенный код (короткая ссылка)
-     * @return id записи в БД
+     * @return id записи в БД или -1 если ошибка
      */
     public static int GetID(String code) {
 
         int link = 0;
-        for (int i = 0; i < code.length(); i++) {
-            link = link * BASE + ALPHABET.indexOf(code.charAt(i));
+        for (int t = 0; t < code.length(); t++) { // Идем по разрядам
+
+            char c = code.charAt(t);
+
+            // Проверяем на то, что код валидный
+            if (!ALPHABET.contains(Character.toString(c))) { // Если этого символа нет, то выходим с ошибкой
+                return -1;
+            }
+
+            link = link * BASE + ALPHABET.indexOf(c);
         }
 
         return link;
