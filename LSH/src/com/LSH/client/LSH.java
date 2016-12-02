@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-//TODO Комментарии обычные и JavaDoc. Рефакторинг?
+//TODO Комментарии обычные и JavaDoc. Рефакторинг -  Переименовать и перегруппировать. Может вынести
 
 /**
  * Класс, отвечающий за главную страницу UI
@@ -14,11 +14,15 @@ public class LSH implements EntryPoint {
 
     // Набор полей в простом сокращении
     private final TextBox simpleOriginalLink = new TextBox();
-    private final Button simpleButton = new Button("Get Short Link");
+    private final Button simpleShortButton = new Button("Get Short Link");
+    private final Button simpleCopyButton = new Button("Copy to clipboard");
+    private final HTML simpleShortText = new HTML("Your shortlink - ");
     private final HTML simpleShortLink = new HTML("");
 
     // Набор полей в управляемом сокращении
-    private final Button complexButton = new Button("Get Short Link");
+    private final Button complexShortButton = new Button("Get Short Link");
+    private final Button complexCopyButton = new Button("Copy to clipboard");
+    private final HTML complexShortText = new HTML("Your shortlink - ");
     private final HTML complexShortLink = new HTML("");
 
     private final HTML complexText = new HTML("Link:");
@@ -26,8 +30,8 @@ public class LSH implements EntryPoint {
     private final HTML complexTimeText = new HTML("Set link live duration:");
     private final ListBox complexTime = new ListBox();
 
-    private final HTML complexCountText = new HTML("Set count of visits:");
-    private final ListBox complexCount = new ListBox();
+    private final HTML complexCountText = new HTML("Set count of visits <br>(0 for unlimited):");
+    private final IntegerBox complexCount = new IntegerBox();
     private final HTML complexNameText = new HTML("Customize link:");
     private final TextBox complexName = new TextBox();
 
@@ -38,30 +42,46 @@ public class LSH implements EntryPoint {
 
         // Создаем простое сокращение
         final HorizontalPanel simpleShortHP = new HorizontalPanel();
+        final HorizontalPanel simpleShortHP2 = new HorizontalPanel(); // TODO Rename!
         final VerticalPanel simpleShortVP = new VerticalPanel();
 
-        simpleButton.addClickHandler(new SimpleClickHandler() );
-        simpleOriginalLink.addKeyDownHandler(new EnterKeyListener(simpleButton));
+        simpleShortButton.addClickHandler(new SimpleClickHandler() );
+        simpleOriginalLink.addKeyDownHandler(new EnterKeyListener(simpleShortButton));
+        simpleOriginalLink.setWidth("200px");
 
         simpleShortHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         simpleShortHP.setSpacing(5);
-
         simpleShortHP.add(simpleOriginalLink);
-        simpleShortHP.add(simpleButton);
+        simpleShortHP.add(simpleShortButton);
+
+        simpleShortHP2.setSpacing(5);
+        simpleShortHP2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        simpleShortHP2.add(simpleShortText);
+        simpleShortHP2.add(simpleShortLink);
+        simpleShortHP2.add(simpleCopyButton);
 
         simpleShortVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         simpleShortVP.setSpacing(10);
-
         simpleShortVP.add(simpleShortHP);
-        simpleShortVP.add(simpleShortLink);
+        simpleShortVP.add(simpleShortHP2);
+
+        simpleShortText.setVisible(false);
+        simpleCopyButton.setVisible(false);
+        simpleCopyButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                copyToClipboard(simpleShortLink.getText());
+            }
+        });
 
 
 
         // Создаем управляемое сокращение
         final HorizontalPanel complexShortHP = new HorizontalPanel();
         final HorizontalPanel complexShortHP2 = new HorizontalPanel(); // TODO Rename
+        final HorizontalPanel complexShortHP3 = new HorizontalPanel(); // TODO Rename
         final VerticalPanel complexShortVP = new VerticalPanel();
-        EnterKeyListener complexKey = new EnterKeyListener(complexButton);
+        EnterKeyListener complexKey = new EnterKeyListener(complexShortButton);
 
         // Заполняем данными
         complexTime.addItem("1 hour");
@@ -72,15 +92,11 @@ public class LSH implements EntryPoint {
         complexTime.addItem("Unlimited");
         complexTime.setSelectedIndex(2);
 
-        complexCount.addItem("1");
-        complexCount.addItem("2");
-        complexCount.addItem("5");
-        complexCount.addItem("10");
-        complexCount.addItem("100");
-        complexCount.addItem("Unlimited");
-        complexTime.setSelectedIndex (0);
+        complexOriginalLink.setHeight("200px");
+        complexCount.setWidth("40px");
+        complexCount.setValue(10);
 
-        complexButton.addClickHandler(new ComplexClickHandler()); // Добавили хендлер наатия на кнопку
+        complexShortButton.addClickHandler(new ComplexClickHandler()); // Добавили хендлер наатия на кнопку
         // Добавляем хендлер нажатия клавишы Enter ко всем полям
         complexOriginalLink.addKeyDownHandler(complexKey);
         complexName.addKeyDownHandler(complexKey);
@@ -89,7 +105,6 @@ public class LSH implements EntryPoint {
 
         complexShortHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexShortHP.setSpacing(8);
-
         complexShortHP.add(complexText);
         complexShortHP.add(complexOriginalLink);
         complexShortHP.add(complexTimeText);
@@ -97,19 +112,32 @@ public class LSH implements EntryPoint {
 
         complexShortHP2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexShortHP2.setSpacing(8);
-
         complexShortHP2.add(complexCountText);
         complexShortHP2.add(complexCount);
         complexShortHP2.add(complexNameText);
         complexShortHP2.add(complexName);
 
+        complexShortHP3.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexShortHP3.setSpacing(8);
+        complexShortHP3.add(complexShortText);
+        complexShortHP3.add(complexShortLink);
+        complexShortHP3.add(complexCopyButton);
+
         complexShortVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexShortVP.setSpacing(15);
-
         complexShortVP.add(complexShortHP);
         complexShortVP.add(complexShortHP2);
-        complexShortVP.add(complexButton);
-        complexShortVP.add(complexShortLink);
+        complexShortVP.add(complexShortButton);
+        complexShortVP.add(complexShortHP3);
+
+        complexShortText.setVisible(false);
+        complexCopyButton.setVisible(false);
+        complexCopyButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                copyToClipboard(simpleShortLink.getText());
+            }
+        });
 
         RootPanel.get("SimpleShort").add(simpleShortVP);
         RootPanel.get("ComplexShort").add(complexShortVP);
@@ -133,7 +161,9 @@ public class LSH implements EntryPoint {
                     if (result.startsWith("ERROR")) {
                         simpleShortLink.setText(result);
                     } else {
-                        simpleShortLink.setText("Your shortlink - " + result);
+                        simpleShortText.setVisible(true);
+                        simpleCopyButton.setVisible(true);
+                        simpleShortLink.setText(result);
                         simpleShortLink.getElement().setAttribute("id", "simpleAnswer");
                         copyToClipboard("simpleAnswer");
                         copyToClipboard(result);
@@ -146,19 +176,12 @@ public class LSH implements EntryPoint {
     private class ComplexClickHandler implements ClickHandler {
         public void onClick(ClickEvent event) {
 
-            // Обрабатываем кол-во переходов
-            Integer t;
-            if (complexCount.getSelectedValue().equals("Unlimited")) {
-                t = 0; // 0 для бесконечного кол-во переходов
-            } else { // Число для всего остального
-                t = Integer.parseInt(complexCount.getSelectedValue());
-            }
             // Формируем 'пакет' данных на сервер
             Message message;
             if (complexName.getText().isEmpty()) { // Вызываем конструктор в зависимости от того, есть ли мнемоника
-                message = new Message( complexOriginalLink.getText(), complexTime.getSelectedItemText(), t);
+                message = new Message( complexOriginalLink.getText(), complexTime.getSelectedItemText(), complexCount.getValue());
             } else {
-                message = new Message( complexOriginalLink.getText(), complexTime.getSelectedItemText(), t, complexName.getText());
+                message = new Message( complexOriginalLink.getText(), complexTime.getSelectedItemText(), complexCount.getValue(), complexName.getText());
             }
 
             // И отправляем его
@@ -172,7 +195,9 @@ public class LSH implements EntryPoint {
                     if (result.startsWith("ERROR")) {
                         complexShortLink.setText(result);
                     } else {
-                        complexShortLink.setText("Your shortlink - " + result);
+                        complexShortText.setVisible(true);
+                        complexCopyButton.setVisible(true);
+                        complexShortLink.setText(result);
                         complexShortLink.getElement().setAttribute("id", "complexAnswer");
                         copyToClipboard("complexAnswer");
                     }
@@ -197,7 +222,7 @@ public class LSH implements EntryPoint {
 
     }
 
-    // TODO Доделать - а нужно ли?
+    // TODO Доделать
     public static native void copyToClipboard(String result) /*-{
         var area = document.getElementById("simpleAnswer");
         area.focus();
