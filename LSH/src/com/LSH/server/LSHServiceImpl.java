@@ -14,20 +14,23 @@ public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
     /**
      * Метод сокращающий ссылу
      * @param msg сообщение с клиента с данными ссылки
-     * @return короткую ссылку
+     * @return короткую ссылку или сообщение об ошибке
      */
     public String getShort(Message msg) {
-
         /*
-        // TODO расскоментировать
         String link = msg.getOriginalLink();
         String norm = Normalizer.Normalize(link);
 
         if ( norm.equals("ERROR!") ) {
-            return "Sorry, but link are illegal!";
+            return "ERROR! <br> Sorry, but link are illegal!";
         } else {
             msg.setOriginalLink(norm);
-            return site + DBConnect.Put(msg);
+            String answer = DBConnect.Put(msg);
+            if (answer.startsWith("ERROR!") {
+                return answer;
+            } else {
+                return site + answer;
+            }
         }
         */
         return Shortner.GetShort(Integer.parseInt(msg.getOriginalLink()));

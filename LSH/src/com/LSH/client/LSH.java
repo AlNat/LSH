@@ -130,11 +130,14 @@ public class LSH implements EntryPoint {
                     }
                 @Override
                 public void onSuccess(String result) {
-                    // TODO Обработка ошибок от сервера
-                    simpleShortLink.setText("Your shortlink - " + result);
-                    simpleShortLink.getElement().setAttribute("id","simpleAnswer");
-                    copyToClipboard("simpleAnswer");
-                    copyToClipboard(result);
+                    if (result.startsWith("ERROR")) {
+                        simpleShortLink.setText(result);
+                    } else {
+                        simpleShortLink.setText("Your shortlink - " + result);
+                        simpleShortLink.getElement().setAttribute("id", "simpleAnswer");
+                        copyToClipboard("simpleAnswer");
+                        copyToClipboard(result);
+                    }
                 }
             });
         }
@@ -166,10 +169,13 @@ public class LSH implements EntryPoint {
                 }
                 @Override
                 public void onSuccess(String result) {
-                    // TODO Обработка ошибок от сервера
-                    complexShortLink.setText("Your shortlink - " + result);
-                    complexShortLink.getElement().setAttribute("id","complexAnswer");
-                    copyToClipboard("complexAnswer");
+                    if (result.startsWith("ERROR")) {
+                        complexShortLink.setText(result);
+                    } else {
+                        complexShortLink.setText("Your shortlink - " + result);
+                        complexShortLink.getElement().setAttribute("id", "complexAnswer");
+                        copyToClipboard("complexAnswer");
+                    }
                 }
             });
         }
