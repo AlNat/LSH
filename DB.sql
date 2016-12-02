@@ -3,6 +3,7 @@
 	СУБД = PostgreSQL
 */
 
+-- TODO Вносить создание ссылки данные в аналитику
 
 -- Таблица для сокращенных ссылок
 CREATE TABLE short (
@@ -132,10 +133,10 @@ LANGUAGE plpgsql;
 
 --/*
 SELECT 
-generate_series(1, 1000),
-generate_series(1, 1000),
-genRandText(20) || '.' || genRandText(3),
-( now() + interval '1 day' * round(random()*200) )::timestamp,
-(random()*20)::int,
-(random()*20)::int;
+	generate_series(1, 1000),
+	generate_series(1, 1000),
+	genRandText(20) || '.' || genRandText(3),
+	( now() + interval '1 day' * round(random()*200) )::timestamp,
+	(random()*20)::int,
+	(random()*20)::int;
 --*/
