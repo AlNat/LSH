@@ -13,18 +13,23 @@ public class NormalizerTests {
 
     @Test(timeOut = 100)
     public void TestSimpleNormalize() throws Exception {
-        Assert.assertEquals ("", Normalizer.Normalize("BigBrownFox"));
+        Assert.assertEquals (Normalizer.Normalize("BigBrownFox"), "BigBrownFox");
+    }
+
+    @Test(timeOut = 100)
+    public void TestURLNormalize() throws Exception {
+        Assert.assertEquals (Normalizer.Normalize("BigBrownFox"), "BigBrownFox");
     }
 
     @Test(timeOut = 100)
     public void TestStopWords() throws Exception {
-        System.out.println(Normalizer.Normalize("CREATE"));
-        //Assert.assertEquals(Normalizer.Normolize("CREATE"), "ERROR");
+        Assert.assertEquals(Normalizer.Normalize("CREATE"), "ERROR");
     }
+
 
     @Test(timeOut = 100)
     public void TestCodeNormalize() throws Exception {
-        Assert.assertEquals ("lkt2", Normalizer.ShortNormalize("www.site.com/lkt2"));
+        Assert.assertEquals (Normalizer.ShortNormalize("www.site.com/lkt2"), "lkt2");
     }
 
 }

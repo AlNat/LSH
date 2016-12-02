@@ -36,7 +36,7 @@ public class LSH implements EntryPoint {
     private final TextBox complexName = new TextBox();
 
     /**
-     * Основной метод в UI - аналог конструктора в GWT
+     * Основной метод в UI
      */
     public void onModuleLoad() {
 
