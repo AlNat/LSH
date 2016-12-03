@@ -5,24 +5,26 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-//TODO Комментарии обычные и JavaDoc. Рефакторинг -  Переименовать и перегруппировать. Может вынести
-
+//TODO Комментарии обычные и JavaDoc.
+//TODO Рефакторинг - Переименовать и перегруппировать. Может вынести
 /**
  * Класс, отвечающий за главную страницу UI
  */
 public class LSH implements EntryPoint {
 
+    private static String errorCode = "Error!";
+
     // Набор полей в простом сокращении
     private final TextBox simpleOriginalLink = new TextBox();
     private final Button simpleShortButton = new Button("Get Short Link");
     private final Button simpleCopyButton = new Button("Copy to clipboard");
-    private final HTML simpleShortText = new HTML("Your shortlink - ");
+    private final HTML simpleShortText = new HTML("Your shortlink — ");
     private final HTML simpleShortLink = new HTML("");
 
     // Набор полей в управляемом сокращении
     private final Button complexShortButton = new Button("Get Short Link");
     private final Button complexCopyButton = new Button("Copy to clipboard");
-    private final HTML complexShortText = new HTML("Your shortlink - ");
+    private final HTML complexShortText = new HTML("Your shortlink — ");
     private final HTML complexShortLink = new HTML("");
 
     private final HTML complexText = new HTML("Link:");
@@ -67,12 +69,7 @@ public class LSH implements EntryPoint {
 
         simpleShortText.setVisible(false);
         simpleCopyButton.setVisible(false);
-        simpleCopyButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                copyToClipboard(simpleShortLink.getText());
-            }
-        });
+        simpleCopyButton.addClickHandler(new CopyClickHandler("simpleAnswer"));
 
 
 
@@ -87,12 +84,12 @@ public class LSH implements EntryPoint {
         complexTime.addItem("1 hour");
         complexTime.addItem("12 hours");
         complexTime.addItem("1 day");
-        complexTime.addItem("1 week"); // TODO по дефолту выбирать эту строку
+        complexTime.addItem("1 week");
         complexTime.addItem("1 month");
         complexTime.addItem("Unlimited");
-        complexTime.setSelectedIndex(2);
+        complexTime.setSelectedIndex(3);
 
-        complexOriginalLink.setHeight("200px");
+        complexOriginalLink.setWidth("200px");
         complexCount.setWidth("40px");
         complexCount.setValue(10);
 
@@ -104,21 +101,21 @@ public class LSH implements EntryPoint {
         complexTime.addKeyDownHandler(complexKey);
 
         complexShortHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        complexShortHP.setSpacing(8);
+        complexShortHP.setSpacing(5);
         complexShortHP.add(complexText);
         complexShortHP.add(complexOriginalLink);
         complexShortHP.add(complexTimeText);
         complexShortHP.add(complexTime);
 
         complexShortHP2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        complexShortHP2.setSpacing(8);
+        complexShortHP2.setSpacing(5);
         complexShortHP2.add(complexCountText);
         complexShortHP2.add(complexCount);
         complexShortHP2.add(complexNameText);
         complexShortHP2.add(complexName);
 
         complexShortHP3.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        complexShortHP3.setSpacing(8);
+        complexShortHP3.setSpacing(5);
         complexShortHP3.add(complexShortText);
         complexShortHP3.add(complexShortLink);
         complexShortHP3.add(complexCopyButton);
@@ -132,13 +129,9 @@ public class LSH implements EntryPoint {
 
         complexShortText.setVisible(false);
         complexCopyButton.setVisible(false);
-        complexCopyButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                copyToClipboard(simpleShortLink.getText());
-            }
-        });
+        complexCopyButton.addClickHandler(new CopyClickHandler("complexAnswer"));
 
+        // Устанавливаем наши панель на страницу
         RootPanel.get("SimpleShort").add(simpleShortVP);
         RootPanel.get("ComplexShort").add(complexShortVP);
     }
@@ -158,21 +151,22 @@ public class LSH implements EntryPoint {
                     }
                 @Override
                 public void onSuccess(String result) {
-                    if (result.startsWith("ERROR")) {
-                        simpleShortLink.setText(result);
+                    if (result.startsWith(errorCode)) {
+                        simpleShortLink.setHTML(result);
                     } else {
                         simpleShortText.setVisible(true);
                         simpleCopyButton.setVisible(true);
                         simpleShortLink.setText(result);
                         simpleShortLink.getElement().setAttribute("id", "simpleAnswer");
-                        copyToClipboard("simpleAnswer");
-                        copyToClipboard(result);
                     }
                 }
             });
         }
     }
 
+    /**
+     *
+     */
     private class ComplexClickHandler implements ClickHandler {
         public void onClick(ClickEvent event) {
 
@@ -192,20 +186,36 @@ public class LSH implements EntryPoint {
                 }
                 @Override
                 public void onSuccess(String result) {
-                    if (result.startsWith("ERROR")) {
-                        complexShortLink.setText(result);
+                    if (result.startsWith(errorCode)) {
+                        complexShortLink.setHTML(result);
                     } else {
                         complexShortText.setVisible(true);
                         complexCopyButton.setVisible(true);
                         complexShortLink.setText(result);
                         complexShortLink.getElement().setAttribute("id", "complexAnswer");
-                        copyToClipboard("complexAnswer");
                     }
                 }
             });
         }
     }
 
+    /**
+     *
+     */
+    private class CopyClickHandler implements ClickHandler {
+        String id;
+
+        CopyClickHandler (String id) {this.id = id;}
+
+        @Override
+        public void onClick(ClickEvent event) {
+            copyToClipboard(id);
+        }
+    }
+
+    /**
+     * Кей-хендлер, наимающий кнопку(переданную в конструкторе) по нажатию Enter
+     */
     private static class EnterKeyListener implements KeyDownHandler {
         Button button;
 
@@ -216,18 +226,25 @@ public class LSH implements EntryPoint {
         @Override
         public void onKeyDown(KeyDownEvent event) {
             if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                button.click(); // Обрабатываем наатие на клавишу Enter вместо кнопки
+                button.click(); // Обрабатываем нажатие на клавишу Enter вместо кнопки
             }
         }
 
     }
 
-    // TODO Доделать
-    public static native void copyToClipboard(String result) /*-{
-        var area = document.getElementById("simpleAnswer");
-        area.focus();
-        area.select();
-        document.execCommand("copy", false, null);
+    /**
+     * Функция копирующая в буфер обмена текст по id
+     * @param inName значение атрибута id
+     */
+    public static native void copyToClipboard(String inName) /*-{
+        var selection = $wnd.getSelection();
+        var text =  $doc.getElementById(inName);
+        var range = $doc.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        $doc.execCommand('copy');
+        selection.removeAllRanges();
     }-*/;
 
 }
