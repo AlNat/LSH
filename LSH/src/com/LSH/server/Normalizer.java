@@ -2,6 +2,8 @@ package com.LSH.server;
 
 import java.util.ArrayList;
 
+import static com.LSH.server.LSHServiceImpl.errorCode;
+
 /**
  * Created by @author AlNat on 21.10.2016.
  * Licensed by Apache License, Version 2.0
@@ -18,12 +20,12 @@ public final class Normalizer {
      */
     private Normalizer () {
         // TODO Доделать стоп листы
-        stoplist.add(" CREATE ");
-        stoplist.add(" UPDATE ");
-        stoplist.add(" DELETE ");
-        stoplist.add(" TRUNK ");
+        stoplist.add("CREATE ");
+        stoplist.add("UPDATE ");
+        stoplist.add("DELETE ");
+        stoplist.add("TRUNK ");
 
-        stoplist.add(" NULL ");
+        stoplist.add("NULL");
     }
 
     /**
@@ -33,14 +35,14 @@ public final class Normalizer {
      */
     public static String Normalize (String in) {
 
-        String s = "";
-
         if (stoplist.contains(in.toUpperCase())) {
-            s = "ERROR";
-        } else {
-            // TODO Приводить ссылу к виду hhtp://www.
-            //s = in.startsWith("http:\\\\www.");
+
+            System.out.println(in);
+
+            return errorCode;
         }
+
+        String s = in;//.startsWith("http:\\\\www.");
 
         return s;
     }
@@ -52,14 +54,11 @@ public final class Normalizer {
      */
     public static String ShortNormalize (String in) {
 
-        String s = "";
-
         if (stoplist.contains(in.toUpperCase())) {
-            s = "ERROR";
-        } else {
-            // TODO Приводить ссылу к виду hhtp://www.
-            //s = in.startsWith("http:\\\\www.");
+            return errorCode;
         }
+
+        String s = in; //.startsWith("http:\\\\www.");
 
         return s;
 

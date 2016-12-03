@@ -9,7 +9,8 @@ import com.LSH.client.LSHService;
  */
 public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
 
-    private static String site = "www.site.com/"; // Префикс ссылки.
+    static String errorCode = "Error!";
+    private static String site = "www.site.com/#"; // Префикс ссылки.
     //TODO На будущее - Подумать, как ее можно получать при настройке приложения
 
     /**
@@ -20,19 +21,19 @@ public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
     public String getShort(Message msg) {
 
         if (msg.getMaxVisits() == null) { // Если кол-во визитов не установлено - возращаем ошибку
-            return "ERROR! <br> Sorry, but count must be initilized!";
+            return errorCode + "<br>Sorry, but count of visits must be initialized!";
         }
 
         String link = msg.getOriginalLink(); // Получаем оригинальный линк
         String norm = Normalizer.Normalize(link); // Нормализауем его
 
-        if ( norm.equals("ERROR!") ) { // Если нормализация не удалась, то возращаем ошибку
-            return "ERROR! <br> Sorry, but link are illegal!";
+        if ( norm.equals(errorCode) ) { // Если нормализация не удалась, то возращаем ошибку
+            return errorCode + "<br>Sorry, but link are illegal!";
         }
 
         msg.setOriginalLink(norm); // Иначе приводим ссылку к нормализованному виду
         String answer = DBConnect.Put(msg); // И посылаем ее в БД
-        if (answer.startsWith("ERROR!") ) { // Если есть ошибка, то возращаем ее
+        if (answer.startsWith(errorCode) ) { // Если есть ошибка, то возращаем ее
             return answer;
         } else { // Иначе отдаем полную короткую ссылку вида : www.site.com/short
             return site + answer;

@@ -1,5 +1,7 @@
 package com.LSH.server;
 
+import static com.LSH.server.LSHServiceImpl.errorCode;
+
 /**
  * Created by @author AlNat on 14.09.2016.
  * Licensed by Apache License, Version 2.0
@@ -25,7 +27,7 @@ public final class Shortner {
     public static String GetShort(int id) {
 
         if (id < 0) {
-            return "ERROR";
+            return errorCode;
         }
 
         StringBuilder str = new StringBuilder();

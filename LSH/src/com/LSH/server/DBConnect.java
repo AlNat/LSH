@@ -1,6 +1,10 @@
 package com.LSH.server;
 
 import com.LSH.client.Message;
+import static com.LSH.server.LSHServiceImpl.errorCode;
+import java.sql.*;
+import java.util.Properties;
+
 
 // TODO Сама имплементация
 // TODO Instance класса и соединение с БД под своим акком
@@ -11,6 +15,19 @@ import com.LSH.client.Message;
  * Класс соединения приложения с БД
  */
 class DBConnect {
+
+    //TODO instance pattern to jdbc
+
+    /*
+
+    String url = "jdbc:postgresql://localhost/test";
+    Properties props = new Properties();
+    props.setProperty("user","fred");
+    props.setProperty("password","secret");
+    props.setProperty("ssl","true");
+    Connection conn = DriverManager.getConnection(url, props);
+
+     */
 
     /**
      * Функция проверки - занят ли этот код
@@ -43,13 +60,13 @@ class DBConnect {
         int id;
         String code;
 
-        if (!in.getShortLink().equals("NONE")) {
+        if (!in.getShortLink().equals("NULL")) {
             code = in.getShortLink();
             Integer answer = CheckAvilability(code);
             if (answer == -1) {
-                return "ERROR! <br> Invalid code!";
+                return errorCode + "<br>Invalid code!";
             } else if (answer == -2) {
-                return "ERROR! <br> Unfortunately, your memo is not available";
+                return errorCode + "<br>Unfortunately, your memo is not available";
             } else {
                 id = answer;
             }
@@ -76,7 +93,7 @@ class DBConnect {
         int id = Shortner.GetID(code);
 
         if (id == -1 || code.equals("ERROR")) {
-            return "ERROR! <br> Invalid code!";
+            return errorCode + "<br>Invalid code!";
         }
 
         // TODO Пойти по этому id в БД и получить оттуда строку, проверить что она валидная и ее можно отдавать обратно -> Отдельная таблица valid.
