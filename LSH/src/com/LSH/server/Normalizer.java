@@ -1,19 +1,24 @@
 package com.LSH.server;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static com.LSH.server.LSHServiceImpl.errorCode;
+import static com.LSH.server.LSHService.errorCode;
+import static com.LSH.server.LSHService.siteLink;
 
 /**
  * Created by @author AlNat on 21.10.2016.
  * Licensed by Apache License, Version 2.0
  *
- * Класс, реализующий нормализатор ссылок - приведения их к виду
- * http://www.site.com/
+ * Класс, реализующий нормализатор ссылок
  */
 public final class Normalizer {
 
     private static ArrayList<String> stoplist = new ArrayList<>(); // Стопслова
+    private static String stopSymbols = "\'\"\'\n\t\\&@:;'"; // TODO Доделать
+
+    //UrlValidator urlValidator = new URLValidator;
 
     /**
      * Конструктор, заполняющий стоп-слова
@@ -36,19 +41,31 @@ public final class Normalizer {
     public static String Normalize (String in) {
 
         if (stoplist.contains(in.toUpperCase())) {
-
-            System.out.println(in);
-
+            //System.out.println(in);
             return errorCode;
         }
 
-        String s = in;//.startsWith("http:\\\\www.");
+        if (in.length() < 3 || in.trim().isEmpty()) {
+            return errorCode;
+        }
 
-        return s;
+        if (isContainsStopsymbols(in)) {
+            return errorCode;
+        }
+
+        // TODO ftp and etc others protocol
+        if (in.startsWith("http://www.")) {
+            return in;
+        } else if (in.startsWith("www.")) {
+            return "http://" + in;
+        } else {
+            return "http://www." + in;
+        }
     }
 
     /**
-     * Метод принимающий короткие ссылик и возращающий их короткий код
+     * Метод принимающий короткие ссылкы и возращающий их короткий код
+     * Зависит от @see siteLink
      * @param in ссылка
      * @return Короткий код
      */
@@ -58,10 +75,29 @@ public final class Normalizer {
             return errorCode;
         }
 
-        String s = in; //.startsWith("http:\\\\www.");
+        if (in.length() < 9 || in.trim().isEmpty()) {
+            return errorCode;
+        }
 
-        return s;
+        if (isContainsStopsymbols(in)) {
+            return errorCode;
+        }
 
+
+        if (in.startsWith(siteLink)) { // http://www.site.com/#
+            return in.substring(siteLink.length());
+        } else if (in.startsWith(siteLink.substring(7))) { // Тк http:// - 7 символов - обрезали и получили -> www.site.com/# - их реем и вернули коротий код
+            return in.substring(14);
+        } else { // site.com/#
+            return in.substring(10);
+        }
+
+    }
+
+    private static boolean isContainsStopsymbols (String in) {
+        Pattern p = Pattern.compile(stopSymbols);
+        Matcher m = p.matcher(in);
+        return m.find();
     }
 
 }

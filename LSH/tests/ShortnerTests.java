@@ -10,12 +10,14 @@ import org.testng.annotations.Test;
  */
 public class ShortnerTests {
 
+    private static String errorCode = "Error!";
+
     @Test(timeOut = 100)
     public void TestEncode() throws Exception {
         Assert.assertEquals ( Shortner.GetShort(123456789), "pgK8p" );
         Assert.assertEquals ( Shortner.GetShort(123456788), "pgK8n" );
         Assert.assertEquals ( Shortner.GetShort(0), "" );
-        Assert.assertEquals( Shortner.GetShort(-1), "ERROR");
+        Assert.assertEquals( Shortner.GetShort(-1), errorCode);
         Assert.assertEquals( Shortner.GetShort(2498), "Z_");
     }
 

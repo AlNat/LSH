@@ -4,6 +4,6 @@
 
     <inherits name='com.google.gwt.user.User'/>
     <entry-point class='com.LSH.client.LSH'/>
-    <servlet path='/LSHService' class='com.LSH.server.LSHServiceImpl'/>
+    <servlet path='/LSHService' class='com.LSH.server.LSHService'/>
 
 </module>

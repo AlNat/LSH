@@ -5,7 +5,7 @@
          version="3.1">
     <servlet>
         <servlet-name>com.LSH.LSH LSHService</servlet-name>
-        <servlet-class>com.LSH.server.LSHServiceImpl</servlet-class>
+        <servlet-class>com.LSH.server.LSHService</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>com.LSH.LSH LSHService</servlet-name>

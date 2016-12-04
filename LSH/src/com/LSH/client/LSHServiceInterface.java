@@ -8,13 +8,13 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * Интрефейс для клиента
  */
 @RemoteServiceRelativePath("LSHService")
-public interface LSHService extends RemoteService {
+public interface LSHServiceInterface extends RemoteService {
 
     String getShort(Message msg);
 
     class App {
-        private static LSHServiceAsync ourInstance = GWT.create(LSHService.class);
-        static synchronized LSHServiceAsync getInstance() {
+        private static LSHServiceInterfaceAsync ourInstance = GWT.create(LSHServiceInterface.class);
+        static synchronized LSHServiceInterfaceAsync getInstance() {
             return ourInstance;
         }
     }

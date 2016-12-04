@@ -1,6 +1,6 @@
 package com.LSH.server;
 
-import static com.LSH.server.LSHServiceImpl.errorCode;
+import static com.LSH.server.LSHService.errorCode;
 
 /**
  * Created by @author AlNat on 14.09.2016.

@@ -9,25 +9,25 @@ import org.testng.annotations.Test;
  *
  * Тесты нормализатора
  */
-public class NormalizerTests {
+public class NormalizeTests {
 
     private static String errorCode = "Error!";
-    private Normalizer normalizer;
+    //private Normalizer normalizer;
 
     @BeforeTest
     public void Create () {
         //normalizer = new Normalizer();
     }
 
-    @Test(timeOut = 100)
-    public void TestSimpleNormalize() throws Exception {
+
+    // Тесты для свертки
+
+    @Test(timeOut = 500)
+    public void TestURL() throws Exception {
         Assert.assertEquals (Normalizer.Normalize("site.com"), "http://www.site.com");
         Assert.assertEquals (Normalizer.Normalize("www.site.com"), "http://www.site.com");
         Assert.assertEquals (Normalizer.Normalize("http://www.site.com"), "http://www.site.com");
-    }
 
-    @Test(timeOut = 100)
-    public void TestURLNormalize() throws Exception {
         Assert.assertEquals (Normalizer.Normalize("site.com/chat"), "http://www.site.com/chat");
         Assert.assertEquals (Normalizer.Normalize("www.site.com/chat"), "http://www.site.com/chat");
         Assert.assertEquals (Normalizer.Normalize("http://www.site.com/chat"), "http://www.site.com/chat");
@@ -38,32 +38,38 @@ public class NormalizerTests {
     }
 
     @Test(timeOut = 100)
-    public void TestSubdomainNormalize() throws Exception {
+    public void TestSubdomain() throws Exception {
         Assert.assertEquals (Normalizer.Normalize("sub.site.com"), "http://www.sub.site.com");
-        Assert.assertEquals (Normalizer.Normalize("www.site.com"), "http://www.sub.site.com");
+        Assert.assertEquals (Normalizer.Normalize("www.sub.site.com"), "http://www.sub.site.com");
         Assert.assertEquals (Normalizer.Normalize("http://www.sub.site.com"), "http://www.sub.site.com");
-
     }
 
     @Test(timeOut = 100)
-    public void TestHashNormalize() throws Exception {
+    public void TestHistory() throws Exception {
         Assert.assertEquals (Normalizer.Normalize("site.com/chat#id"), "http://www.site.com/chat#id");
         Assert.assertEquals (Normalizer.Normalize("www.site.com/chat"), "http://www.site.com/chat#id");
         Assert.assertEquals (Normalizer.Normalize("http://www.site.com/chat#id"), "http://www.site.com/chat#id");
     }
 
     @Test(timeOut = 100)
-    public void TestStopWords() throws Exception {
+    public void TestProtocols() throws Exception {
+        //Assert.assertEquals( Normalizer.Normalize("ftp://www.site.com"), "ftp://www.site.com");
+    }
+
+    @Test(timeOut = 100)
+    public void TestStopwords() throws Exception {
         Assert.assertEquals( Normalizer.Normalize("CREATE TABLE users"), errorCode);
         Assert.assertEquals( Normalizer.Normalize("DROP TABLE users"), errorCode);
         Assert.assertEquals( Normalizer.Normalize("http://www.site.com/DROP TABLE users"), errorCode);
     }
 
-
-
     @Test(timeOut = 100)
-    public void TestCodeNormalize() throws Exception {
-        //Assert.assertEquals (Normalizer.ShortNormalize("www.site.com/lkt2"), "lkt2");
+    public void TestStopSymbols() throws Exception {
+        Assert.assertEquals( Normalizer.Normalize("'"), errorCode);
+        Assert.assertEquals( Normalizer.Normalize("\t"), errorCode);
     }
+
+
+
 
 }

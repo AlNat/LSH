@@ -144,7 +144,7 @@ public class LSH implements EntryPoint {
 
             Message message = new Message(simpleOriginalLink.getText());
 
-            LSHService.App.getInstance().getShort(message, new AsyncCallback<String>() {
+            LSHServiceInterface.App.getInstance().getShort(message, new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     simpleShortLink.setText("Cannot connect to server!");
@@ -179,7 +179,7 @@ public class LSH implements EntryPoint {
             }
 
             // И отправляем его
-            LSHService.App.getInstance().getShort(message, new AsyncCallback<String>() {
+            LSHServiceInterface.App.getInstance().getShort(message, new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     complexShortLink.setText("Cannot connect to server!");

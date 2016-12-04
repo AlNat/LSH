@@ -2,15 +2,15 @@ package com.LSH.server;
 
 import com.LSH.client.Message;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.LSH.client.LSHService;
+import com.LSH.client.LSHServiceInterface;
 
 /**
  * Основной класс сервера
  */
-public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
+public class LSHService extends RemoteServiceServlet implements LSHServiceInterface {
 
     static String errorCode = "Error!";
-    private static String site = "www.site.com/#"; // Префикс ссылки.
+    public static String siteLink = "http://www.site.com/#"; // Префикс ссылки.
     //TODO На будущее - Подумать, как ее можно получать при настройке приложения
 
     /**
@@ -35,8 +35,8 @@ public class LSHServiceImpl extends RemoteServiceServlet implements LSHService {
         String answer = DBConnect.Put(msg); // И посылаем ее в БД
         if (answer.startsWith(errorCode) ) { // Если есть ошибка, то возращаем ее
             return answer;
-        } else { // Иначе отдаем полную короткую ссылку вида : www.site.com/short
-            return site + answer;
+        } else { // Иначе отдаем полную короткую ссылку вида : http://www.site.com/#short
+            return siteLink + answer;
         }
 
     }

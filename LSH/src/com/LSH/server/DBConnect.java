@@ -1,9 +1,7 @@
 package com.LSH.server;
 
 import com.LSH.client.Message;
-import static com.LSH.server.LSHServiceImpl.errorCode;
-import java.sql.*;
-import java.util.Properties;
+import static com.LSH.server.LSHService.errorCode;
 
 
 // TODO Сама имплементация
