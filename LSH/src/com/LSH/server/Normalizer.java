@@ -18,8 +18,6 @@ public final class Normalizer {
     private static ArrayList<String> stoplist = new ArrayList<>(); // Стопслова
     private static String stopSymbols = "\'\"\'\n\t\\&@:;'"; // TODO Доделать
 
-    //UrlValidator urlValidator = new URLValidator;
-
     /**
      * Конструктор, заполняющий стоп-слова
      */
@@ -53,13 +51,17 @@ public final class Normalizer {
             return errorCode;
         }
 
-        // TODO ftp and etc others protocol
-        if (in.startsWith("http://www.")) {
+        String[] protocol = {"ftp://", "http://", "https://"};
+
+        if (in.startsWith(protocol[0]) ||
+            in.startsWith(protocol[1]) ||
+            in.startsWith(protocol[2])
+            ) {
             return in;
         } else if (in.startsWith("www.")) {
-            return "http://" + in;
+            return "https://" + in;
         } else {
-            return "http://www." + in;
+            return "https://www." + in;
         }
     }
 

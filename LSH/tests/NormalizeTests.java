@@ -12,13 +12,6 @@ import org.testng.annotations.Test;
 public class NormalizeTests {
 
     private static String errorCode = "Error!";
-    //private Normalizer normalizer;
-
-    @BeforeTest
-    public void Create () {
-        //normalizer = new Normalizer();
-    }
-
 
     // Тесты для свертки
 
@@ -53,7 +46,9 @@ public class NormalizeTests {
 
     @Test(timeOut = 100)
     public void TestProtocols() throws Exception {
-        //Assert.assertEquals( Normalizer.Normalize("ftp://www.site.com"), "ftp://www.site.com");
+        Assert.assertEquals( Normalizer.Normalize("ftp://www.site.com"), "ftp://www.site.com");
+        Assert.assertEquals( Normalizer.Normalize("http://www.site.com"), "https://www.site.com");
+        Assert.assertEquals( Normalizer.Normalize("https://www.site.com"), "https://www.site.com");
     }
 
     @Test(timeOut = 100)
