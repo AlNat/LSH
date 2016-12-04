@@ -28,13 +28,13 @@ public class ShortNormalizeTests {
     @Test(timeOut = 100)
     public void TestStopWords() throws Exception {
         Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/# DROP DATABASE"), errorCode);
-        Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#CREATE"), errorCode);
+        Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#CREATE TABLE"), errorCode);
     }
 
-    @Test(timeOut = 100)
+    @Test//(timeOut = 100)
     public void TestStopSymbols() throws Exception {
-        Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#\t"), errorCode);
         Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#'"), errorCode);
+        Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#\t"), errorCode);
     }
 
 
