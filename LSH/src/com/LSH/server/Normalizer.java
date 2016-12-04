@@ -39,7 +39,6 @@ public final class Normalizer {
     public static String Normalize (String in) {
 
         if (stoplist.contains(in.toUpperCase())) {
-            //System.out.println(in);
             return errorCode;
         }
 
@@ -47,7 +46,7 @@ public final class Normalizer {
             return errorCode;
         }
 
-        if (isContainsStopsymbols(in)) {
+        if (isContainsStopSymbols(in)) {
             return errorCode;
         }
 
@@ -81,14 +80,14 @@ public final class Normalizer {
             return errorCode;
         }
 
-        if (isContainsStopsymbols(in)) {
+        if (isContainsStopSymbols(in)) {
             return errorCode;
         }
 
 
-        if (in.startsWith(siteLink)) { // http://www.site.com/#
+        if (in.startsWith(siteLink)) {
             return in.substring(siteLink.length());
-        } else if (in.startsWith(siteLink.substring(7))) { // Тк http:// - 7 символов - обрезали и получили -> www.site.com/# - их реем и вернули коротий код
+        } else if (in.startsWith(siteLink.substring(7))) { // Тк http:// - 7 символов - обрезали и получили -> www.site.com/# - их режем и вернули коротий код
             return in.substring(14);
         } else { // site.com/#
             return in.substring(10);
@@ -96,7 +95,12 @@ public final class Normalizer {
 
     }
 
-    private static boolean isContainsStopsymbols (String in) {
+    /**
+     * Функция, проверяющая встречаються ли стоп-символы в строке
+     * @param in входная строка
+     * @return true если встречаються, false если нет
+     */
+    private static boolean isContainsStopSymbols (String in) {
         Pattern p = Pattern.compile(stopSymbols);
         Matcher m = p.matcher(in);
         return m.find();

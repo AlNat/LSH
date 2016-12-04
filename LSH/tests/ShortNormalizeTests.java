@@ -18,11 +18,17 @@ public class ShortNormalizeTests {
     @Test(timeOut = 100)
     public void TestShort() throws Exception {
         Assert.assertEquals (Normalizer.ShortNormalize(siteLink + "lkt1"), "lkt1");
-        Assert.assertEquals (Normalizer.ShortNormalize("www.site.com/#lkt2"), "lkt2");
-        Assert.assertEquals (Normalizer.ShortNormalize("site.com/#lkt3"), "lkt3");
-        Assert.assertEquals (Normalizer.ShortNormalize("www.site.com/#"), "");
+        Assert.assertEquals (Normalizer.ShortNormalize(siteLink.substring(7) + "lkt2"), "lkt2");
+        Assert.assertEquals (Normalizer.ShortNormalize(siteLink.substring(11) + "lkt3"), "lkt3");
+        Assert.assertEquals (Normalizer.ShortNormalize(siteLink), "");
         Assert.assertEquals (Normalizer.ShortNormalize("com/#"), errorCode);
 
+    }
+
+    @Test(timeOut = 100)
+    public void TestStopWords() throws Exception {
+        Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/# DROP DATABASE"), errorCode);
+        Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#CREATE"), errorCode);
     }
 
     @Test(timeOut = 100)
