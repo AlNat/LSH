@@ -3,9 +3,8 @@ package com.LSH.server;
 import com.LSH.client.Message;
 import static com.LSH.server.LSHService.errorCode;
 
-
 // TODO Сама имплементация
-// TODO Instance класса и соединение с БД под своим акком
+// TODO instance pattern to jdbc и соединение с БД под своим акком
 /**
  * Created by @author AlNat on 16.09.2016.
  * Licensed by Apache License, Version 2.0
@@ -14,17 +13,13 @@ import static com.LSH.server.LSHService.errorCode;
  */
 class DBConnect {
 
-    //TODO instance pattern to jdbc
-
     /*
-
     String url = "jdbc:postgresql://localhost/test";
     Properties props = new Properties();
     props.setProperty("user","fred");
     props.setProperty("password","secret");
     props.setProperty("ssl","true");
     Connection conn = DriverManager.getConnection(url, props);
-
      */
 
     /**
@@ -55,28 +50,30 @@ class DBConnect {
      */
     static String Put(Message in) {
 
-        int id;
-        String code;
+        int id; // id Ссылки
+        String code; // Короткий код
 
-        if (!in.getShortLink().equals("NULL")) {
-            code = in.getShortLink();
-            Integer answer = CheckAvilability(code);
-            if (answer == -1) {
+        if (!in.getShortLink().equals("NULL")) { // Если есть желаемый короткий код
+            code = in.getShortLink(); // Получаем его
+            Integer answer = CheckAvilability(code); // И проверяем его наличие в БД
+            if (answer == -1) { // Если код невалидный то отвечаем
                 return errorCode + "<br>Invalid code!";
-            } else if (answer == -2) {
+            } else if (answer == -2) { // Если занят тоже
                 return errorCode + "<br>Unfortunately, your memo is not available";
-            } else {
+            } else { // Иначе берем его как новый id
                 id = answer;
             }
         } else {
-            id = 0; // Postgres - GET NEXT ID TODO Получить новый id из базы
-            code = Shortner.GetShort(id); // Здесь проверка не нужна, ведь из базы гарантирован нормальный id
+            id = 0; // Получаем новый id из базы
+            // Postgres - GET NEXT ID TODO Получить новый id из базы
+            code = Shortner.GetShort(id); // Соращаем его в код
+            // Здесь проверка не нужна, ведь из базы гарантирован нормальный id
 
         }
 
         // TODO записать новую строчку в бд. Попутно отловив ошибки
 
-        return code;
+        return code; // И возращаем саму ссылки
     }
 
     /**
@@ -86,20 +83,25 @@ class DBConnect {
      */
     static String Get (String code) {
 
-        code = Normalizer.ShortNormalize(code);
-        String answer = "";
-        int id = Shortner.GetID(code);
+        code = Normalizer.ShortNormalize(code); // Нормализуем код
 
-        if (id == -1 || code.equals("ERROR")) {
+        if (code.equals(errorCode)) { // Если это ошибка то вернули ее
             return errorCode + "<br>Invalid code!";
         }
 
+        int id = Shortner.GetID(code); // Попытались код преобразовать к id
+
+        if (id == -1 || code.equals("ERROR")) { // Если ошибка то вернули
+            return errorCode + "<br>Invalid code!";
+        }
+
+        String answer = "";
         // TODO Пойти по этому id в БД и получить оттуда строку, проверить что она валидная и ее можно отдавать обратно -> Отдельная таблица valid.
         // TODO После чего взять оттуда ссылку и вернуть ее. И записать данные о том, кто ходил за ссылкой
 
         // answer = ;
 
-        return answer;
+        return answer; // Вернули оригинальную ссылку для редиректа
     }
 
 }
