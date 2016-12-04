@@ -2,85 +2,99 @@ package com.LSH.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-//TODO Комментарии обычные и JavaDoc.
-//TODO Рефакторинг - Переименовать и перегруппировать. Может вынести
 /**
  * Класс, отвечающий за главную страницу UI
  */
 public class LSH implements EntryPoint {
 
-    private static String errorCode = "Error!";
+    private static String errorCode = "Error!"; // Код ошибки
 
-    // Набор полей в простом сокращении
-    private final TextBox simpleOriginalLink = new TextBox();
-    private final Button simpleShortButton = new Button("Get Short Link");
-    private final Button simpleCopyButton = new Button("Copy to clipboard");
-    private final HTML simpleShortText = new HTML("Your shortlink — ");
-    private final HTML simpleShortLink = new HTML("");
+    /* Набор полей для простом сокращении */
+    private final TextBox simpleOriginalLink = new TextBox(); // Оригинальная ссылка
+    private final Button simpleShortButton = new Button("Get Short Link"); // Кнопка получить короткую ссылку
+    private final Button simpleCopyButton = new Button("Copy to clipboard"); // Кнопа копировать в буфер обмена
+    private final HTML simpleShortText = new HTML("Your shortlink — "); // Текст перед короткой ссылкой
+    private final HTML simpleShortLink = new HTML(""); // Сама ссылка
 
-    // Набор полей в управляемом сокращении
-    private final Button complexShortButton = new Button("Get Short Link");
-    private final Button complexCopyButton = new Button("Copy to clipboard");
-    private final HTML complexShortText = new HTML("Your shortlink — ");
-    private final HTML complexShortLink = new HTML("");
 
-    private final HTML complexText = new HTML("Link:");
-    private final TextBox complexOriginalLink = new TextBox();
-    private final HTML complexTimeText = new HTML("Set link live duration:");
-    private final ListBox complexTime = new ListBox();
+    /* Набор полей для управляемого сокращения */
+    private final Button complexShortButton = new Button("Get Short Link"); // Кнопка получить короткую ссылку
+    private final Button complexCopyButton = new Button("Copy to clipboard"); // Кнопа копировать в буфер обмена
+    private final HTML complexShortText = new HTML("Your shortlink — "); // Текст перед короткой ссылкой
+    private final HTML complexShortLink = new HTML(""); // Сама ссылка
 
-    private final HTML complexCountText = new HTML("Set count of visits <br>(0 for unlimited):");
-    private final IntegerBox complexCount = new IntegerBox();
-    private final HTML complexNameText = new HTML("Customize link:");
-    private final TextBox complexName = new TextBox();
+    private final HTML complexText = new HTML("Link:"); // Текст перед полем для оригинальной ссылки
+    private final TextBox complexOriginalLink = new TextBox(); // Оригинальная ссылка
+    private final HTML complexTimeText = new HTML("Set link live duration:"); // Текст перед полем для времени жизни ссылки
+    private final ListBox complexTime = new ListBox(); // Поле для указания времени жизни ссылки
+
+    private final HTML complexCountText = new HTML("Set count of visits <br>(0 for unlimited):"); // Тест перед полем для кол-во переходов
+    private final IntegerBox complexCount = new IntegerBox(); // Поле ввода кол-во переходов
+    private final HTML complexNameText = new HTML("Customize link:"); // Текст перед полем для кастомизации ссыли
+    private final TextBox complexName = new TextBox(); // Само поле кастомизации ссылки
 
     /**
      * Основной метод в UI
      */
     public void onModuleLoad() {
 
-        // Создаем простое сокращение
-        final HorizontalPanel simpleShortHP = new HorizontalPanel();
-        final HorizontalPanel simpleShortHP2 = new HorizontalPanel(); // TODO Rename!
-        final VerticalPanel simpleShortVP = new VerticalPanel();
+        /* Создаем простое сокращение */
 
-        simpleShortButton.addClickHandler(new SimpleClickHandler() );
-        simpleOriginalLink.addKeyDownHandler(new EnterKeyListener(simpleShortButton));
-        simpleOriginalLink.setWidth("200px");
+        String linkWidth = String.valueOf(Window.getClientWidth() / 4);
 
-        simpleShortHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        simpleShortHP.setSpacing(5);
-        simpleShortHP.add(simpleOriginalLink);
-        simpleShortHP.add(simpleShortButton);
+        // HP = HorizontalPanel; VP = VerticalPanel
+        final HorizontalPanel simpleDataHP = new HorizontalPanel(); // Панель для приема ссылки
+        final HorizontalPanel simpleAnswerHP = new HorizontalPanel(); // Панель для выдачи ответа
+        final VerticalPanel simpleVP = new VerticalPanel(); // Панель для хранения того, что выше
 
-        simpleShortHP2.setSpacing(5);
-        simpleShortHP2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        simpleShortHP2.add(simpleShortText);
-        simpleShortHP2.add(simpleShortLink);
-        simpleShortHP2.add(simpleCopyButton);
+        simpleShortButton.addClickHandler(new SimpleClickHandler() ); // Навесили на кнопку хендлер нажатий
+        simpleOriginalLink.addKeyDownHandler(new EnterKeyListener(simpleShortButton)); // Навесили на поле хендлер нажатия Enter
+        simpleCopyButton.addClickHandler(new CopyClickHandler("simpleAnswer")); // Навесили на кнопку копирование в буфер хендлер нажатия
 
-        simpleShortVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        simpleShortVP.setSpacing(10);
-        simpleShortVP.add(simpleShortHP);
-        simpleShortVP.add(simpleShortHP2);
+        simpleOriginalLink.setWidth(linkWidth); // Установили шириину поля
+        simpleDataHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER); // Выравнивание
+        simpleDataHP.setSpacing(5); // Отступ
 
+        // Добавили данные
+        simpleDataHP.add(simpleOriginalLink);
+        simpleDataHP.add(simpleShortButton);
+
+        // Аналогично, настроили
+        simpleAnswerHP.setSpacing(5);
+        simpleAnswerHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
+        // И добавили
+        simpleAnswerHP.add(simpleShortText);
+        simpleAnswerHP.add(simpleShortLink);
+        simpleAnswerHP.add(simpleCopyButton);
+
+        // Тут тоже
+        simpleVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        simpleVP.setSpacing(10);
+        simpleVP.add(simpleDataHP);
+        simpleVP.add(simpleAnswerHP);
+
+        // Установили кнопки в невидимость
         simpleShortText.setVisible(false);
         simpleCopyButton.setVisible(false);
-        simpleCopyButton.addClickHandler(new CopyClickHandler("simpleAnswer"));
 
 
 
-        // Создаем управляемое сокращение
-        final HorizontalPanel complexShortHP = new HorizontalPanel();
-        final HorizontalPanel complexShortHP2 = new HorizontalPanel(); // TODO Rename
-        final HorizontalPanel complexShortHP3 = new HorizontalPanel(); // TODO Rename
-        final VerticalPanel complexShortVP = new VerticalPanel();
-        EnterKeyListener complexKey = new EnterKeyListener(complexShortButton);
+        /* Создаем управляемое сокращение */
+        // Панели для хранения
+        final HorizontalPanel complexDataHP = new HorizontalPanel(); // Данные
+        final HorizontalPanel complexData2HP = new HorizontalPanel(); // Данные 2
+        final HorizontalPanel complexAnswerHP = new HorizontalPanel(); // Ответ
+        final VerticalPanel complexVP = new VerticalPanel(); // Хранение того, что выше
 
-        // Заполняем данными
+        EnterKeyListener complexKey = new EnterKeyListener(complexShortButton); // Хендлер наатия на клавишу Enter
+        complexCopyButton.addClickHandler(new CopyClickHandler("complexAnswer"));
+
+        // Заполняем данными поле времени жизни ссылки
         complexTime.addItem("1 hour");
         complexTime.addItem("12 hours");
         complexTime.addItem("1 day");
@@ -89,75 +103,78 @@ public class LSH implements EntryPoint {
         complexTime.addItem("Unlimited");
         complexTime.setSelectedIndex(3);
 
-        complexOriginalLink.setWidth("200px");
+        // Настроили другие поля
+        complexOriginalLink.setWidth(linkWidth);
         complexCount.setWidth("40px");
         complexCount.setValue(10);
 
-        complexShortButton.addClickHandler(new ComplexClickHandler()); // Добавили хендлер наатия на кнопку
+        complexShortButton.addClickHandler(new ComplexClickHandler()); // Добавили хендлер нажатия на кнопку
         // Добавляем хендлер нажатия клавишы Enter ко всем полям
         complexOriginalLink.addKeyDownHandler(complexKey);
         complexName.addKeyDownHandler(complexKey);
         complexCount.addKeyDownHandler(complexKey);
         complexTime.addKeyDownHandler(complexKey);
 
-        complexShortHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        complexShortHP.setSpacing(5);
-        complexShortHP.add(complexText);
-        complexShortHP.add(complexOriginalLink);
-        complexShortHP.add(complexTimeText);
-        complexShortHP.add(complexTime);
+        // Настроили и добавили данные к панелям
+        complexDataHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexDataHP.setSpacing(5);
+        complexDataHP.add(complexText);
+        complexDataHP.add(complexOriginalLink);
+        complexDataHP.add(complexTimeText);
+        complexDataHP.add(complexTime);
 
-        complexShortHP2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        complexShortHP2.setSpacing(5);
-        complexShortHP2.add(complexCountText);
-        complexShortHP2.add(complexCount);
-        complexShortHP2.add(complexNameText);
-        complexShortHP2.add(complexName);
+        complexData2HP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexData2HP.setSpacing(5);
+        complexData2HP.add(complexCountText);
+        complexData2HP.add(complexCount);
+        complexData2HP.add(complexNameText);
+        complexData2HP.add(complexName);
 
-        complexShortHP3.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        complexShortHP3.setSpacing(5);
-        complexShortHP3.add(complexShortText);
-        complexShortHP3.add(complexShortLink);
-        complexShortHP3.add(complexCopyButton);
+        complexAnswerHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexAnswerHP.setSpacing(5);
+        complexAnswerHP.add(complexShortText);
+        complexAnswerHP.add(complexShortLink);
+        complexAnswerHP.add(complexCopyButton);
 
-        complexShortVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        complexShortVP.setSpacing(15);
-        complexShortVP.add(complexShortHP);
-        complexShortVP.add(complexShortHP2);
-        complexShortVP.add(complexShortButton);
-        complexShortVP.add(complexShortHP3);
+        complexVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexVP.setSpacing(15);
+        complexVP.add(complexDataHP);
+        complexVP.add(complexData2HP);
+        complexVP.add(complexShortButton);
+        complexVP.add(complexAnswerHP);
 
+        // Скрыли кнопки ответа
         complexShortText.setVisible(false);
         complexCopyButton.setVisible(false);
-        complexCopyButton.addClickHandler(new CopyClickHandler("complexAnswer"));
 
         // Устанавливаем наши панель на страницу
-        RootPanel.get("SimpleShort").add(simpleShortVP);
-        RootPanel.get("ComplexShort").add(complexShortVP);
+        RootPanel.get("SimpleShort").add(simpleVP);
+        RootPanel.get("ComplexShort").add(complexVP);
     }
 
     /**
-     * Класс, который реагирует на клик на кнопку получить короткую ссылку
+     * Класс, который реагирует на клик на кнопку получить простую короткую ссылку
      */
     private class SimpleClickHandler implements ClickHandler {
         public void onClick(ClickEvent event) {
 
-            Message message = new Message(simpleOriginalLink.getText());
+            Message message = new Message(simpleOriginalLink.getText()); // Формируем сообщение на сервер
 
-            LSHServiceInterface.App.getInstance().getShort(message, new AsyncCallback<String>() {
+            LSHServiceInterface.App.getInstance().getShort(message, new AsyncCallback<String>() { // Отпраляем сообщение и получаем ответ
                 @Override
-                public void onFailure(Throwable caught) {
+                public void onFailure(Throwable caught) { // При неудачном соединению с сервером
                     simpleShortLink.setText("Cannot connect to server!");
                     }
                 @Override
-                public void onSuccess(String result) {
-                    if (result.startsWith(errorCode)) {
+                public void onSuccess(String result) { // При удаче
+                    if (result.startsWith(errorCode)) { // Если вернули код ошиби то показываем его
                         simpleShortLink.setHTML(result);
                     } else {
+                        // Иначе активируем кнопки про короткую ссылку
                         simpleShortText.setVisible(true);
                         simpleCopyButton.setVisible(true);
-                        simpleShortLink.setText(result);
-                        simpleShortLink.getElement().setAttribute("id", "simpleAnswer");
+                        simpleShortLink.setText(result); // Показываем саму ссылку
+                        simpleShortLink.getElement().setAttribute("id", "simpleAnswer"); // И навшиваем на него аттрибут - для работы кнопки копировать
                     }
                 }
             });
@@ -165,7 +182,7 @@ public class LSH implements EntryPoint {
     }
 
     /**
-     *
+     * Класс, который реагирует на клик на кнопку получить управляемую короткую ссылку
      */
     private class ComplexClickHandler implements ClickHandler {
         public void onClick(ClickEvent event) {
@@ -178,7 +195,7 @@ public class LSH implements EntryPoint {
                 message = new Message( complexOriginalLink.getText(), complexTime.getSelectedItemText(), complexCount.getValue(), complexName.getText());
             }
 
-            // И отправляем его
+            // И отправляем его. Что внутри - см выше
             LSHServiceInterface.App.getInstance().getShort(message, new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
@@ -200,24 +217,26 @@ public class LSH implements EntryPoint {
     }
 
     /**
-     *
+     * Класс, которые реагирует на нажатие кнопи скопировать в буфер обмена
      */
     private class CopyClickHandler implements ClickHandler {
-        String id;
+        String id; // Простая или управляемая ссылка долна быть скопирована
 
-        CopyClickHandler (String id) {this.id = id;}
+        CopyClickHandler (String id) { // Получаем id
+            this.id = id;
+        }
 
         @Override
-        public void onClick(ClickEvent event) {
-            copyToClipboard(id);
+        public void onClick(ClickEvent event) { // При клике
+            copyToClipboard(id); // Вызываем функцию копирования
         }
     }
 
     /**
-     * Кей-хендлер, наимающий кнопку(переданную в конструкторе) по нажатию Enter
+     * Кей-хендлер, нажимающий кнопку(переданную в конструкторе) по нажатию Enter
      */
     private static class EnterKeyListener implements KeyDownHandler {
-        Button button;
+        Button button; // Кнопка
 
         EnterKeyListener (Button button) {
             this.button = button;
@@ -226,7 +245,7 @@ public class LSH implements EntryPoint {
         @Override
         public void onKeyDown(KeyDownEvent event) {
             if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                button.click(); // Обрабатываем нажатие на клавишу Enter вместо кнопки
+                button.click(); // Наимаем на кнопку по наатию клавиши Enter
             }
         }
 
