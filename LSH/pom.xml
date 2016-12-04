@@ -6,7 +6,7 @@
 
     <groupId>alnat.LSH</groupId>
     <artifactId>LSH</artifactId>
-    <version>0.4</version>
+    <version>1.0.alpha</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -31,12 +31,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.4.1212</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-parent</artifactId>
-            <version>7</version>
         </dependency>
 
     </dependencies>

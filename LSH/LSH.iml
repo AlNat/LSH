@@ -41,6 +41,5 @@
     <orderEntry type="library" name="Maven: com.beust:jcommander:1.27" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.6" level="project" />
     <orderEntry type="library" name="Maven: org.postgresql:postgresql:9.4.1212" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-parent:7" level="project" />
   </component>
 </module>
