@@ -1,6 +1,5 @@
 import com.LSH.server.Normalizer;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 /**
@@ -40,14 +39,21 @@ public class NormalizeTests {
     @Test(timeOut = 100)
     public void TestHistory() throws Exception {
         Assert.assertEquals (Normalizer.Normalize("site.com/chat#id"), "http://www.site.com/chat#id");
-        Assert.assertEquals (Normalizer.Normalize("www.site.com/chat"), "http://www.site.com/chat#id");
+        Assert.assertEquals (Normalizer.Normalize("www.site.com/chat#id"), "http://www.site.com/chat#id");
         Assert.assertEquals (Normalizer.Normalize("http://www.site.com/chat#id"), "http://www.site.com/chat#id");
+    }
+
+    @Test(timeOut = 100)
+    public void TestQuery() throws Exception {
+        Assert.assertEquals (Normalizer.Normalize("site.com/chat?id=1"), "http://www.site.com/chat?id=1");
+        Assert.assertEquals (Normalizer.Normalize("www.site.com/chat?id=2"), "http://www.site.com/chat?id=2");
+        Assert.assertEquals (Normalizer.Normalize("http://www.site.com/chat?id=3"), "http://www.site.com/chat?id=3");
     }
 
     @Test(timeOut = 100)
     public void TestProtocols() throws Exception {
         Assert.assertEquals( Normalizer.Normalize("ftp://www.site.com"), "ftp://www.site.com");
-        Assert.assertEquals( Normalizer.Normalize("http://www.site.com"), "https://www.site.com");
+        Assert.assertEquals( Normalizer.Normalize("http://www.site.com"), "http://www.site.com");
         Assert.assertEquals( Normalizer.Normalize("https://www.site.com"), "https://www.site.com");
     }
 
@@ -58,7 +64,7 @@ public class NormalizeTests {
         Assert.assertEquals( Normalizer.Normalize("http://www.site.com/DROP TABLE users"), errorCode);
     }
 
-    @Test(timeOut = 1000)
+    @Test(timeOut = 100)
     public void TestStopSymbols() throws Exception {
         Assert.assertEquals( Normalizer.Normalize("'"), errorCode);
         Assert.assertEquals( Normalizer.Normalize("\t"), errorCode);

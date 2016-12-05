@@ -31,10 +31,12 @@ public class ShortNormalizeTests {
         Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#CREATE TABLE"), errorCode);
     }
 
-    @Test//(timeOut = 100)
+    @Test(timeOut = 100)
     public void TestStopSymbols() throws Exception {
+        Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#<>"), errorCode);
         Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#'"), errorCode);
         Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#\t"), errorCode);
+        Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#\n"), errorCode);
     }
 
 

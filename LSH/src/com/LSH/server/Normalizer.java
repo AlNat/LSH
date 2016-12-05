@@ -1,8 +1,6 @@
 package com.LSH.server;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+//import java.util.ArrayList;
 
 import static com.LSH.server.LSHService.errorCode;
 import static com.LSH.server.LSHService.siteLink;
@@ -15,13 +13,11 @@ import static com.LSH.server.LSHService.siteLink;
  */
 public final class Normalizer {
 
-    private static ArrayList<String> stoplist = new ArrayList<>(); // Стопслова
-    private static String stopSymbols = "\'\"\n\t\\&@:;\\''"; // TODO Добавить
-    // TODO Разобраться, почему в одной функции он работает, а в другой - нет
+    //private static ArrayList<String> stoplist = new ArrayList<>(); // Стопслова
+    private static String stopSymbols = "\n\t;'\'\"^{}[]<>|`";
+    // См https://stackoverflow.com/questions/1547899/which-characters-make-a-url-invalid
 
-    /**
-     * Конструктор, заполняющий стоп-слова
-     */
+    /*
     private Normalizer () {
         //А это точно надо? Нужно ли обрабатывать такую ситуацию? Или достаточно стоп-сиволов - кавычек и тд. Плюс проверка на пробелы
         stoplist.add("CREATE ");
@@ -30,7 +26,7 @@ public final class Normalizer {
         stoplist.add("TRUNK ");
 
         stoplist.add("NULL");
-    }
+    }*/
 
     /**
      * Основной метод нормализации оригинальных ссылок
@@ -60,7 +56,6 @@ public final class Normalizer {
             return errorCode;
         }*/
 
-
         String[] protocol = {"ftp://", "http://", "https://"}; // Протоколы
 
         if (in.startsWith(protocol[0]) ||
@@ -69,9 +64,9 @@ public final class Normalizer {
             ) { // Если ссылка начинаеться с протоколов, то вернули ее
             return in;
         } else if (in.startsWith("www.")) { // Если она начинаеться с www
-            return "https://" + in; // То добавили к ней https://
+            return "http://" + in; // То добавили к ней https://
         } else { // Если это просто адрес сайт
-            return "https://www." + in; // То привели к виду https://www.site etc...
+            return "http://www." + in; // То привели к виду https://www.site etc...
         }
     }
 
@@ -121,12 +116,24 @@ public final class Normalizer {
      * @return true если встречаються, false если нет
      */
     private static boolean isContainsStopSymbols (String in) {
+
+        char s[] = in.toCharArray(); // Разбиавем строку на символы
+        for (char c: s) { // Идем по всем символам
+            if (stopSymbols.contains(String.valueOf(c))) { // Если они встречаються
+                return true; // То выдаем true
+            }
+        }
+        return false; // Выдаем false если нет
+
+        // Почем- то, это работало не всегда. Ну вот такие регулярки
+        /*
         Pattern p = Pattern.compile(stopSymbols);
         Matcher m = p.matcher(in);
         return m.find();
+        */
     }
 
-
+    /*
     private static boolean isContainsStopWords (String in) {
         ArrayList<String> s = new ArrayList<>();
         s.add("CREATE ");
@@ -141,5 +148,5 @@ public final class Normalizer {
 
         return t;
     }
-
+    */
 }
