@@ -14,7 +14,7 @@ import static com.LSH.server.LSHService.errorCode;
  * 'I', 'l', '1', 'O', '0'
  * По причинам их похожести
  */
-public final class Shortner {
+final class Shortner {
 
     private static final String ALPHABET = "23456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ-_";
     private static final int BASE = ALPHABET.length();

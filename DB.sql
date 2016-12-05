@@ -120,7 +120,7 @@ $$
 LANGUAGE plpgsql;
 
 
--- Заполение тестовыми данными
+-- Заполнение тестовыми данными
 /*
 CREATE OR REPLACE FUNCTION genRandText (inp INT) RETURNS TEXT AS
 $$
