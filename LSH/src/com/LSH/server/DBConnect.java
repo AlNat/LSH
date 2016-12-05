@@ -7,7 +7,7 @@ import static com.LSH.server.LSHService.errorCode;
 import java.sql.*;
 import java.util.Properties;
 
-// TODO Протестировать все
+// TODO Протестировать Put и Get
 
 /**
  * Created by @author AlNat on 16.09.2016.
@@ -19,15 +19,17 @@ class DBConnect {
 
     static final DBConnect instance = new DBConnect(); // Реализация паттерна Singleton
 
-    // TODO Подумать, как брать эти данные из окружения
-    private String url = "jdbc:postgresql://localhost/LSH";
-    private String login = "LSH";
-    private String password = "LSH";
-    private Connection connection;
-    private Properties props;
+    private Connection connection; // Соединение
 
 
     private DBConnect () { // Конструктор
+
+        // TODO Подумать, как брать эти данные из окружения
+        String url = "jdbc:postgresql://localhost/LSH";
+        String login = "LSH";
+        String password = "LSH";
+        Properties props;
+
         try { // Попытались установить соединение с БД
             props = new Properties();
             props.setProperty("user", login);
@@ -94,7 +96,7 @@ class DBConnect {
 
         Statement statement;
         PreparedStatement preparedStatement;
-        ResultSet rs;
+        ResultSet resultSet;
 
         if (!in.getShortLink().equals("NULL")) { // Если есть желаемый короткий код
 
@@ -114,14 +116,14 @@ class DBConnect {
             try { // Получаем новый id из базы
                 // Создали соедниение и вызвали функцию генерации нового id
                 statement = connection.createStatement();
-                rs = statement.executeQuery("SELECT get_next_id()");
+                resultSet = statement.executeQuery("SELECT get_next_id()");
 
                 // Получили его
-                rs.next();
-                id = rs.getInt(1);
+                resultSet.next();
+                id = resultSet.getInt(1);
 
                 // И закрыли соединение
-                rs.close();
+                resultSet.close();
                 statement.close();
             } catch (SQLException e) { // Отловили ошибки
                 e.printStackTrace();
@@ -138,17 +140,23 @@ class DBConnect {
         switch (t) {
             case "1 hour":
                 date = new Timestamp(System.currentTimeMillis() + 3600000L ); // ТК 1 час - это 3600000  миллисекунд
+                break;
             case "12 hour":
                 date = new Timestamp(System.currentTimeMillis() + 43200000L ); // Аналогично
+                break;
             case "1 day":
                 date = new Timestamp(System.currentTimeMillis() + 86400000L );
+                break;
             case "1 week":
                 date = new Timestamp(System.currentTimeMillis() + 604800000L );
+                break;
             case "1 month":
                 date = new Timestamp(System.currentTimeMillis() + 2678400000L ); // Это, конечно, не месяц, а 31 день. Но нам огромная точность не нужна
+                break;
             case "Unlimited":
                 date = new Timestamp(Long.MAX_VALUE); // ТК это максимально возможное время в Java
-                // TODO проверить, можно ли в PostgreSQL установить время INFINITY
+                break;
+                //date = new Timestamp(Timestamp.parse("infinity")); // Есть такой вариант, но какая разница?
             default:
                 date = new Timestamp(System.currentTimeMillis()); // По дефолту будем делать ссылку не валидной
         }
@@ -163,8 +171,8 @@ class DBConnect {
             preparedStatement.setInt(4, in.getMaxVisits());
 
             // Выолнили вставку и закрыли соединение
-            rs = preparedStatement.executeQuery();
-            rs.close();
+            resultSet = preparedStatement.executeQuery();
+            resultSet.close();
             preparedStatement.close();
         } catch (SQLException e) { // Отловили ошибки
             e.printStackTrace();
@@ -182,9 +190,8 @@ class DBConnect {
      * @return оригинальная ссылка или сообщение об ошибке
      */
     String Get (Data data) {
-        // TODO Комментарии
 
-        String code = data.getCode();
+        String code = data.getCode(); // Получили код
 
         int id = Shortner.GetID(code); // Попытались код преобразовать к id
 
@@ -192,27 +199,29 @@ class DBConnect {
             return errorCode + "<br>Invalid code!";
         }
 
-        ResultSet rs;
+        ResultSet resultSet;
         PreparedStatement preparedStatement;
-        Integer curID;
 
-        try { // Пойти по этому id в БД и получить оттуда строку, проверить что она валидная(отдает по этому id true или false) и ее можно отдавать обратно.
+        try { // Проверили, что этот id вообще есть
 
-            preparedStatement = connection.prepareStatement("SELECT user_id FROM status ORDER BY user_id DESC LIMIT 1");
-            rs = preparedStatement.executeQuery();
+            // Создали и выполнили запрос
+            preparedStatement = connection.prepareStatement("SELECT valid FROM status ORDER BY user_id DESC LIMIT 1");
+            resultSet = preparedStatement.executeQuery();
 
-            rs.next();
-            curID = rs.getInt(1);
+            // Получили ответ
+            resultSet.next();
+            boolean t = resultSet.getBoolean(1);
 
-            rs.close();
+            if (t) { // Если этот id false = занят = используеться то идем дальше
+                return errorCode + "<br>Invalid code!";
+            }
+
+            // Закрыли соединение
+            resultSet.close();
             preparedStatement.close();
-        } catch (SQLException e) {
+        } catch (SQLException e) { // Вывели ошибки
             e.printStackTrace();
             return errorCode + "<br>SQL Error!";
-        }
-
-        if ( id > curID ) {
-            return errorCode + "<br>Invalid link!";
         }
 
 
@@ -221,28 +230,32 @@ class DBConnect {
 
             preparedStatement = connection.prepareStatement("SELECT link FROM short WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
             preparedStatement.setInt(1, id);
-            rs = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
 
-            answer = rs.getString(1);
+            resultSet.next();
+            answer = resultSet.getString(1);
 
-            rs.close();
+            resultSet.close();
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
             return errorCode + "<br>SQL Error!";
         }
 
-        try { // Запись аналитики - писать его в БД
+        try { // Запись аналитики
 
-            preparedStatement = connection.prepareStatement("INSERT INTO analitics (short_id, visit_time, ip, user_agent) VALUES (?, ?, ?, ?)");
+            // Вставили данные в таблицу аналитики
+            preparedStatement = connection.prepareStatement("INSERT INTO analitics (short_id, visit_time, ip, user_agent) VALUES (?, ?, ?::cidr, ?)");
             preparedStatement.setInt(1, id);
-            preparedStatement.setTimestamp( 2, new Timestamp( System.currentTimeMillis() ) );
+            preparedStatement.setTimestamp(2, new Timestamp( System.currentTimeMillis() ) );
             preparedStatement.setString(3, data.getIp());
             preparedStatement.setString(4, data.getBrowser());
-            rs = preparedStatement.executeQuery();
-            rs.close();
+            resultSet = preparedStatement.executeQuery();
+
+            // Закрыли соединение
+            resultSet.close();
             preparedStatement.close();
-        } catch (SQLException e) {
+        } catch (SQLException e) { // Вывели ошибки
             e.printStackTrace();
             return errorCode + "<br>SQL Error!";
         }
