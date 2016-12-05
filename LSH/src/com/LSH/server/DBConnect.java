@@ -4,7 +4,7 @@ import com.LSH.client.Message;
 import static com.LSH.server.LSHService.errorCode;
 import java.sql.*;
 
-// TODO Сама имплементация
+// TODO комментарии
 /**
  * Created by @author AlNat on 16.09.2016.
  * Licensed by Apache License, Version 2.0
@@ -37,27 +37,39 @@ class DBConnect {
      * @return -2 если занят. -1 при ошибке кода. id от кода в другом случае
      */
     private Integer CheckAvilability (String code) {
-        // TODO Проверить занятости этого id
         Integer id = Shortner.GetID(code);
-        //Statment statment
 
         if (id == -1) {
-            return -1;
+            return id;
         }
 
         try {
-            //connection
+            PreparedStatement st = connection.prepareStatement("SELECT status FROM status WHERE user_id = ?");
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+
+            String answer = rs.getString(1);
+
+            rs.close();
+            st.close();
+
+            switch (answer) {
+                case "false":
+                    return -2;
+                case "true":
+                case "":
+                    return id;
+                default:
+                    return -1;
+            }
+
         } catch (SQLException e) {
             System.out.println("Connection Failed! Check output console");
             e.printStackTrace();
         }
 
-        /*
-        if (id = )
-            id = -2;
-        */
+        return -2;
 
-        return id;
     }
 
     /**
@@ -67,8 +79,12 @@ class DBConnect {
      */
     String Put(Message in) {
 
-        int id; // id Ссылки
+        int id = 0; // id Ссылки
         String code; // Короткий код
+
+        Statement st = null;
+        ResultSet rs;
+        PreparedStatement st2 = null;
 
         if (!in.getShortLink().equals("NULL")) { // Если есть желаемый короткий код
             code = in.getShortLink(); // Получаем его
@@ -81,14 +97,41 @@ class DBConnect {
                 id = answer;
             }
         } else {
-            id = 0; // Получаем новый id из базы
-            // Postgres - GET NEXT ID TODO Получить новый id из базы
-            code = Shortner.GetShort(id); // Соращаем его в код
-            // Здесь проверка не нужна, ведь из базы гарантирован нормальный id
+
+            try { // Получаем новый id из базы
+                st = connection.createStatement();
+                rs = st.executeQuery("SELECT get_next_id()");
+
+                id = rs.getInt(1);
+                rs.close();
+                st.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return errorCode + "<br>SQL Error!";
+            }
 
         }
 
-        // TODO записать новую строчку в бд. Попутно отловив ошибки
+        // TODO parsing expireddate
+        String date = "";
+
+        code = Shortner.GetShort(id); // Сокращаем его в код
+
+        try { // Пишем в базу
+
+            st2 = connection.prepareStatement("INSERT INTO short(user_id, link, expired_date, max_count) VALUES (?, ?, ?, ?)");
+            st2.setInt(1, id);
+            st2.setString(2, in.getOriginalLink());
+            st2.setString(3, date);
+            st2.setInt(4, in.getMaxVisits());
+
+            rs = st2.executeQuery();
+            rs.close();
+            st.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return errorCode + "<br>SQL Error!";
+        }
 
         return code; // И возращаем саму ссылки
     }
@@ -99,6 +142,7 @@ class DBConnect {
      * @return оригинальная ссылка или сообщение об ошибке
      */
     String Get (String code) {
+        // TODO Запись аналитики - новый класс, заполнять на клиенте и передавать сюда, а тут уже писать его в БД
 
         code = Normalizer.ShortNormalize(code); // Нормализуем код
 
@@ -113,8 +157,8 @@ class DBConnect {
         }
 
         String answer = "";
-        // TODO Пойти по этому id в БД и получить оттуда строку, проверить что она валидная и ее можно отдавать обратно -> Отдельная таблица valid.
-        // TODO После чего взять оттуда ссылку и вернуть ее. И записать данные о том, кто ходил за ссылкой
+        // TODO Пойти по этому id в БД и получить оттуда строку, проверить что она валидная(отдает по этому id true или false) и ее можно отдавать обратно.
+        // TODO После чего взять оттуда ссылку и вернуть ее.
 
         // answer = ;
 
