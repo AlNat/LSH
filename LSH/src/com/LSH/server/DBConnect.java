@@ -2,9 +2,9 @@ package com.LSH.server;
 
 import com.LSH.client.Message;
 import static com.LSH.server.LSHService.errorCode;
+import java.sql.*;
 
 // TODO Сама имплементация
-// TODO instance pattern to jdbc и соединение с БД под своим акком
 /**
  * Created by @author AlNat on 16.09.2016.
  * Licensed by Apache License, Version 2.0
@@ -13,26 +13,43 @@ import static com.LSH.server.LSHService.errorCode;
  */
 class DBConnect {
 
-    /*
-    String url = "jdbc:postgresql://localhost/test";
-    Properties props = new Properties();
-    props.setProperty("user","fred");
-    props.setProperty("password","secret");
-    props.setProperty("ssl","true");
-    Connection conn = DriverManager.getConnection(url, props);
-     */
+    static final DBConnect instance = new DBConnect(); // Реализация паттерна Singleton
+
+    // TODO Подумать, как брать эти данные из окружения
+    private static String url = "jdbc:postgresql://localhost/LSH";
+    private static String login = "LSH";
+    private static String password = "LSH";
+    Connection connection = null;
+
+
+    private DBConnect () { // Конструктор
+        try { // Попытались установить соединение с БД
+            connection = DriverManager.getConnection(url, login, password);
+        } catch (SQLException e) {
+            System.out.println("Connection Failed! Check output console");
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Функция проверки - занят ли этот код
      * @param code мнемноничесая ссылки
      * @return -2 если занят. -1 при ошибке кода. id от кода в другом случае
      */
-    private static Integer CheckAvilability (String code) {
+    private Integer CheckAvilability (String code) {
         // TODO Проверить занятости этого id
         Integer id = Shortner.GetID(code);
+        //Statment statment
 
         if (id == -1) {
             return -1;
+        }
+
+        try {
+            //connection
+        } catch (SQLException e) {
+            System.out.println("Connection Failed! Check output console");
+            e.printStackTrace();
         }
 
         /*
@@ -48,7 +65,7 @@ class DBConnect {
      * @param in сообщение с данными ссылки
      * @return Код ошибки или короткую ссылку
      */
-    static String Put(Message in) {
+    String Put(Message in) {
 
         int id; // id Ссылки
         String code; // Короткий код
@@ -81,7 +98,7 @@ class DBConnect {
      * @param code короткая ссылка
      * @return оригинальная ссылка или сообщение об ошибке
      */
-    static String Get (String code) {
+    String Get (String code) {
 
         code = Normalizer.ShortNormalize(code); // Нормализуем код
 

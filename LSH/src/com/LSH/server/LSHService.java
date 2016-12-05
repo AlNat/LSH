@@ -32,7 +32,7 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
         }
 
         msg.setOriginalLink(norm); // Иначе приводим ссылку к нормализованному виду
-        String answer = DBConnect.Put(msg); // И посылаем ее в БД
+        String answer = DBConnect.instance.Put(msg); // И посылаем ее в БД
         if (answer.startsWith(errorCode) ) { // Если есть ошибка, то возращаем ее
             return answer;
         } else { // Иначе отдаем полную короткую ссылку вида : http://www.site.com/#short

@@ -5,6 +5,12 @@
 
 -- TODO Вносить создание ссылки данные в аналитику
 
+-- Создание пользователя для приложения
+CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf' VALID UNTIL 'infinity' CONNECTION LIMIT 1;
+
+-- Создали БД
+CREATE DATABASE "LSH" WITH ENCODING='UTF8' OWNER="LSH" CONNECTION LIMIT=-1;
+
 -- Таблица для сокращенных ссылок
 CREATE TABLE short (
 	id SERIAL CONSTRAINT shot_pk PRIMARY KEY, -- Внутрениий id
