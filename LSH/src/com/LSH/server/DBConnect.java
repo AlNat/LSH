@@ -1,10 +1,10 @@
 package com.LSH.server;
 
+import com.LSH.client.Data;
 import com.LSH.client.Message;
 import static com.LSH.server.LSHService.errorCode;
 import java.sql.*;
 
-// TODO комментарии
 /**
  * Created by @author AlNat on 16.09.2016.
  * Licensed by Apache License, Version 2.0
@@ -19,7 +19,7 @@ class DBConnect {
     private static String url = "jdbc:postgresql://localhost/LSH";
     private static String login = "LSH";
     private static String password = "LSH";
-    Connection connection = null;
+    private Connection connection = null;
 
 
     private DBConnect () { // Конструктор
@@ -37,6 +37,8 @@ class DBConnect {
      * @return -2 если занят. -1 при ошибке кода. id от кода в другом случае
      */
     private Integer CheckAvilability (String code) {
+
+        // TODO Комментарии
         Integer id = Shortner.GetID(code);
 
         if (id == -1) {
@@ -79,6 +81,8 @@ class DBConnect {
      */
     String Put(Message in) {
 
+        // TODO refactoring
+
         int id = 0; // id Ссылки
         String code; // Короткий код
 
@@ -97,6 +101,7 @@ class DBConnect {
                 id = answer;
             }
         } else {
+            // TODO Комментарии
 
             try { // Получаем новый id из базы
                 st = connection.createStatement();
@@ -113,7 +118,24 @@ class DBConnect {
         }
 
         // TODO parsing expireddate
-        String date = "";
+        /*
+        complexTime.addItem("1 hour");
+        complexTime.addItem("12 hours");
+        complexTime.addItem("1 day");
+        complexTime.addItem("1 week");
+        complexTime.addItem("1 month");
+        complexTime.addItem("Unlimited");
+        */
+        String t = in.getTtl();
+        String date;
+        switch (t) {
+            case "1 hour":
+                date = "1 hour";
+            default:
+                date = "12 hour";
+        }
+
+
 
         code = Shortner.GetShort(id); // Сокращаем его в код
 
@@ -138,17 +160,13 @@ class DBConnect {
 
     /**
      * Метод, который возращает оригинальную ссылку по коду
-     * @param code короткая ссылка
+     * @param data данные об переходе
      * @return оригинальная ссылка или сообщение об ошибке
      */
-    String Get (String code) {
-        // TODO Запись аналитики - новый класс, заполнять на клиенте и передавать сюда, а тут уже писать его в БД
+    String Get (Data data) {
+        // TODO Комментарии
 
-        code = Normalizer.ShortNormalize(code); // Нормализуем код
-
-        if (code.equals(errorCode)) { // Если это ошибка то вернули ее
-            return errorCode + "<br>Invalid code!";
-        }
+        String code = data.getCode();
 
         int id = Shortner.GetID(code); // Попытались код преобразовать к id
 
@@ -157,10 +175,58 @@ class DBConnect {
         }
 
         String answer = "";
-        // TODO Пойти по этому id в БД и получить оттуда строку, проверить что она валидная(отдает по этому id true или false) и ее можно отдавать обратно.
-        // TODO После чего взять оттуда ссылку и вернуть ее.
+        ResultSet rs;
+        PreparedStatement st = null;
 
-        // answer = ;
+        try { // Пойти по этому id в БД и получить оттуда строку, проверить что она валидная(отдает по этому id true или false) и ее можно отдавать обратно.
+
+            st = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ? DESC LIMIT 1");
+            st.setInt(1, id);
+            rs = st.executeQuery();
+
+            answer = rs.getString(1);
+
+            rs.close();
+            st.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return errorCode + "<br>SQL Error!";
+        }
+
+        if ( ! (answer.equals("true") || answer.equals("false") ) ) {
+            return errorCode + "<br>Invalid link!";
+        }
+
+
+        try { // Получили оригинальную ссылку
+
+            st = connection.prepareStatement("SELECT link FROM short WHERE user_id = ? DESC LIMIT 1");
+            st.setInt(1, id);
+            rs = st.executeQuery();
+
+            answer = rs.getString(1);
+
+            rs.close();
+            st.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return errorCode + "<br>SQL Error!";
+        }
+
+        try { // Запись аналитики - писать его в БД
+
+            st = connection.prepareStatement("INSET INTO analitics (short_id, visit_time, ip, user_agent) VALUES (?, ?, ?, ?)");
+            st.setInt(1, id);
+            st.setLong(2, System.currentTimeMillis());
+            st.setString(3, data.getIp());
+            st.setString(4, data.getBrowser());
+            rs = st.executeQuery();
+            rs.close();
+            st.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return errorCode + "<br>SQL Error!";
+        }
 
         return answer; // Вернули оригинальную ссылку для редиректа
     }
