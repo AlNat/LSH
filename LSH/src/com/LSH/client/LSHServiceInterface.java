@@ -11,6 +11,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface LSHServiceInterface extends RemoteService {
 
     String getShort(Message msg);
+    String getOriginal (Data data);
 
     class App {
         private static LSHServiceInterfaceAsync ourInstance = GWT.create(LSHServiceInterface.class);

@@ -1,5 +1,6 @@
 package com.LSH.server;
 
+import com.LSH.client.Data;
 import com.LSH.client.Message;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.LSH.client.LSHServiceInterface;
@@ -38,6 +39,26 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
         } else { // Иначе отдаем полную короткую ссылку вида : http://www.site.com/#short
             return siteLink + answer;
         }
+
+    }
+
+    /**
+     * Функция, принимающая короткую ссылку и возращающая или ошибку или оригинальный линк
+     * @param data данные об переходе
+     * @return оригинальную ссылку или код ошибки
+     */
+    public String getOriginal (Data data) {
+
+        String code = data.getCode();
+        code = Normalizer.ShortNormalize(code); // Нормализуем код
+
+        if (code.equals(errorCode)) { // Если это ошибка то вернули ее
+            return errorCode + "<br>Invalid code!";
+        }
+
+        data.setCode(code); // Установили нормализованный код
+
+        return DBConnect.instance.Get(data); // Возращаем ответ - там будет или ошибка или нормальный код для редиректа
 
     }
 

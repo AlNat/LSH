@@ -7,4 +7,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface LSHServiceInterfaceAsync {
     void getShort(Message msg, AsyncCallback<String> async);
+    void getOriginal(Data data, AsyncCallback<String> async);
 }
