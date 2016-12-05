@@ -10,6 +10,7 @@ CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf'
 
 -- Создали БД
 CREATE DATABASE "LSH" WITH ENCODING='UTF8' OWNER="LSH" CONNECTION LIMIT=-1;
+ALTER SCHEMA public OWNER TO "LSH"; -- Доделать доступ ибо не работает
 
 -- Таблица для сокращенных ссылок
 CREATE TABLE short (
