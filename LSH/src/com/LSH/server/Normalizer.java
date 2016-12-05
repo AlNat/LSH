@@ -11,7 +11,7 @@ import static com.LSH.server.LSHService.siteLink;
  *
  * Класс, реализующий нормализатор ссылок
  */
-final class Normalizer {
+public final class Normalizer {
 
     //private static ArrayList<String> stoplist = new ArrayList<>(); // Стопслова
     private static String stopSymbols = "\n\t;'\'\"^{}[]<>|`";
