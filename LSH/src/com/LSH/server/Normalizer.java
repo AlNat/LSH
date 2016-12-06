@@ -1,7 +1,5 @@
 package com.LSH.server;
 
-//import java.util.ArrayList;
-
 import static com.LSH.server.LSHService.errorCode;
 import static com.LSH.server.LSHService.siteLink;
 
@@ -13,20 +11,10 @@ import static com.LSH.server.LSHService.siteLink;
  */
 public final class Normalizer {
 
-    //private static ArrayList<String> stoplist = new ArrayList<>(); // Стопслова
+    // TODO URLValidator from Apache
+
     private static String stopSymbols = "\n\t;'\'\"^{}[]<>|`";
     // См https://stackoverflow.com/questions/1547899/which-characters-make-a-url-invalid
-
-    /*
-    private Normalizer () {
-        //А это точно надо? Нужно ли обрабатывать такую ситуацию? Или достаточно стоп-сиволов - кавычек и тд. Плюс проверка на пробелы
-        stoplist.add("CREATE ");
-        stoplist.add("UPDATE ");
-        stoplist.add("DELETE ");
-        stoplist.add("TRUNK ");
-
-        stoplist.add("NULL");
-    }*/
 
     /**
      * Основной метод нормализации оригинальных ссылок
@@ -47,14 +35,6 @@ public final class Normalizer {
             return errorCode;
         }
 
-        /*
-        if (stoplist.contains(in.toUpperCase())) { // Если есть стоп-слова
-            return errorCode;
-        }
-
-        if (isContainsStopWords(in)) { // Если есть стоп-слова
-            return errorCode;
-        }*/
 
         String[] protocol = {"ftp://", "http://", "https://"}; // Протоколы
 
@@ -90,14 +70,6 @@ public final class Normalizer {
             return errorCode;
         }
 
-        /*
-        if (stoplist.contains(in.toUpperCase())) { // Если есть стоп-слова
-            return errorCode;
-        }
-
-        if (isContainsStopWords(in)) { // Если есть стоп-слова
-            return errorCode;
-        }*/
 
         if (in.startsWith(siteLink)) { // Если ссылка полная - то обрезали ее и вернули код
             return in.substring(siteLink.length());
@@ -133,20 +105,4 @@ public final class Normalizer {
         */
     }
 
-    /*
-    private static boolean isContainsStopWords (String in) {
-        ArrayList<String> s = new ArrayList<>();
-        s.add("CREATE ");
-        s.add("UPDATE ");
-        s.add("DELETE ");
-        s.add("DROP ");
-        s.add("TRUNK ");
-
-        s.add("NULL");
-
-        boolean t = s.contains(in.toUpperCase());
-
-        return t;
-    }
-    */
 }

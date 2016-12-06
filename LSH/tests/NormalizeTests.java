@@ -67,6 +67,7 @@ public class NormalizeTests {
     @Test(timeOut = 100)
     public void TestStopSymbols() throws Exception {
         Assert.assertEquals( Normalizer.Normalize("'"), errorCode);
+        Assert.assertEquals( Normalizer.Normalize("'DROP TABLE users"), errorCode);
         Assert.assertEquals( Normalizer.Normalize("\t"), errorCode);
     }
 
