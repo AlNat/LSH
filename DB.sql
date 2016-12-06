@@ -40,7 +40,7 @@ CREATE TABLE status (
 	valid BOOLEAN -- Его статус
 );
 
---TODO Триггерная функция на вставку в short вставлять в status
+--TODO Триггерная функция на вставку в short вставлять в status. ИИ инкрементировать currentCount;
 
 
 -- Индекс на user_id

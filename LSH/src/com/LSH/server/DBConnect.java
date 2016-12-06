@@ -226,16 +226,17 @@ class DBConnect {
             return errorCode + "<br>SQL Error!";
         }
 
-
+        Integer tableID; // id в таблице для foregin key в аналитике
         String answer;
         try { // Получили оригинальную ссылку
 
-            preparedStatement = connection.prepareStatement("SELECT link FROM short WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
+            preparedStatement = connection.prepareStatement("SELECT id, link FROM short WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
             resultSet.next();
-            answer = resultSet.getString(1);
+            answer = resultSet.getString("link");
+            tableID = resultSet.getInt("id");
 
             resultSet.close();
             preparedStatement.close();
@@ -248,7 +249,7 @@ class DBConnect {
 
             // Вставили данные в таблицу аналитики
             preparedStatement = connection.prepareStatement("INSERT INTO analitics (short_id, visit_time, ip, user_agent) VALUES (?, ?, ?::cidr, ?)");
-            preparedStatement.setInt(1, id);
+            preparedStatement.setInt(1, tableID);
             preparedStatement.setTimestamp(2, new Timestamp( System.currentTimeMillis() ) );
             preparedStatement.setString(3, getLinkData.getIp());
             preparedStatement.setString(4, getLinkData.getBrowser());
