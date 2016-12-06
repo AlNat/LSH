@@ -40,6 +40,8 @@ CREATE TABLE status (
 	valid BOOLEAN -- Его статус
 );
 
+--TODO Триггерная функция на вставку в short вставлять в status
+
 
 -- Индекс на user_id
 CREATE INDEX user_id_index ON short (user_id);
@@ -59,7 +61,9 @@ BEGIN
 	SELECT user_id INTO ret
 	FROM status
 	WHERE valid = FALSE
-	LIMIT 1; -- TODO - проверить, что возращает первый сверху
+	LIMIT 1; 
+	-- TODO - проверить, что возращает первый сверху
+	-- TODO - fix if user_id > curval('usr') ret = nexval('usr')
 
 	-- Если нет свободных id, генерируем новое
 	IF ret IS NULL THEN

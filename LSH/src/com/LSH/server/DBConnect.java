@@ -7,7 +7,7 @@ import static com.LSH.server.LSHService.errorCode;
 import java.sql.*;
 import java.util.Properties;
 
-// TODO Протестировать Put и Get
+// TODO Протестировать Get
 
 /**
  * Created by @author AlNat on 16.09.2016.
@@ -20,7 +20,6 @@ class DBConnect {
     static final DBConnect instance = new DBConnect(); // Реализация паттерна Singleton
 
     private Connection connection; // Соединение
-
 
     private DBConnect () { // Конструктор
 
@@ -51,17 +50,18 @@ class DBConnect {
 
         Integer id = Shortner.GetID(code); // Получили id по коду
 
-        if (id == -1) { // Если код ошибочный то вернули его
-            return id;
+        if (id == -1) { // Если код ошибочный то вернули ошибку -1
+            return -1;
         }
 
         try {
             // Создаем запрос и выполняем его
-            PreparedStatement st = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
+            PreparedStatement st = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ? ORDER BY user_id DESC LIMIT 1", ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
 
             // Получаем ответ
+            rs.next();
             rs.next();
             boolean answer = rs.getBoolean("valid");
 
@@ -77,6 +77,9 @@ class DBConnect {
             }
 
         } catch (SQLException e) { // Ловим ошибки
+            if (e.getSQLState().equals("24000")) { // Пустой ответ - нет такого кода - еще не использовался
+                return id;
+            }
             System.out.println("Connection Failed! Check output console");
             e.printStackTrace();
             return -1; // И говорим про ошибку
@@ -171,8 +174,7 @@ class DBConnect {
             preparedStatement.setInt(4, in.getMaxVisits());
 
             // Выолнили вставку и закрыли соединение
-            resultSet = preparedStatement.executeQuery();
-            resultSet.close();
+            boolean tt = preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException e) { // Отловили ошибки
             e.printStackTrace();
@@ -212,7 +214,7 @@ class DBConnect {
             resultSet.next();
             boolean t = resultSet.getBoolean(1);
 
-            if (t) { // Если этот id false = занят = используеться то идем дальше
+            if (t) { // Если этот id true = свободен, то выдаем ошибку
                 return errorCode + "<br>Invalid code!";
             }
 
@@ -250,11 +252,9 @@ class DBConnect {
             preparedStatement.setTimestamp(2, new Timestamp( System.currentTimeMillis() ) );
             preparedStatement.setString(3, getLinkData.getIp());
             preparedStatement.setString(4, getLinkData.getBrowser());
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement.execute();
 
-            // Закрыли соединение
-            resultSet.close();
-            preparedStatement.close();
+            preparedStatement.close(); // Закрыли соединение
         } catch (SQLException e) { // Вывели ошибки
             e.printStackTrace();
             return errorCode + "<br>SQL Error!";
