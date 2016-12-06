@@ -12,23 +12,15 @@
         <url-pattern>/LSH/LSHService</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>com.LSH.LSH LSHService</servlet-name>
+        <url-pattern>/Error404/LSHService</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>LSH.html</welcome-file>
         <welcome-file>404.html</welcome-file>
     </welcome-file-list>
-
-    <!-- ERROR 404 replacement -->
-    <!--
-    <servlet>
-        <servlet-name>missingPageServlet</servlet-name>
-        <servlet-class>com.LSH.client.Error404</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>missingPageServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
-    -->
 
     <error-page>
         <error-code>404</error-code>

@@ -53,7 +53,7 @@ public class Error404 implements EntryPoint {
 
     private void Print404 (String result) {
         Window.setTitle("Page 404");
-        label.setHTML(" <h1>404 Page!</h1> <br>" + result);
+        label.setHTML("<h1>404 Page!</h1> <br>" + result);
     }
 
     // TOADD to page
