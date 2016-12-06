@@ -34,7 +34,7 @@ public class LogEvent implements Serializable {
     LogEvent (String massage, String type) {
         this.massage = massage;
         this.type = type;
-        date = System.currentTimeMillis(); // TODO В нормальном виде
+        //date = System.currentTimeMillis(); // TODO В нормальном виде
     }
 
 }

@@ -11,4 +11,21 @@
         <servlet-name>com.LSH.LSH LSHService</servlet-name>
         <url-pattern>/LSH/LSHService</url-pattern>
     </servlet-mapping>
+
+    <!-- ERROR 404 replacement -->
+    <!--
+    <servlet>
+        <servlet-name>missingPageServlet</servlet-name>
+        <servlet-class>com.LSH.client.Error404</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>missingPageServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping> -->
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>LSH/LSHService</location>
+    </error-page>
 </web-app>
