@@ -82,8 +82,6 @@ public class LSH implements EntryPoint {
         simpleShortText.setVisible(false);
         simpleCopyButton.setVisible(false);
 
-
-
         /* Создаем управляемое сокращение */
         // Панели для хранения
         final HorizontalPanel complexDataHP = new HorizontalPanel(); // Данные
