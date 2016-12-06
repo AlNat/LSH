@@ -158,9 +158,9 @@ public class LSH implements EntryPoint {
     private class SimpleClickHandler implements ClickHandler {
         public void onClick(ClickEvent event) {
 
-            Message message = new Message(simpleOriginalLink.getText()); // Формируем сообщение на сервер
+            PutLinkData putLinkData = new PutLinkData(simpleOriginalLink.getText()); // Формируем сообщение на сервер
 
-            LSHServiceInterface.App.getInstance().getShort(message, new AsyncCallback<String>() { // Отпраляем сообщение и получаем ответ
+            LSHServiceInterface.App.getInstance().getShort(putLinkData, new AsyncCallback<String>() { // Отпраляем сообщение и получаем ответ
                 @Override
                 public void onFailure(Throwable caught) { // При неудачном соединению с сервером
                     simpleShortLink.setText("Cannot connect to server!");
@@ -188,15 +188,15 @@ public class LSH implements EntryPoint {
         public void onClick(ClickEvent event) {
 
             // Формируем 'пакет' данных на сервер
-            Message message;
+            PutLinkData putLinkData;
             if (complexName.getText().isEmpty()) { // Вызываем конструктор в зависимости от того, есть ли мнемоника
-                message = new Message( complexOriginalLink.getText(), complexTime.getSelectedItemText(), complexCount.getValue());
+                putLinkData = new PutLinkData( complexOriginalLink.getText(), complexTime.getSelectedItemText(), complexCount.getValue());
             } else {
-                message = new Message( complexOriginalLink.getText(), complexTime.getSelectedItemText(), complexCount.getValue(), complexName.getText());
+                putLinkData = new PutLinkData( complexOriginalLink.getText(), complexTime.getSelectedItemText(), complexCount.getValue(), complexName.getText());
             }
 
             // И отправляем его. Что внутри - см выше
-            LSHServiceInterface.App.getInstance().getShort(message, new AsyncCallback<String>() {
+            LSHServiceInterface.App.getInstance().getShort(putLinkData, new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     complexShortLink.setText("Cannot connect to server!");

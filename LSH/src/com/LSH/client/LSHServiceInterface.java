@@ -10,8 +10,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("LSHService")
 public interface LSHServiceInterface extends RemoteService {
 
-    String getShort(Message msg);
-    String getOriginal (Data data);
+    String getShort(PutLinkData msg);
+    String getOriginal (GetLinkData getLinkData);
 
     class App {
         private static LSHServiceInterfaceAsync ourInstance = GWT.create(LSHServiceInterface.class);

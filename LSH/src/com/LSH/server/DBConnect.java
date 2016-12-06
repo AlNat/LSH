@@ -1,7 +1,7 @@
 package com.LSH.server;
 
-import com.LSH.client.Data;
-import com.LSH.client.Message;
+import com.LSH.client.GetLinkData;
+import com.LSH.client.PutLinkData;
 import static com.LSH.server.LSHService.errorCode;
 
 import java.sql.*;
@@ -89,7 +89,7 @@ class DBConnect {
      * @param in сообщение с данными ссылки
      * @return Код ошибки или короткую ссылку
      */
-    String Put(Message in) {
+    String Put(PutLinkData in) {
 
         int id; // id Ссылки
         String code; // Короткий код
@@ -186,12 +186,12 @@ class DBConnect {
 
     /**
      * Метод, который возращает оригинальную ссылку по коду
-     * @param data данные об переходе
+     * @param getLinkData данные об переходе
      * @return оригинальная ссылка или сообщение об ошибке
      */
-    String Get (Data data) {
+    String Get (GetLinkData getLinkData) {
 
-        String code = data.getCode(); // Получили код
+        String code = getLinkData.getCode(); // Получили код
 
         int id = Shortner.GetID(code); // Попытались код преобразовать к id
 
@@ -248,8 +248,8 @@ class DBConnect {
             preparedStatement = connection.prepareStatement("INSERT INTO analitics (short_id, visit_time, ip, user_agent) VALUES (?, ?, ?::cidr, ?)");
             preparedStatement.setInt(1, id);
             preparedStatement.setTimestamp(2, new Timestamp( System.currentTimeMillis() ) );
-            preparedStatement.setString(3, data.getIp());
-            preparedStatement.setString(4, data.getBrowser());
+            preparedStatement.setString(3, getLinkData.getIp());
+            preparedStatement.setString(4, getLinkData.getBrowser());
             resultSet = preparedStatement.executeQuery();
 
             // Закрыли соединение

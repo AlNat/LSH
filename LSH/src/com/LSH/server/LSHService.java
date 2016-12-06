@@ -1,7 +1,7 @@
 package com.LSH.server;
 
-import com.LSH.client.Data;
-import com.LSH.client.Message;
+import com.LSH.client.GetLinkData;
+import com.LSH.client.PutLinkData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.LSH.client.LSHServiceInterface;
 
@@ -19,7 +19,7 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
      * @param msg сообщение с клиента с данными ссылки
      * @return короткую ссылку или сообщение об ошибке
      */
-    public String getShort(Message msg) {
+    public String getShort(PutLinkData msg) {
 
         if (msg.getMaxVisits() == null) { // Если кол-во визитов не установлено - возращаем ошибку
             return errorCode + "<br>Sorry, but count of visits must be initialized!";
@@ -44,21 +44,21 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
 
     /**
      * Функция, принимающая короткую ссылку и возращающая или ошибку или оригинальный линк
-     * @param data данные об переходе
+     * @param getLinkData данные об переходе
      * @return оригинальную ссылку или код ошибки
      */
-    public String getOriginal (Data data) {
+    public String getOriginal (GetLinkData getLinkData) {
 
-        String code = data.getCode();
+        String code = getLinkData.getCode();
         code = Normalizer.ShortNormalize(code); // Нормализуем код
 
         if (code.equals(errorCode)) { // Если это ошибка то вернули ее
             return errorCode + "<br>Invalid code!";
         }
 
-        data.setCode(code); // Установили нормализованный код
+        getLinkData.setCode(code); // Установили нормализованный код
 
-        return DBConnect.instance.Get(data); // Возращаем ответ - там будет или ошибка или нормальный код для редиректа
+        return DBConnect.instance.Get(getLinkData); // Возращаем ответ - там будет или ошибка или нормальный код для редиректа
 
     }
 
