@@ -41,7 +41,8 @@ public class GetLinkData implements Serializable {
         this.browser = browser;
     }
 
-
-
+    String toLog () {
+        return "{code=" + code + ";ip=" + ip + ";browser" + browser + "}";
+    }
 
 }

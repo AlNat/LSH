@@ -80,6 +80,8 @@ public class PutLinkData implements Serializable {
         this.maxVisits = maxVisits;
     }
 
-
+    String toLog () {
+        return "{originalLink=" + originalLink + ";shortLink=" + shortLink + ";ttl" + ttl + ";maxVisits" + maxVisits + "}";
+    }
 
 }
