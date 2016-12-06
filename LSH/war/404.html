@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" language="javascript" src="Error404/Error404.nocache.js"></script>
+
+    <script type="text/javascript" language="javascript">
+        <%
+        String ip_address = request.getRemoteAddr();
+        %>
+        var _ipAddress = <%= "\"" + ip_address + "\"" %>;
+    </script>
+
+</head>
+<body>
+    <div id = Page404></div>
+</body>
+</html>

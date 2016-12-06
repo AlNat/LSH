@@ -4,12 +4,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.core.client.EntryPoint;
 
 /**
  * Created by @author AlNat on 06.12.2016.
  * Licensed by Apache License, Version 2.0
  */
-public class Error404 {
+public class Error404 implements EntryPoint {
 
     // TODO Test
     // TODO Подмена 404 страницы на эту
@@ -26,8 +27,8 @@ public class Error404 {
 
         label = new HTML();
         url = Window.Location.getHref();
-        browser = Window.Navigator.getPlatform() + " " + Window.Navigator.getUserAgent() + " " + Window.Navigator.getAppName(); // TODO check corrections
-        ip = getIP();
+        browser = Window.Navigator.getUserAgent();
+        ip = getIP(); // TODO check
         getLinkData = new GetLinkData(url, ip, browser);
 
         LSHServiceInterface.App.getInstance().getOriginal(getLinkData, new AsyncCallback<String>() {
@@ -52,7 +53,7 @@ public class Error404 {
 
     private void Print404 (String result) {
         Window.setTitle("Page 404");
-        label.setHTML(" <h1>404 Page!</h1> <br>" + result);
+        label.setHTML("<h1>404 Page!</h1> <br>" + result);
     }
 
     // TOADD to page

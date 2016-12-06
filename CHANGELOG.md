@@ -4,7 +4,7 @@
 - Serializable data type massage - Complete
 - Функции взаимодействия UI и сервера - Complete
 - Взаимодействие сервера и БД - Complete
-- Сами короткие переходы по ссылке
+- Сами короткие переходы по ссылке - Complete
 - DB.sql fix - доступ к БД + TODO
 v1.0 release
 - Логи
@@ -17,7 +17,8 @@ v1.3 release
 - Брать данные об сервере и тд из внешнего окружения
 v1.4 release 
 
-TODO Заменить 404 страницу на мой класс!!!
+TODO Fix some DB error
+TODO Create css to 404
 
 
 #QUESTIONS
