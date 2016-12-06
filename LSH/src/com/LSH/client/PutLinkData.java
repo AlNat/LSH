@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Класс обертка для сообщения между клиентом и сервером
  * для передачи данных об управляемом сворачивании ссылки
  */
-public class Message implements Serializable {
+public class PutLinkData implements Serializable {
 
     /* Геттеры и сеттеры */
     public String getOriginalLink() {
@@ -55,25 +55,25 @@ public class Message implements Serializable {
 
 
     /* Конструкторы */
-    Message () {
+    PutLinkData() {
         originalLink = "";
     }
 
-    Message(String originalLink) {
+    PutLinkData(String originalLink) {
         this.originalLink = originalLink;
         shortLink = "NULL"; // Кодовое слово
         ttl = "1 week"; // Неделю по дефолту
         maxVisits = 0; // Бесконечное по дефолту
     }
 
-    Message(String originalLink, String ttl, Integer maxVisits) {
+    PutLinkData(String originalLink, String ttl, Integer maxVisits) {
         this.originalLink = originalLink;
         shortLink = "NULL"; // Кодовое слово
         this.ttl = ttl;
         this.maxVisits = maxVisits;
     }
 
-    Message(String originalLink, String ttl, Integer maxVisits, String shortLink) {
+    PutLinkData(String originalLink, String ttl, Integer maxVisits, String shortLink) {
         this.originalLink = originalLink;
         this.shortLink = shortLink;
         this.ttl = ttl;

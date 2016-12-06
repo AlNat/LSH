@@ -8,7 +8,7 @@ import java.io.Serializable;
  *
  * // Класс данных об пользователе, перешедшем по ссылке
  */
-public class Data implements Serializable {
+public class GetLinkData implements Serializable {
 
     // Геттеры
     public String getCode() {
@@ -31,11 +31,11 @@ public class Data implements Serializable {
     private String ip; // Ip перехода
     private String browser; // User-agent
 
-    Data() {
+    GetLinkData() {
 
     }
 
-    Data (String code, String ip, String browser) {
+    GetLinkData(String code, String ip, String browser) {
         this.code = code;
         this.ip = ip;
         this.browser = browser;
