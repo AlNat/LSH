@@ -4,7 +4,9 @@
 */
 
 -- TODO Вносить создание ссылки данные в аналитику
--- TODO Доделать роль LSH на вставку и просмотр на бд
+-- TODO Доделать роль LSH на вставку и просмотр на бд - создаем от лица postgresql - нужно передать права на втавку в БД на пользователя LSH
+-- TODO Проверить, как функции инвалидируют
+	-- TODO делать инвалидацию по кол-ву переходов.
 
 -- Создание пользователя для приложения
 CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf' VALID UNTIL 'infinity' CONNECTION LIMIT 1;
@@ -30,17 +32,35 @@ CREATE TABLE analitics (
 	short_id INT NOT NULL REFERENCES short(id) ON UPDATE CASCADE, -- Запись перехода 
 	visit_time TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp, -- Время перехода
 	ip CIDR, -- IP откуда пришли
-	user_agent VARCHAR(180) -- Браузер, откуда пришли
+	user_agent VARCHAR(256) -- Браузер, откуда пришли
 );
 
 
--- Таблица статусов user_id - простоейшая Key-Value. Может в редис вынести?
+-- Таблица статусов user_id - простейшая Key-Value. Может в редис вынести?
 CREATE TABLE status (
 	user_id INT CONSTRAINT status_pk PRIMARY KEY, -- id пользователя
 	valid BOOLEAN -- Его статус
 );
 
---TODO Триггерная функция на вставку в short вставлять в status. ИИ инкрементировать currentCount;
+
+-- Триггерная функция, обновляющая таблицу статуса, при вставке нового значения в таблицу short
+CREATE FUNCTION shortTGP () RETURNS trigger AS
+$$
+	BEGIN
+		IF EXISTS (SELECT valid FROM status WHERE user_id = NEW.user_id)
+		THEN
+			UPDATE status SET valid = true WHERE user_id = NEW.user_id;
+		ELSE
+			INSERT INTO status(user_id, valid) VALUES (NEW.user_id, true);
+		END IF;
+	RETURN NEW;
+	END;
+$$ 
+LANGUAGE plpgsql;
+
+
+-- Триггер на вставку данных в таблицу short
+CREATE TRIGGER shortTG AFTER INSERT ON short FOR EACH ROW EXECUTE PROCEDURE shortTGP();
 
 
 -- Индекс на user_id
@@ -56,14 +76,24 @@ CREATE OR REPLACE FUNCTION get_next_id ()
 RETURNS INT AS 
 $$
 DECLARE ret INT;
+DECLARE rett INT;
 BEGIN
+
+	-- Вызвали функцию инвалидации
+	SELECT check_time_valid (); 
+
 	-- Ищем свободные user_id
 	SELECT user_id INTO ret
 	FROM status
 	WHERE valid = FALSE
 	LIMIT 1; 
-	-- TODO - проверить, что возращает первый сверху
-	-- TODO - fix if user_id > curval('usr') ret = nexval('usr')
+	
+	-- Получили текущее значение последовательности
+	SELECT setval('usr', nextval('usr')-1) INTO rett;
+
+	IF ret > rett THEN 
+		ret = NULL;
+	END IF;
 
 	-- Если нет свободных id, генерируем новое
 	IF ret IS NULL THEN
@@ -92,7 +122,7 @@ BEGIN
 	FOR t IN 1..max LOOP -- Идем по всем id
 
 		IF EXISTS ( -- Если есть еще валидный id то добавляем его в массив
- 			SELECT user_id FROM short  -- Запрашиваем с конца все user_id где дата еще не истекла с лимитом 1
+ 			SELECT user_id FROM short  -- Запрашиваем с конца все user_id где дата еще не истекла с лимитом 1 -> по одному
 			WHERE user_id = t
 			AND expired_date < current_time
 			ORDER BY id DESC
@@ -103,7 +133,8 @@ BEGIN
 			a = a + 1;
 		END IF;
 	
-	END LOOP;	
+	END LOOP;
+
 
 	RETURN res;
 END
@@ -120,9 +151,14 @@ BEGIN
 	UPDATE status SET valid = FALSE WHERE user_id != ALL (calc_valid_id() );
 	-- TODO Проверить что конструция != ALL эквивалентна NOT IN (massive[])
 
+
+	-- TODO делать инвалидацию по кол-ву переходов.
+
 END
 $$ 
 LANGUAGE plpgsql;
+
+
 
 
 -- Заполнение тестовыми данными
