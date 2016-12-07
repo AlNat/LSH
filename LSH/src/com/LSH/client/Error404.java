@@ -11,9 +11,7 @@ import com.google.gwt.core.client.EntryPoint;
  * Licensed by Apache License, Version 2.0
  */
 public class Error404 implements EntryPoint {
-
-    // TODO Test
-    // TODO Подмена 404 страницы на эту
+    // TODO Commentary
 
     private static String errorCode = "Error!"; // Код ошибки
 
@@ -28,7 +26,7 @@ public class Error404 implements EntryPoint {
         label = new HTML();
         url = Window.Location.getHref();
         browser = Window.Navigator.getUserAgent();
-        ip = getIP(); // TODO check
+        ip = getIP(); // TODO fix - сделать нормальное получение ip
         getLinkData = new GetLinkData(url, ip, browser);
 
         LSHServiceInterface.App.getInstance().getOriginal(getLinkData, new AsyncCallback<String>() {
@@ -55,18 +53,6 @@ public class Error404 implements EntryPoint {
         Window.setTitle("Page 404");
         label.setHTML("<h1>404 Page!</h1> <br>" + result);
     }
-
-    // TOADD to page
-    /*
-    <head>
-        <script type="text/javascript" language="javascript">
-            <%
-                String ip_address = request.getRemoteAddr();
-            %>
-            var _ipAddress = <%= "\"" + ip_address + "\"" %>;
-        </script>
-    </head>
-    */
 
     private native String getIP ()  /*-{
         return $wnd._ipAddress;

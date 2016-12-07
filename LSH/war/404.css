@@ -1,0 +1,20 @@
+h1 {
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: center;
+    font-family: "Segoe UI Symbol", monospace;
+    margin: 0;
+    padding: 2%;
+}
+
+div {
+    align: center;
+}
+
+.blockTitile {
+    background: #304FFE; /*304FFE*/
+    height: 20%;
+    border: none;
+    position: relative;
+}
