@@ -55,7 +55,7 @@ public class Error404 implements EntryPoint {
      * @param result код ошибки
      */
     private void Print404 (String result) {
-        Window.setTitle("Page 404");
+        Window.setTitle("404 - Page Not Found");
 
         if (result.startsWith(errorCode)) { // Оберазли фразу errorCode
             result = result.substring(errorCode.length());

@@ -54,12 +54,11 @@ class DBConnect {
 
         try {
             // Создаем запрос и выполняем его
-            PreparedStatement st = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ? ORDER BY user_id DESC LIMIT 1", ResultSet.TYPE_SCROLL_INSENSITIVE);
+            PreparedStatement st = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
 
             // Получаем ответ
-            rs.next();
             rs.next();
             boolean answer = rs.getBoolean("valid");
 
@@ -207,7 +206,7 @@ class DBConnect {
         try { // Проверили, что этот id вообще есть
 
             // Создали и выполнили запрос
-            preparedStatement = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
+            preparedStatement = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ?");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
@@ -223,6 +222,9 @@ class DBConnect {
             resultSet.close();
             preparedStatement.close();
         } catch (SQLException e) { // Вывели ошибки
+            if (e.getSQLState().equals("24000")) { // Пустой ответ - нет такого кода - еще не использовался
+                return errorCode + "<br>Invalid code!";
+            }
             e.printStackTrace();
             return errorCode + "<br>SQL Error!";
         }
