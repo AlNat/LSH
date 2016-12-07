@@ -167,11 +167,13 @@ class DBConnect {
 
         try { // Пишем в базу
             // Создали соединение
-            preparedStatement = connection.prepareStatement("INSERT INTO short(user_id, link, expired_date, max_count) VALUES (?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO short(user_id, link, expired_date, max_count, current_count) VALUES (?, ?, ?, ?, ?)");
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, in.getOriginalLink());
             preparedStatement.setTimestamp(3, date);
             preparedStatement.setInt(4, in.getMaxVisits());
+            preparedStatement.setInt(5, 0);
+
 
             // Выолнили вставку и закрыли соединение
             boolean tt = preparedStatement.execute();
@@ -207,14 +209,16 @@ class DBConnect {
         try { // Проверили, что этот id вообще есть
 
             // Создали и выполнили запрос
-            preparedStatement = connection.prepareStatement("SELECT valid FROM status ORDER BY user_id DESC LIMIT 1");
+            // TODO
+            preparedStatement = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
+            preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
             // Получили ответ
             resultSet.next();
             boolean t = resultSet.getBoolean(1);
 
-            if (t) { // Если этот id true = свободен, то выдаем ошибку
+            if (!t) { // Если этот id false = свободен, то выдаем ошибку
                 return errorCode + "<br>Invalid code!";
             }
 
@@ -250,7 +254,7 @@ class DBConnect {
         try { // Обновили ко-во переходов
             preparedStatement = connection.prepareStatement("UPDATE short SET current_count = ? WHERE id = ?");
             preparedStatement.setInt(1, curCount + 1);
-            preparedStatement.setInt(1, tableID);
+            preparedStatement.setInt(2, tableID);
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException e) {

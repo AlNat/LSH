@@ -8,19 +8,19 @@
 - DB.sql fix - доступ к БД + TODO
 v1.0 release
 - Логи
+- Брать данные об сервере и тд из внешнего окружения
 v1.1 release
 - Вывод аналитики + детальная аналитика
 v1.2 release
 - Админка
 v1.3 release 
 - URL Validator
-- Брать данные об сервере и тд из внешнего окружения
+- 
 v1.4 release 
 
 
 TODO Fix some DB error
-TODO Create css to 404
-TODO Fix getIP to analitics from 404 script
+TODO Fix getIP to analitics from 404 page
 
 
 

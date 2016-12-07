@@ -80,7 +80,7 @@ DECLARE rett INT;
 BEGIN
 
 	-- Вызвали функцию инвалидации
-	SELECT check_time_valid (); 
+	PERFORM check_time_valid (); 
 
 	-- Ищем свободные user_id
 	SELECT user_id INTO ret
@@ -124,7 +124,7 @@ BEGIN
 		IF EXISTS ( -- Если есть еще валидный id то добавляем его в массив
  			SELECT user_id FROM short  -- Запрашиваем с конца все user_id где дата еще не истекла с лимитом 1 -> по одному
 			WHERE user_id = t
-			AND expired_date < current_time
+			AND expired_date < current_timestamp
 			ORDER BY id DESC
 			LIMIT 1 )
 		THEN
@@ -151,8 +151,14 @@ BEGIN
 	UPDATE status SET valid = FALSE WHERE user_id != ALL (calc_valid_id() );
 	-- TODO Проверить что конструция != ALL эквивалентна NOT IN (massive[])
 
-
-	-- TODO делать инвалидацию по кол-ву переходов.
+	-- Инвалидировали все строки, где кол-во переходов превышено
+	-- TODO Переписать на манер того, что выше - тут мы все просто затираем, а ним нужно с конца и только по одному ip
+	UPDATE status SET valid = FALSE WHERE user_id IN (
+		SELECT user_id 
+		FROM short 
+		WHERE max_count != 0 AND
+		current_count > max_count  
+	);
 
 END
 $$ 
