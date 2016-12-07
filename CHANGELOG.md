@@ -21,6 +21,7 @@ v1.4 release
 
 TODO Fix some DB error
 TODO Fix getIP to analitics from 404 page
+v1.0
 
 
 

@@ -12,9 +12,9 @@ div {
     align: center;
 }
 
-.blockTitile {
-    background: #304FFE; /*304FFE*/
-    height: 20%;
+.block404 {
+    background: #304FFE;
+    height: 100%;
     border: none;
     position: relative;
 }
