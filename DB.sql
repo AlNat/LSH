@@ -74,7 +74,7 @@ DECLARE rett INT;
 BEGIN
 
 	-- Вызвали функцию инвалидации
-	PERFORM check_time_valid (); 
+	PERFORM validate(); 
 
 	-- Ищем свободные user_id
 	SELECT user_id INTO ret

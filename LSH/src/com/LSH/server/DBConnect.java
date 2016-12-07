@@ -155,9 +155,10 @@ class DBConnect {
                 date = new Timestamp(System.currentTimeMillis() + 2678400000L ); // Это, конечно, не месяц, а 31 день. Но нам огромная точность не нужна
                 break;
             case "Unlimited":
-                date = new Timestamp(Long.MAX_VALUE); // ТК это максимально возможное время в Java
-                break;
+                date = new Timestamp(System.currentTimeMillis() + 3155760000000L); // Это 100 лет. Куда уж больше?
+                // LONG_MAX не влезает
                 //date = new Timestamp(Timestamp.parse("infinity")); // Есть такой вариант, но какая разница?
+                break;
             default:
                 date = new Timestamp(System.currentTimeMillis()); // По дефолту будем делать ссылку не валидной
         }
@@ -172,9 +173,8 @@ class DBConnect {
             preparedStatement.setInt(4, in.getMaxVisits());
             preparedStatement.setInt(5, 0);
 
-
             // Выолнили вставку и закрыли соединение
-            boolean tt = preparedStatement.execute();
+            preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException e) { // Отловили ошибки
             e.printStackTrace();
