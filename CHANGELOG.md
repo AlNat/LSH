@@ -17,8 +17,11 @@ v1.3 release
 - Брать данные об сервере и тд из внешнего окружения
 v1.4 release 
 
+
 TODO Fix some DB error
 TODO Create css to 404
+TODO Fix getIP to analitics from 404 script
+
 
 
 #QUESTIONS

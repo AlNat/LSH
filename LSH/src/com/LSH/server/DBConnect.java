@@ -227,18 +227,31 @@ class DBConnect {
         }
 
         Integer tableID; // id в таблице для foregin key в аналитике
-        String answer;
+        Integer curCount; // Текущее кол-во переходов
+        String answer; // Сам линк
         try { // Получили оригинальную ссылку
 
-            preparedStatement = connection.prepareStatement("SELECT id, link FROM short WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
+            preparedStatement = connection.prepareStatement("SELECT id, link, current_count FROM short WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
 
             resultSet.next();
             answer = resultSet.getString("link");
             tableID = resultSet.getInt("id");
+            curCount = resultSet.getInt("current_count");
 
             resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return errorCode + "<br>SQL Error!";
+        }
+
+        try { // Обновили ко-во переходов
+            preparedStatement = connection.prepareStatement("UPDATE short SET current_count = ? WHERE id = ?");
+            preparedStatement.setInt(1, curCount + 1);
+            preparedStatement.setInt(1, tableID);
+            preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
