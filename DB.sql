@@ -3,8 +3,10 @@
 	СУБД = PostgreSQL
 */
 
+
 -- Создали БД
-CREATE DATABASE "LSH" WITH ENCODING='UTF8' CONNECTION LIMIT=-1;
+CREATE DATABASE "LSH" WITH ENCODING='UTF8' CONNECTION LIMIT=1;
+
 
 -- Таблица для сокращенных ссылок
 CREATE TABLE short (
@@ -83,8 +85,9 @@ BEGIN
 	-- Получили текущее значение последовательности
 	SELECT setval('usr', nextval('usr')-1) INTO rett;
 
+	-- Если первый свободный дальше, чем значение последовательности
 	IF ret > rett THEN 
-		ret = NULL;
+		ret = NULL; -- То пойдем к следующему условию
 	END IF;
 
 	-- Если нет свободных id, генерируем новое
@@ -98,72 +101,6 @@ $$
 LANGUAGE plpgsql;
 
 
-/*
--- Функция, возращающая набор user_id, которые валидные
-CREATE OR REPLACE FUNCTION calc_valid_id ()
-RETURNS INT[] AS  
-$$
-DECLARE t INT; -- Переменная в цикле
-DECLARE max INT; -- Кол-во шагов в цикле
-DECLARE a INT; -- Переменная счетчик в массиве
-DECLARE vid INT[]; -- Набор валидных id для проверки
-DECLARE res INT[]; -- Массив id
-BEGIN
-
-
-	a = 1;
-	max = ( SELECT COUNT(*) FROM status );
-		
-	FOR t IN 1..max LOOP -- Идем по всем id
-
-		IF EXISTS ( -- Если есть еще валидный id то добавляем его в массив
- 			SELECT user_id FROM short  -- Запрашиваем с конца все user_id где дата еще не истекла с лимитом 1 -> по одному
-			WHERE user_id = t -- TODO - здесь будем ошибка
-			AND expired_date < current_timestamp
-			ORDER BY id DESC
-			LIMIT 1 )
-		THEN
-			-- Добавить user_id в вывод
-			res[a] = t;
-			a = a + 1;
-		END IF;
-	
-	END LOOP;
-
-
-	RETURN res;
-END
-$$ 
-LANGUAGE plpgsql;
-
-
--- Функция, запускающаяся по времени и инвалидирующая все записи, где время вышло 
-CREATE OR REPLACE FUNCTION check_time_valid ()
-RETURNS VOID AS  
-$$
-BEGIN
-
-	UPDATE status SET valid = FALSE WHERE user_id != ALL (calc_valid_id() );
-	-- TODO Проверить что конструция != ALL эквивалентна NOT IN (massive[])
-
-	
-	-- Инвалидировали все строки, где кол-во переходов превышено
-	-- TODO Переписать на манер того, что выше - тут мы все просто затираем, а ним нужно с конца и только по одному ip
-	UPDATE status SET valid = FALSE WHERE user_id IN (
-		SELECT user_id 
-		FROM short 
-		WHERE max_count != 0 AND
-		current_count > max_count 
-		GROUP BY id DESC LIMIT 1 
-	);
-	
-
-END
-$$ 
-LANGUAGE plpgsql;
-*/
-
-
 -- Функция, запускающаяся по времени и инвалидирующая все записи, где время вышло 
 CREATE OR REPLACE FUNCTION validate ()
 RETURNS VOID AS  
@@ -174,42 +111,16 @@ BEGIN
 	-- С конца по одному (у нас может быть несколько строчек с одинаковым user_id, нам нужна только последняя - первая с конца) 
 	-- И изменить таблицу status по некому правилу (дата истекла, кол-во переходов больше)
 
-	/*
-	-- Вот эта функция решает эту проблему?
-	UPDATE status SET valid = FALSE WHERE user_id IN ( -- Обновляем статус на невалидный где id в
- 		SELECT user_id FROM short  -- Запрашиваем с конца все user_id
-		WHERE user_id IN ( 
-			SELECT user_id FROM status WHERE valid = true -- Получили набор валидных user_id
-			)
-		AND expired_date < current_timestamp -- где дата еще не истекла
-		AND max_count != 0 AND current_count > max_count  
-		ORDER BY id DESC LIMIT 1 -- с лимитом 1 <-> по одному c конца
-		-- Вот этот лимит отдает только одну строчку, а мне надо все строки, но только по последним user_id!!!
-	);
-	*/
-
-	/*
-	-- Вот почти, но мне надо только каждый первый уникальный user_id. И дистинкт не работает!!!!
-	SELECT * FROM short WHERE user_id IN (SELECT user_id FROM status WHERE valid = true) 
-	ORDER BY id DESC;
-	*/
-
-	/*
-	-- Оконные функции тащат!
-	SELECT row_number() over(PARTITION BY user_id ORDER BY id DESC) AS c, id FROM short  
-	WHERE user_id IN (SELECT user_id FROM status WHERE valid = true)
-	*/
-
 	-- 3 подзапроса в каскадно в одном запросе. Рекорд! 
-	UPDATE status SET valid = FALSE WHERE user_id IN (  -- -- Обновляем статус на невалидный где id в
+	UPDATE status SET valid = FALSE WHERE user_id IN ( -- Обновляем статус на невалидный где id в
 
-		SELECT user_id FROM short WHERE id in ( -- Выбрали все инвалидированные
+		SELECT user_id FROM short WHERE id in ( -- Выбрали все не валидные user_id по условию
 
-			SELECT id FROM ( -- Выбрали все id с конца с уникальным user_id для каждого - см выше
+			SELECT id FROM ( 
 				SELECT row_number() over(PARTITION BY user_id ORDER BY id DESC) AS c, id, user_id FROM short  
-				WHERE user_id IN (SELECT user_id FROM status WHERE valid = true )-- Получили набор валидных user_id
+				WHERE user_id IN (SELECT user_id FROM status WHERE valid = true ) -- Получили набор валидных user_id
 			) t 
-			WHERE c = 1
+			WHERE c = 1 -- Этим мы выбираем первые уникальные c конца - см выше
 
 		) 
 		AND expired_date < current_timestamp -- где дата еще истекла
@@ -235,23 +146,8 @@ GRANT SELECT, INSERT ON short TO "LSH";
 GRANT SELECT, INSERT ON analitics TO "LSH";
 GRANT SELECT ON status TO "LSH";
 
--- Заполнение тестовыми данными
-/*
-CREATE OR REPLACE FUNCTION genRandText (inp INT) RETURNS TEXT AS
-$$
-DECLARE t CHAR; 
-DECLARE ans TEXT;
-BEGIN
-	FOR a IN 1..inp LOOP
-		t = ( (array['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','r','s','t','u','v','w','x','y','z','.','1','2','3','4','5','6','7','8','9','0']) [ceil( random() * 27 )] ) ;
-		ans = CONCAT (ans, t); -- А вот просто не рабоатет ans || t;
-	END LOOP;
-RETURN ans;
-END
-$$
-LANGUAGE plpgsql;
-*/
 
+-- Заполнение тестовыми данными
 /*
 SELECT 
 	generate_series(1, 1000),
