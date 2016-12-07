@@ -39,5 +39,4 @@ public class ShortNormalizeTests {
         Assert.assertEquals( Normalizer.ShortNormalize("www.site.com/#\n"), errorCode);
     }
 
-
 }

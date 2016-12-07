@@ -70,15 +70,15 @@ public final class Normalizer {
             return errorCode;
         }
 
-
         if (in.startsWith(siteLink)) { // Если ссылка полная - то обрезали ее и вернули код
             return in.substring(siteLink.length());
-        } else if (in.startsWith(siteLink.substring(7))) { // Если почти полная - без http, то обрезали
-            // Тк http:// - 7 символов - обрезали и получили -> www.site.com/# - их режем и вернули коротий код
-            return in.substring(14);
-        } else { // Иначе это просто адрес сайта, поэтому обрезали его полностью
-            return in.substring(10);
         }
+        in = in.replace("http://", ""); // Убрали протокол
+        in = in.replace("https://", ""); // Убрали протокол
+        in = in.replace("www.", ""); // Убрали адрес
+        in = in.replace(siteLink.substring(7), ""); // Убрали наш адрес без протокола и http
+
+        return in; // Вернули код
 
     }
 
