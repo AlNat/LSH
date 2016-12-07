@@ -30,7 +30,7 @@ public class Error404 implements EntryPoint {
         // Получили данные про пользоватеья
         url = Window.Location.getHref();
         browser = Window.Navigator.getUserAgent();
-        ip = "192.168.0.1"; //getIP(); // TODO fix - сделать нормальное получение ip
+        ip = getIP();
         getLinkData = new GetLinkData(url, ip, browser);
 
         // Пошли на сервер
@@ -60,15 +60,20 @@ public class Error404 implements EntryPoint {
      */
     private void Print404 (String result) {
         Window.setTitle("Page 404");
-        label.setHTML("<h1>404 Page!</h1> <br>" + result);
+
+        if (result.startsWith(errorCode)) { // Оберазли фразу errorCode
+            result = result.substring(errorCode.length());
+        }
+
+        label.setHTML("<h1>404 Page!</h1><br>" + result);
     }
 
     /**
      * Функция получающая ip пользователя
      * @return ip
      */
-    private native String getIP ()  /*-{
-        return request.getRemoteAddr();
+    private native String getIP () /*-{
+        return $wnd.userip;
     }-*/;
 
 }

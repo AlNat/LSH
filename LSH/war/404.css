@@ -8,12 +8,11 @@ h1 {
     padding: 2%;
 }
 
-div {
-    align: center;
+body {
+    background-color: #607d8b;
 }
 
 .block404 {
-    background: #304FFE;
     height: 100%;
     border: none;
     position: relative;
