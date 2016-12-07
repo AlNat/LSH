@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by @author AlNat on 05.12.2016.
  * Licensed by Apache License, Version 2.0
  *
- * // Класс данных об пользователе, перешедшем по ссылке
+ * Класс данных об пользователе, перешедшем по ссылке + сама ссылка
  */
 public class GetLinkData implements Serializable {
 

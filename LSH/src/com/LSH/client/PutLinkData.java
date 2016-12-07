@@ -34,16 +34,8 @@ public class PutLinkData implements Serializable {
         return ttl;
     }
 
-    public void setTtl(String ttl) {
-        this.ttl = ttl;
-    }
-
     public Integer getMaxVisits() {
         return maxVisits;
-    }
-
-    public void setMaxVisits(Integer maxVisits) {
-        this.maxVisits = maxVisits;
     }
 
 

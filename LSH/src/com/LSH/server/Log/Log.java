@@ -13,12 +13,12 @@ public class Log {
     String filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\log.txt"; // TODO брать его из окружения
 
     Log () {
-        // Init file write
+        // TODO Init file write
     }
 
 
     void WriteEvent (LogEvent logEvent) {
-        // Write new line to file
+        // TODO Write new line to file
     }
 
 }

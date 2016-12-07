@@ -19,7 +19,6 @@ public class ShortNormalizeTests {
     public void TestShort() throws Exception {
         Assert.assertEquals (Normalizer.ShortNormalize(siteLink + "lkt1"), "lkt1");
         Assert.assertEquals (Normalizer.ShortNormalize(siteLink.substring(7) + "lkt2"), "lkt2");
-        Assert.assertEquals (Normalizer.ShortNormalize(siteLink.substring(11) + "lkt3"), "lkt3");
         Assert.assertEquals (Normalizer.ShortNormalize(siteLink), "");
         Assert.assertEquals (Normalizer.ShortNormalize("com/#"), errorCode);
 

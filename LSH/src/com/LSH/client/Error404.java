@@ -15,10 +15,6 @@ public class Error404 implements EntryPoint {
 
     private static String errorCode = "Error!"; // Код ошибки
 
-    private String url; // Урл, по которому пользователь пришел
-    private String ip; // IP адресс пользователя
-    private String browser; // user-agent пользователя
-    private GetLinkData getLinkData; // Блок данных про пользователя
     private HTML label; // Место вывода ошибок
 
     public void onModuleLoad() {
@@ -28,10 +24,10 @@ public class Error404 implements EntryPoint {
         label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
         // Получили данные про пользоватеья
-        url = Window.Location.getHref();
-        browser = Window.Navigator.getUserAgent();
-        ip = getIP();
-        getLinkData = new GetLinkData(url, ip, browser);
+        String url = Window.Location.getHref();// URL, по которому пользователь пришел
+        String browser = Window.Navigator.getUserAgent(); // user-agent пользователя
+        String ip = getIP(); // IP адресс пользователя
+        GetLinkData getLinkData = new GetLinkData(url, ip, browser); // Блок данных про пользователя
 
         // Пошли на сервер
         LSHServiceInterface.App.getInstance().getOriginal(getLinkData, new AsyncCallback<String>() {
