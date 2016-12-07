@@ -1,21 +1,27 @@
 #TODO
-- Design - Complete
-- UI - Complete
-- Serializable data type massage - Complete
-- Функции взаимодействия UI и сервера - Complete
-- Взаимодействие сервера и БД - Complete
-- Сами короткие переходы по ссылке - Complete
-- DB.sql fix - доступ к БД + TODO
-v1.0 release
+- Design + UI
+- Serializable data type massages
+- Функции взаимодействия UI и сервера
+- Взаимодействие сервера и БД
+- Сами короткие переходы по ссылке
+- DB.sql fix - доступ к БД + TODO в файле --DEL AFTER COMPLETE
+v1.0 release COMPLETE
+
 - Логи
 - Брать данные об сервере и тд из внешнего окружения
 v1.1 release
-- Вывод аналитики + детальная аналитика
+
+
+- Вывод аналитики
+- Вносить создание ссылки в аналитику
 v1.2 release
+
+
 - Админка
 v1.3 release 
+
+
 - URL Validator
-- 
 v1.4 release 
 
 

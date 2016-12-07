@@ -3,10 +3,9 @@
 	СУБД = PostgreSQL
 */
 
--- TODO Вносить создание ссылки данные в аналитику
--- TODO Доделать роль LSH на вставку и просмотр на бд - создаем от лица postgresql - нужно передать права на втавку в БД на пользователя LSH
--- TODO Проверить, как функции инвалидируют
-	-- TODO делать инвалидацию по кол-ву переходов.
+-- TODO Доделать роль LSH на вставку и просмотр на бд - создаем от лица postgresql - 
+-- нужно передать права на втавку в БД на пользователя LSH
+-- TODO Проверить, как функции инвалидируют и доделать
 
 -- Создание пользователя для приложения
 CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf' VALID UNTIL 'infinity' CONNECTION LIMIT 1;
@@ -184,7 +183,7 @@ $$
 LANGUAGE plpgsql;
 */
 
---/*
+/*
 SELECT 
 	generate_series(1, 1000),
 	generate_series(1, 1000),
@@ -192,4 +191,4 @@ SELECT
 	( now() + interval '1 day' * round(random()*200) )::timestamp,
 	(random()*20)::int,
 	(random()*20)::int;
---*/
+*/

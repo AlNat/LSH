@@ -7,8 +7,6 @@ import static com.LSH.server.LSHService.errorCode;
 import java.sql.*;
 import java.util.Properties;
 
-// TODO Протестировать Get
-
 /**
  * Created by @author AlNat on 16.09.2016.
  * Licensed by Apache License, Version 2.0
@@ -209,7 +207,6 @@ class DBConnect {
         try { // Проверили, что этот id вообще есть
 
             // Создали и выполнили запрос
-            // TODO
             preparedStatement = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
