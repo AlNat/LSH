@@ -3,15 +3,8 @@
 	СУБД = PostgreSQL
 */
 
--- TODO Доделать роль LSH на вставку и просмотр на бд - создаем от лица postgresql - 
--- нужно передать права на втавку в БД на пользователя LSH
--- TODO Проверить, как функции инвалидируют и доделать
-
--- Создание пользователя для приложения
-CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf' VALID UNTIL 'infinity' CONNECTION LIMIT 1;
-
 -- Создали БД
-CREATE DATABASE "LSH" WITH ENCODING='UTF8' OWNER="LSH" CONNECTION LIMIT=-1;
+CREATE DATABASE "LSH" WITH ENCODING='UTF8' CONNECTION LIMIT=-1;
 
 -- Таблица для сокращенных ссылок
 CREATE TABLE short (
@@ -105,6 +98,7 @@ $$
 LANGUAGE plpgsql;
 
 
+/*
 -- Функция, возращающая набор user_id, которые валидные
 CREATE OR REPLACE FUNCTION calc_valid_id ()
 RETURNS INT[] AS  
@@ -112,8 +106,10 @@ $$
 DECLARE t INT; -- Переменная в цикле
 DECLARE max INT; -- Кол-во шагов в цикле
 DECLARE a INT; -- Переменная счетчик в массиве
+DECLARE vid INT[]; -- Набор валидных id для проверки
 DECLARE res INT[]; -- Массив id
 BEGIN
+
 
 	a = 1;
 	max = ( SELECT COUNT(*) FROM status );
@@ -122,7 +118,7 @@ BEGIN
 
 		IF EXISTS ( -- Если есть еще валидный id то добавляем его в массив
  			SELECT user_id FROM short  -- Запрашиваем с конца все user_id где дата еще не истекла с лимитом 1 -> по одному
-			WHERE user_id = t
+			WHERE user_id = t -- TODO - здесь будем ошибка
 			AND expired_date < current_timestamp
 			ORDER BY id DESC
 			LIMIT 1 )
@@ -150,13 +146,75 @@ BEGIN
 	UPDATE status SET valid = FALSE WHERE user_id != ALL (calc_valid_id() );
 	-- TODO Проверить что конструция != ALL эквивалентна NOT IN (massive[])
 
+	
 	-- Инвалидировали все строки, где кол-во переходов превышено
 	-- TODO Переписать на манер того, что выше - тут мы все просто затираем, а ним нужно с конца и только по одному ip
 	UPDATE status SET valid = FALSE WHERE user_id IN (
 		SELECT user_id 
 		FROM short 
 		WHERE max_count != 0 AND
-		current_count > max_count  
+		current_count > max_count 
+		GROUP BY id DESC LIMIT 1 
+	);
+	
+
+END
+$$ 
+LANGUAGE plpgsql;
+*/
+
+
+-- Функция, запускающаяся по времени и инвалидирующая все записи, где время вышло 
+CREATE OR REPLACE FUNCTION validate ()
+RETURNS VOID AS  
+$$
+BEGIN
+
+	-- Логика - мы должны получить набор user_id из статуса, где статус валиден. Затем, пойти по всем этим id в таблице short
+	-- С конца по одному (у нас может быть несколько строчек с одинаковым user_id, нам нужна только последняя - первая с конца) 
+	-- И изменить таблицу status по некому правилу (дата истекла, кол-во переходов больше)
+
+	/*
+	-- Вот эта функция решает эту проблему?
+	UPDATE status SET valid = FALSE WHERE user_id IN ( -- Обновляем статус на невалидный где id в
+ 		SELECT user_id FROM short  -- Запрашиваем с конца все user_id
+		WHERE user_id IN ( 
+			SELECT user_id FROM status WHERE valid = true -- Получили набор валидных user_id
+			)
+		AND expired_date < current_timestamp -- где дата еще не истекла
+		AND max_count != 0 AND current_count > max_count  
+		ORDER BY id DESC LIMIT 1 -- с лимитом 1 <-> по одному c конца
+		-- Вот этот лимит отдает только одну строчку, а мне надо все строки, но только по последним user_id!!!
+	);
+	*/
+
+	/*
+	-- Вот почти, но мне надо только каждый первый уникальный user_id. И дистинкт не работает!!!!
+	SELECT * FROM short WHERE user_id IN (SELECT user_id FROM status WHERE valid = true) 
+	ORDER BY id DESC;
+	*/
+
+	/*
+	-- Оконные функции тащат!
+	SELECT row_number() over(PARTITION BY user_id ORDER BY id DESC) AS c, id FROM short  
+	WHERE user_id IN (SELECT user_id FROM status WHERE valid = true)
+	*/
+
+	-- 3 подзапроса в каскадно в одном запросе. Рекорд! 
+	UPDATE status SET valid = FALSE WHERE user_id IN (  -- -- Обновляем статус на невалидный где id в
+
+		SELECT user_id FROM short WHERE id in ( -- Выбрали все инвалидированные
+
+			SELECT id FROM ( -- Выбрали все id с конца с уникальным user_id для каждого - см выше
+				SELECT row_number() over(PARTITION BY user_id ORDER BY id DESC) AS c, id, user_id FROM short  
+				WHERE user_id IN (SELECT user_id FROM status WHERE valid = true )-- Получили набор валидных user_id
+			) t 
+			WHERE c = 1
+
+		) 
+		AND expired_date < current_timestamp -- где дата еще истекла
+		AND max_count != 0 AND current_count > max_count  -- и кол-во переходов превышена
+
 	);
 
 END
@@ -165,6 +223,17 @@ LANGUAGE plpgsql;
 
 
 
+-- Создание пользователя для приложения
+CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf' VALID UNTIL 'infinity' CONNECTION LIMIT 1;
+
+
+-- Разрешения. Владелец - POSTGRES, но LSH может SELECT, INSERT, EXECUTE
+GRANT EXECUTE ON FUNCTION check_time_valid() to "LSH";
+GRANT EXECUTE ON FUNCTION get_next_id() to "LSH";
+
+GRANT SELECT, INSERT ON short TO "LSH";
+GRANT SELECT, INSERT ON analitics TO "LSH";
+GRANT SELECT ON status TO "LSH";
 
 -- Заполнение тестовыми данными
 /*
