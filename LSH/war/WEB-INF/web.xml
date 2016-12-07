@@ -3,7 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-    <servlet> <!-- TODO Комментарии -->
+
+    <servlet>
         <servlet-name>com.LSH.LSH LSHService</servlet-name>
         <servlet-class>com.LSH.server.LSHService</servlet-class>
     </servlet>
@@ -26,4 +27,5 @@
         <error-code>404</error-code>
         <location>/404.html</location>
     </error-page>
+
 </web-app>
