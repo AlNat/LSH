@@ -1,4 +1,4 @@
-package com.LSH.client;
+package com.LSH.server.DataType;
 
 import java.io.Serializable;
 
@@ -27,6 +27,7 @@ public class GetLinkData implements Serializable {
         this.code = code;
     }
 
+    // Данные
     private String code; // Короткий код
     private String ip; // Ip перехода
     private String browser; // User-agent
@@ -35,7 +36,7 @@ public class GetLinkData implements Serializable {
 
     }
 
-    GetLinkData(String code, String ip, String browser) {
+    public GetLinkData(String code, String ip, String browser) {
         this.code = code;
         this.ip = ip;
         this.browser = browser;

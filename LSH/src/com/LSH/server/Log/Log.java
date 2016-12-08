@@ -1,6 +1,6 @@
 package com.LSH.server.Log;
 
-import com.LSH.server.Config;
+import com.LSH.server.Config.Config;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -19,7 +19,7 @@ public class Log {
     // Инстанс - паттерн Синглтон
     public static final Log instance = new Log();
 
-    private String filename;// = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\log.txt";
+    private String filename;
 
     /**
      * Конструктор, создает или открывает файл лога
@@ -29,14 +29,14 @@ public class Log {
 
         File file = new File(filename); // Создаем ссылку на файл
 
-        /*
+
         if (!file.exists()) { // Если файл не существует
             try {
                 file.createNewFile(); // То создадим его
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }*/
+        }
     }
 
     /**

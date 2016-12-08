@@ -1,5 +1,6 @@
 package com.LSH.client;
 
+import com.LSH.server.DataType.PutLinkData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Window;

@@ -1,5 +1,7 @@
 package com.LSH.client;
 
+import com.LSH.server.DataType.GetLinkData;
+import com.LSH.server.DataType.PutLinkData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;

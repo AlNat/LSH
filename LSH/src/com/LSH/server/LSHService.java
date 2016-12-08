@@ -1,7 +1,8 @@
 package com.LSH.server;
 
-import com.LSH.client.GetLinkData;
-import com.LSH.client.PutLinkData;
+import com.LSH.server.Config.Config;
+import com.LSH.server.DataType.GetLinkData;
+import com.LSH.server.DataType.PutLinkData;
 import com.LSH.server.Log.Log;
 import com.LSH.server.Log.LogEvent;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -28,7 +29,7 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
             LogEvent l = new LogEvent(msg);
             l.setClassName("LSHService.getShort");
             l.setType("DataError");
-            l.setMassage("Count of visits error");
+            l.setMessage("Count of visits error");
             Log.instance.WriteEvent(l);
 
             return errorCode + "<br>Sorry, but count of visits must be initialized!";
@@ -43,7 +44,7 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
             LogEvent l = new LogEvent(msg);
             l.setClassName("LSHService.getShort");
             l.setType("DataError");
-            l.setMassage("Illegal link");
+            l.setMessage("Illegal link");
             Log.instance.WriteEvent(l);
 
             return errorCode + "<br>Sorry, but link are illegal!";
@@ -74,7 +75,7 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
             LogEvent l = new LogEvent(msg);
             l.setClassName("LSHService.getOriginal");
             l.setType("DataError");
-            l.setMassage("Invalid code");
+            l.setMessage("Invalid code");
             Log.instance.WriteEvent(l);
 
             return errorCode + "<br>Invalid code!";

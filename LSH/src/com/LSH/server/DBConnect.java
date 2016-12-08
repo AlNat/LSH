@@ -1,7 +1,8 @@
 package com.LSH.server;
 
-import com.LSH.client.GetLinkData;
-import com.LSH.client.PutLinkData;
+import com.LSH.server.Config.Config;
+import com.LSH.server.DataType.GetLinkData;
+import com.LSH.server.DataType.PutLinkData;
 import com.LSH.server.Log.Log;
 import com.LSH.server.Log.LogEvent;
 
@@ -24,9 +25,9 @@ class DBConnect {
 
     private DBConnect () { // Конструктор
 
-        String url = "jdbc:postgresql:" + Config.instance.getURL();// "//localhost/LSH";
-        String login = Config.instance.getLogin();// "LSH";
-        String password = Config.instance.getPassword();// "LSH";
+        String url = "jdbc:postgresql:" + Config.instance.getURL();
+        String login = Config.instance.getLogin();
+        String password = Config.instance.getPassword();
         Properties props;
 
         try { // Попытались установить соединение с БД
@@ -43,7 +44,7 @@ class DBConnect {
             LogEvent l = new LogEvent();
             l.setClassName("DBConnect");
             l.setType("Connecton");
-            l.setMassage("Cannot connect to DB");
+            l.setMessage("Cannot connect to DB");
             Log.instance.WriteEvent(l);
         }
     }
@@ -93,7 +94,7 @@ class DBConnect {
             LogEvent l = new LogEvent();
             l.setClassName("DBConnect.CheckAvailability");
             l.setType("SQLException");
-            l.setMassage(e.getMessage());
+            l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
 
             return -1; // И говорим про ошибку
@@ -125,7 +126,7 @@ class DBConnect {
                 LogEvent l = new LogEvent(in);
                 l.setClassName("DBConnect.Put");
                 l.setType("InvalidCode");
-                l.setMassage("answer=-1");
+                l.setMessage("answer=-1");
                 Log.instance.WriteEvent(l);
 
                 return errorCode + "<br>Invalid code!";
@@ -134,7 +135,7 @@ class DBConnect {
                 LogEvent l = new LogEvent(in);
                 l.setClassName("DBConnect.Put");
                 l.setType("CodeError");
-                l.setMassage("MemoUnavaliable");
+                l.setMessage("MemoUnavaliable");
                 Log.instance.WriteEvent(l);
 
                 return errorCode + "<br>Unfortunately, your memo is not available";
@@ -159,12 +160,8 @@ class DBConnect {
             } catch (SQLException e) { // Отловили ошибки
                 e.printStackTrace();
 
-                // Пишем лог
-                LogEvent l = new LogEvent(in);
-                l.setClassName("DBConnect.Put");
-                l.setType("SQLException");
-                l.setMassage(e.getMessage());
-                Log.instance.WriteEvent(l);
+
+                WritePutLog(in, e);// Пишем лог
 
                 return errorCode + "<br>SQL Error!";
             }
@@ -217,11 +214,7 @@ class DBConnect {
         } catch (SQLException e) { // Отловили ошибки
             e.printStackTrace();
 
-            // Пишем лог
-            LogEvent l = new LogEvent(in);
-            l.setClassName("DBConnect.Put");
-            l.setType("SQLException");
-            l.setMassage(e.getMessage());
+            WritePutLog(in, e);// Пишем лог
 
             return errorCode + "<br>SQL Error!";
         }
@@ -232,7 +225,8 @@ class DBConnect {
         LogEvent l = new LogEvent(in);
         l.setClassName("DBConnect.Put");
         l.setType("Success");
-        l.setMassage("Return code");
+        l.setMessage("Return code");
+        Log.instance.WriteEvent(l);
 
         return code; // И возращаем саму ссылки
     }
@@ -250,12 +244,7 @@ class DBConnect {
 
         if (id == -1 || code.equals("ERROR")) { // Если ошибка то вернули
 
-            // Пишем лог
-            LogEvent l = new LogEvent(in);
-            l.setClassName("DBConnect.Get");
-            l.setType("CodeError");
-            l.setMassage("Invalid code!");
-            Log.instance.WriteEvent(l);
+            WriteGetLog(in); // Пишем лог
 
             return errorCode + "<br>Invalid code!";
         }
@@ -285,11 +274,7 @@ class DBConnect {
             if (e.getSQLState().equals("24000")) { // Пустой ответ - нет такого кода - еще не использовался
 
                 // Пишем в лог
-                LogEvent l = new LogEvent(in);
-                l.setClassName("DBConnect.Get");
-                l.setType("CodeError");
-                l.setMassage("Invalid code!");
-                Log.instance.WriteEvent(l);
+                WriteGetLog(in);
 
                 return errorCode + "<br>Invalid code!";
             }
@@ -299,7 +284,7 @@ class DBConnect {
             LogEvent l = new LogEvent(in);
             l.setClassName("DBConnect.Get");
             l.setType("SQLException");
-            l.setMassage(e.getMessage());
+            l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
 
             return errorCode + "<br>SQL Error!";
@@ -324,12 +309,7 @@ class DBConnect {
         } catch (SQLException e) {
             e.printStackTrace();
 
-            // Пишем в лог
-            LogEvent l = new LogEvent(in);
-            l.setClassName("DBConnect.Get");
-            l.setType("SQLException");
-            l.setMassage(e.getMessage());
-            Log.instance.WriteEvent(l);
+            WriteGetELog(in, e);// Пишем в лог
 
             return errorCode + "<br>SQL Error!";
         }
@@ -343,12 +323,7 @@ class DBConnect {
         } catch (SQLException e) {
             e.printStackTrace();
 
-            // Пишем в лог
-            LogEvent l = new LogEvent(in);
-            l.setClassName("DBConnect.Get");
-            l.setType("SQLException");
-            l.setMassage(e.getMessage());
-            Log.instance.WriteEvent(l);
+            WriteGetELog(in, e);// Пишем в лог
 
             return errorCode + "<br>SQL Error!";
         }
@@ -367,12 +342,7 @@ class DBConnect {
         } catch (SQLException e) { // Вывели ошибки
             e.printStackTrace();
 
-            // Пишем в лог
-            LogEvent l = new LogEvent(in);
-            l.setClassName("DBConnect.Get");
-            l.setType("SQLException");
-            l.setMassage(e.getMessage());
-            Log.instance.WriteEvent(l);
+            WriteGetELog(in, e);// Пишем в лог
 
             return errorCode + "<br>SQL Error!";
         }
@@ -381,9 +351,55 @@ class DBConnect {
         LogEvent l = new LogEvent(in);
         l.setClassName("DBConnect.Get");
         l.setType("Success");
-        l.setMassage("Return link");
+        l.setMessage("Return link");
+        Log.instance.WriteEvent(l);
 
         return answer; // Вернули оригинальную ссылку для редиректа
+    }
+
+
+
+    // Функции для записи в лог - вынес, тк надоела подсветка в IDEA о дубликате кода
+
+    /**
+     * Функция, пишушья код ошибки в лог.
+     * Вынес, тк используеться больше 2 раз
+     * @param in данные
+     * @param e exception
+     */
+    private void WritePutLog (PutLinkData in, SQLException e) {
+        LogEvent l = new LogEvent(in);
+        l.setClassName("DBConnect.Put");
+        l.setType("SQLException");
+        l.setMessage(e.getMessage());
+        Log.instance.WriteEvent(l);
+    }
+
+    /**
+     * Функция, пишушья код ошибки в лог.
+     * Вынес, тк используеться больше 2 раз
+     * @param in данные
+     */
+    private void WriteGetLog (GetLinkData in) {
+        LogEvent l = new LogEvent(in);
+        l.setClassName("DBConnect.Get");
+        l.setType("CodeError");
+        l.setMessage("Invalid code!");
+        Log.instance.WriteEvent(l);
+    }
+
+    /**
+     * Функция, пишушья код ошибки в лог.
+     * Вынес, тк используеться больше 3 раз
+     * @param in данные
+     * @param e exception
+     */
+    private void WriteGetELog (GetLinkData in, SQLException e) {
+        LogEvent l = new LogEvent(in);
+        l.setClassName("DBConnect.Get");
+        l.setType("SQLException");
+        l.setMessage(e.getMessage());
+        Log.instance.WriteEvent(l);
     }
 
 }

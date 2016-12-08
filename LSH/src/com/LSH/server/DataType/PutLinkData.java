@@ -1,4 +1,4 @@
-package com.LSH.client;
+package com.LSH.server.DataType;
 
 import java.io.Serializable;
 
@@ -24,12 +24,6 @@ public class PutLinkData implements Serializable {
         return shortLink;
     }
 
-    public void setShortLink(String shortLink) {
-        if (!shortLink.isEmpty()) {
-            this.shortLink = shortLink;
-        }
-    }
-
     public String getTtl() {
         return ttl;
     }
@@ -51,21 +45,21 @@ public class PutLinkData implements Serializable {
         originalLink = "";
     }
 
-    PutLinkData(String originalLink) {
+    public PutLinkData(String originalLink) {
         this.originalLink = originalLink;
         shortLink = "NULL"; // Кодовое слово
         ttl = "1 week"; // Неделю по дефолту
         maxVisits = 0; // Бесконечное по дефолту
     }
 
-    PutLinkData(String originalLink, String ttl, Integer maxVisits) {
+    public PutLinkData(String originalLink, String ttl, Integer maxVisits) {
         this.originalLink = originalLink;
         shortLink = "NULL"; // Кодовое слово
         this.ttl = ttl;
         this.maxVisits = maxVisits;
     }
 
-    PutLinkData(String originalLink, String ttl, Integer maxVisits, String shortLink) {
+    public PutLinkData(String originalLink, String ttl, Integer maxVisits, String shortLink) {
         this.originalLink = originalLink;
         this.shortLink = shortLink;
         this.ttl = ttl;

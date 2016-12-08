@@ -1,7 +1,7 @@
 package com.LSH.server.Log;
 
-import com.LSH.client.GetLinkData;
-import com.LSH.client.PutLinkData;
+import com.LSH.server.DataType.GetLinkData;
+import com.LSH.server.DataType.PutLinkData;
 
 import java.util.Date;
 
@@ -15,16 +15,15 @@ public class LogEvent {
     // TODO Придумать типа id сессии или что-то подобное
 
     // Данные
-    private String date;
-    private String massage;
+    private String message;
     private String type;
     private String className;
     private GetLinkData getLinkData = null;
     private PutLinkData putLinkData = null;
 
     // Сеттеры
-    public void setMassage(String massage) {
-        this.massage = massage;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public void setType(String type) {
@@ -54,8 +53,8 @@ public class LogEvent {
      */
     String Write () {
 
-        date = new Date (System.currentTimeMillis() ).toString();
-        String a = "[" + date + "] Event=" + type + "; ClassName=" + className + "; Message=" + massage + ";";
+        String date = new Date (System.currentTimeMillis() ).toString();
+        String a = "[" + date + "] Event=" + type + "; ClassName=" + className + "; Message=" + message + ";";
 
         if (getLinkData != null) {
             a += " Data:" + getLinkData.toLog() + ";";

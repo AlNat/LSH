@@ -1,5 +1,6 @@
 package com.LSH.client;
 
+import com.LSH.server.DataType.GetLinkData;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;

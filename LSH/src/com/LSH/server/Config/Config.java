@@ -1,4 +1,4 @@
-package com.LSH.server;
+package com.LSH.server.Config;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -49,13 +49,17 @@ public class Config {
     private String SiteLink;
     private String LogFile;
     private String Login;
-    private String Password;
+    private String Password; // TODO Подумать, как брать пароль в зашифрованном виде
     private String URL;
 
+    // Конструктор, вызывающий чтение конфигурационного файла
     private Config () {
         ReadConfig();
     }
 
+    /**
+     * Функция, парсящая xml файл конфигурации и заполняющая поля из него
+     */
     private void ReadConfig () {
 
         try {
