@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+	<SiteLink>http://127.0.0.1/</SiteLink>
+	<ErrorCode>Error!</ErrorCode>
+	<DB>
+		<Login>LSH</Login>
+		<Password>LSH</Password>
+		<URL>//localhost/LSH</URL>
+	</DB>
+	<LogFile>C:\Users\AlNat\Source\Studi\Diplom\log.txt</LogFile>
+
+</Config>
