@@ -12,7 +12,6 @@ import java.util.Date;
  * Класс события лога - 1 строка об проишествии
  */
 public class LogEvent {
-    // TODO Придумать типа id сессии или что-то подобное
 
     // Данные
     private String message;

@@ -11,6 +11,8 @@ import com.google.gwt.core.client.EntryPoint;
 /**
  * Created by @author AlNat on 06.12.2016.
  * Licensed by Apache License, Version 2.0
+ *
+ * Класс UI на 404 код ошибки
  */
 public class Error404 implements EntryPoint {
 
@@ -56,12 +58,12 @@ public class Error404 implements EntryPoint {
      * @param result код ошибки
      */
     private void Print404 (String result) {
-        Window.setTitle("404 - Page Not Found");
 
         if (result.startsWith(errorCode)) { // Оберазли фразу errorCode
             result = result.substring(errorCode.length());
         }
 
+        Window.setTitle("404 - Page Not Found");
         label.setHTML("<h1>404 Page!</h1><br>" + result);
     }
 
