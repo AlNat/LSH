@@ -102,6 +102,7 @@ LANGUAGE plpgsql;
 
 
 -- Функция, запускающаяся по времени и инвалидирующая все записи, где время вышло 
+-- НЕИМОВЕРНО ДОЛГО!
 CREATE OR REPLACE FUNCTION validate ()
 RETURNS VOID AS  
 $$
