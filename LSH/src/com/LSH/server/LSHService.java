@@ -13,8 +13,7 @@ import com.LSH.client.LSHServiceInterface;
 public class LSHService extends RemoteServiceServlet implements LSHServiceInterface {
 
     static String errorCode = "Error!";
-    public static String siteLink = "http://127.0.0.1/"; // Префикс ссылки.
-    //TODO Получать при настройке приложения
+    public static String siteLink = Config.instance.getSiteLink(); // Префикс ссылки.
 
     /**
      * Метод сокращающий ссылу

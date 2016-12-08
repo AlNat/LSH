@@ -24,10 +24,9 @@ class DBConnect {
 
     private DBConnect () { // Конструктор
 
-        // TODO Брать эти данные из окружения
-        String url = "jdbc:postgresql:" + "//localhost/LSH";
-        String login = "LSH";
-        String password = "LSH";
+        String url = "jdbc:postgresql:" + Config.instance.getURL();// "//localhost/LSH";
+        String login = Config.instance.getLogin();// "LSH";
+        String password = Config.instance.getPassword();// "LSH";
         Properties props;
 
         try { // Попытались установить соединение с БД
@@ -300,7 +299,7 @@ class DBConnect {
             LogEvent l = new LogEvent(in);
             l.setClassName("DBConnect.Get");
             l.setType("SQLException");
-            l.setMassage(e.getMasseage());
+            l.setMassage(e.getMessage());
             Log.instance.WriteEvent(l);
 
             return errorCode + "<br>SQL Error!";
