@@ -2,6 +2,9 @@ package com.LSH.server;
 
 import com.LSH.client.GetLinkData;
 import com.LSH.client.PutLinkData;
+import com.LSH.server.Log.Log;
+import com.LSH.server.Log.LogEvent;
+
 import static com.LSH.server.LSHService.errorCode;
 
 import java.sql.*;
@@ -21,8 +24,8 @@ class DBConnect {
 
     private DBConnect () { // Конструктор
 
-        // TODO Подумать, как брать эти данные из окружения
-        String url = "jdbc:postgresql://localhost/LSH";
+        // TODO Брать эти данные из окружения
+        String url = "jdbc:postgresql:" + "//localhost/LSH";
         String login = "LSH";
         String password = "LSH";
         Properties props;
@@ -36,6 +39,13 @@ class DBConnect {
             connection = DriverManager.getConnection(url, props);
         } catch (SQLException e) { // Ловим ошибку
             e.printStackTrace();
+
+            // Пишем лог
+            LogEvent l = new LogEvent();
+            l.setClassName("DBConnect");
+            l.setType("Connecton");
+            l.setMassage("Cannot connect to DB");
+            Log.instance.WriteEvent(l);
         }
     }
 
@@ -79,6 +89,14 @@ class DBConnect {
             }
             System.out.println("Connection Failed! Check output console");
             e.printStackTrace();
+
+            // Пишем лог
+            LogEvent l = new LogEvent();
+            l.setClassName("DBConnect.CheckAvailability");
+            l.setType("SQLException");
+            l.setMassage(e.getMessage());
+            Log.instance.WriteEvent(l);
+
             return -1; // И говорим про ошибку
         }
 
@@ -103,9 +121,23 @@ class DBConnect {
             code = in.getShortLink(); // Получаем его
             Integer answer = CheckAvailability(code); // И проверяем его наличие в БД
 
-            if (answer == -1) { // Если код невалидный то отвечаем
+            if (answer == -1) { // Если код невалидный то отвечаем ошибкой
+                // Пишем лог
+                LogEvent l = new LogEvent(in);
+                l.setClassName("DBConnect.Put");
+                l.setType("InvalidCode");
+                l.setMassage("answer=-1");
+                Log.instance.WriteEvent(l);
+
                 return errorCode + "<br>Invalid code!";
             } else if (answer == -2) { // Если занят тоже
+                // Пишем лог
+                LogEvent l = new LogEvent(in);
+                l.setClassName("DBConnect.Put");
+                l.setType("CodeError");
+                l.setMassage("MemoUnavaliable");
+                Log.instance.WriteEvent(l);
+
                 return errorCode + "<br>Unfortunately, your memo is not available";
             } else { // Иначе берем его как новый id
                 id = answer;
@@ -127,6 +159,14 @@ class DBConnect {
                 statement.close();
             } catch (SQLException e) { // Отловили ошибки
                 e.printStackTrace();
+
+                // Пишем лог
+                LogEvent l = new LogEvent(in);
+                l.setClassName("DBConnect.Put");
+                l.setType("SQLException");
+                l.setMassage(e.getMessage());
+                Log.instance.WriteEvent(l);
+
                 return errorCode + "<br>SQL Error!";
             }
 
@@ -177,26 +217,47 @@ class DBConnect {
             preparedStatement.close();
         } catch (SQLException e) { // Отловили ошибки
             e.printStackTrace();
+
+            // Пишем лог
+            LogEvent l = new LogEvent(in);
+            l.setClassName("DBConnect.Put");
+            l.setType("SQLException");
+            l.setMassage(e.getMessage());
+
             return errorCode + "<br>SQL Error!";
         }
 
         //TODO Писать в аналитку про создание ссылки
+
+        // Пишем лог
+        LogEvent l = new LogEvent(in);
+        l.setClassName("DBConnect.Put");
+        l.setType("Success");
+        l.setMassage("Return code");
 
         return code; // И возращаем саму ссылки
     }
 
     /**
      * Метод, который возращает оригинальную ссылку по коду
-     * @param getLinkData данные об переходе
+     * @param in данные об переходе
      * @return оригинальная ссылка или сообщение об ошибке
      */
-    String Get (GetLinkData getLinkData) {
+    String Get (GetLinkData in) {
 
-        String code = getLinkData.getCode(); // Получили код
+        String code = in.getCode(); // Получили код
 
         int id = Shortner.GetID(code); // Попытались код преобразовать к id
 
         if (id == -1 || code.equals("ERROR")) { // Если ошибка то вернули
+
+            // Пишем лог
+            LogEvent l = new LogEvent(in);
+            l.setClassName("DBConnect.Get");
+            l.setType("CodeError");
+            l.setMassage("Invalid code!");
+            Log.instance.WriteEvent(l);
+
             return errorCode + "<br>Invalid code!";
         }
 
@@ -223,9 +284,25 @@ class DBConnect {
             preparedStatement.close();
         } catch (SQLException e) { // Вывели ошибки
             if (e.getSQLState().equals("24000")) { // Пустой ответ - нет такого кода - еще не использовался
+
+                // Пишем в лог
+                LogEvent l = new LogEvent(in);
+                l.setClassName("DBConnect.Get");
+                l.setType("CodeError");
+                l.setMassage("Invalid code!");
+                Log.instance.WriteEvent(l);
+
                 return errorCode + "<br>Invalid code!";
             }
             e.printStackTrace();
+
+            // Пишем в лог
+            LogEvent l = new LogEvent(in);
+            l.setClassName("DBConnect.Get");
+            l.setType("SQLException");
+            l.setMassage(e.getMasseage());
+            Log.instance.WriteEvent(l);
+
             return errorCode + "<br>SQL Error!";
         }
 
@@ -247,6 +324,14 @@ class DBConnect {
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
+
+            // Пишем в лог
+            LogEvent l = new LogEvent(in);
+            l.setClassName("DBConnect.Get");
+            l.setType("SQLException");
+            l.setMassage(e.getMessage());
+            Log.instance.WriteEvent(l);
+
             return errorCode + "<br>SQL Error!";
         }
 
@@ -258,6 +343,14 @@ class DBConnect {
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
+
+            // Пишем в лог
+            LogEvent l = new LogEvent(in);
+            l.setClassName("DBConnect.Get");
+            l.setType("SQLException");
+            l.setMassage(e.getMessage());
+            Log.instance.WriteEvent(l);
+
             return errorCode + "<br>SQL Error!";
         }
 
@@ -267,15 +360,29 @@ class DBConnect {
             preparedStatement = connection.prepareStatement("INSERT INTO analitics (short_id, visit_time, ip, user_agent) VALUES (?, ?, ?::cidr, ?)");
             preparedStatement.setInt(1, tableID);
             preparedStatement.setTimestamp(2, new Timestamp( System.currentTimeMillis() ) );
-            preparedStatement.setString(3, getLinkData.getIp());
-            preparedStatement.setString(4, getLinkData.getBrowser());
+            preparedStatement.setString(3, in.getIp());
+            preparedStatement.setString(4, in.getBrowser());
             preparedStatement.execute();
 
             preparedStatement.close(); // Закрыли соединение
         } catch (SQLException e) { // Вывели ошибки
             e.printStackTrace();
+
+            // Пишем в лог
+            LogEvent l = new LogEvent(in);
+            l.setClassName("DBConnect.Get");
+            l.setType("SQLException");
+            l.setMassage(e.getMessage());
+            Log.instance.WriteEvent(l);
+
             return errorCode + "<br>SQL Error!";
         }
+
+        // Пишем лог
+        LogEvent l = new LogEvent(in);
+        l.setClassName("DBConnect.Get");
+        l.setType("Success");
+        l.setMassage("Return link");
 
         return answer; // Вернули оригинальную ссылку для редиректа
     }

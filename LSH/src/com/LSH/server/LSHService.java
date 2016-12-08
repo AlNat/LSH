@@ -2,6 +2,8 @@ package com.LSH.server;
 
 import com.LSH.client.GetLinkData;
 import com.LSH.client.PutLinkData;
+import com.LSH.server.Log.Log;
+import com.LSH.server.Log.LogEvent;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.LSH.client.LSHServiceInterface;
 
@@ -11,8 +13,8 @@ import com.LSH.client.LSHServiceInterface;
 public class LSHService extends RemoteServiceServlet implements LSHServiceInterface {
 
     static String errorCode = "Error!";
-    public static String siteLink = "http://127.0.0.1:8888/"; // Префикс ссылки.
-    //TODO На будущее - Подумать, как ее можно получать при настройке приложения
+    public static String siteLink = "http://127.0.0.1/"; // Префикс ссылки.
+    //TODO Получать при настройке приложения
 
     /**
      * Метод сокращающий ссылу
@@ -22,6 +24,14 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
     public String getShort(PutLinkData msg) {
 
         if (msg.getMaxVisits() == null) { // Если кол-во визитов не установлено - возращаем ошибку
+
+            // Пишем в лог
+            LogEvent l = new LogEvent(msg);
+            l.setClassName("LSHService.getShort");
+            l.setType("DataError");
+            l.setMassage("Count of visits error");
+            Log.instance.WriteEvent(l);
+
             return errorCode + "<br>Sorry, but count of visits must be initialized!";
         }
 
@@ -29,6 +39,14 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
         String norm = Normalizer.Normalize(link); // Нормализауем его
 
         if ( norm.equals(errorCode) ) { // Если нормализация не удалась, то возращаем ошибку
+
+            // Пишем в лог
+            LogEvent l = new LogEvent(msg);
+            l.setClassName("LSHService.getShort");
+            l.setType("DataError");
+            l.setMassage("Illegal link");
+            Log.instance.WriteEvent(l);
+
             return errorCode + "<br>Sorry, but link are illegal!";
         }
 
@@ -44,21 +62,28 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
 
     /**
      * Функция, принимающая короткую ссылку и возращающая или ошибку или оригинальный линк
-     * @param getLinkData данные об переходе
+     * @param msg данные об переходе
      * @return оригинальную ссылку или код ошибки
      */
-    public String getOriginal (GetLinkData getLinkData) {
+    public String getOriginal (GetLinkData msg) {
 
-        String code = getLinkData.getCode();
+        String code = msg.getCode();
         code = Normalizer.ShortNormalize(code); // Нормализуем код
 
         if (code.equals(errorCode)) { // Если это ошибка то вернули ее
+            // Пишем в лог
+            LogEvent l = new LogEvent(msg);
+            l.setClassName("LSHService.getOriginal");
+            l.setType("DataError");
+            l.setMassage("Invalid code");
+            Log.instance.WriteEvent(l);
+
             return errorCode + "<br>Invalid code!";
         }
 
-        getLinkData.setCode(code); // Установили нормализованный код
+        msg.setCode(code); // Установили нормализованный код
 
-        return DBConnect.instance.Get(getLinkData); // Возращаем ответ - там будет или ошибка или нормальный код для редиректа
+        return DBConnect.instance.Get(msg); // Возращаем ответ - там будет или ошибка или нормальный код для редиректа
 
     }
 
