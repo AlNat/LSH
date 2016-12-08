@@ -1,4 +1,4 @@
-package com.LSH.server.DataType;
+package com.LSH.client.DataType;
 
 import java.io.Serializable;
 
@@ -32,7 +32,7 @@ public class GetLinkData implements Serializable {
     private String ip; // Ip перехода
     private String browser; // User-agent
 
-    GetLinkData() {
+    public GetLinkData() {
 
     }
 
@@ -43,7 +43,7 @@ public class GetLinkData implements Serializable {
     }
 
     public String toLog () {
-        return "{code=" + code + "; ip=" + ip + "; browser" + browser + "}";
+        return "{code = " + code + "; ip = " + ip + "; browser = " + browser + "}";
     }
 
 }

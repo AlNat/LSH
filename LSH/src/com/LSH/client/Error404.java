@@ -1,6 +1,6 @@
 package com.LSH.client;
 
-import com.LSH.server.DataType.GetLinkData;
+import com.LSH.client.DataType.GetLinkData;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -20,7 +20,7 @@ public class Error404 implements EntryPoint {
 
     public void onModuleLoad() {
 
-        // Настроили поле для ошибо
+        // Настроили поле для ошибок
         label = new HTML();
         label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 

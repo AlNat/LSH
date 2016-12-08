@@ -1,8 +1,8 @@
 package com.LSH.server;
 
 import com.LSH.server.Config.Config;
-import com.LSH.server.DataType.GetLinkData;
-import com.LSH.server.DataType.PutLinkData;
+import com.LSH.client.DataType.GetLinkData;
+import com.LSH.client.DataType.PutLinkData;
 import com.LSH.server.Log.Log;
 import com.LSH.server.Log.LogEvent;
 

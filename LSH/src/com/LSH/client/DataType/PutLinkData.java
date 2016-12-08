@@ -1,4 +1,4 @@
-package com.LSH.server.DataType;
+package com.LSH.client.DataType;
 
 import java.io.Serializable;
 
@@ -67,7 +67,7 @@ public class PutLinkData implements Serializable {
     }
 
     public String toLog () {
-        return "{originalLink=" + originalLink + "; shortLink=" + shortLink + "; ttl" + ttl + "; maxVisits" + maxVisits + "}";
+        return "{originalLink = " + originalLink + "; shortLink = " + shortLink + "; ttl = " + ttl + "; maxVisits = " + maxVisits + "}";
     }
 
 }

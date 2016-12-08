@@ -1,7 +1,7 @@
 package com.LSH.server.Log;
 
-import com.LSH.server.DataType.GetLinkData;
-import com.LSH.server.DataType.PutLinkData;
+import com.LSH.client.DataType.GetLinkData;
+import com.LSH.client.DataType.PutLinkData;
 
 import java.util.Date;
 
@@ -54,12 +54,12 @@ public class LogEvent {
     String Write () {
 
         String date = new Date (System.currentTimeMillis() ).toString();
-        String a = "[" + date + "] Event=" + type + "; ClassName=" + className + "; Message=" + message + ";";
+        String a = "[" + date + "] Event = " + type + "; ClassName = " + className + "; Message = " + message + "; ";
 
         if (getLinkData != null) {
-            a += " Data:" + getLinkData.toLog() + ";";
+            a += "LinkData:" + getLinkData.toLog() + ";";
         } else if (putLinkData != null) {
-            a += " Data:" + putLinkData.toLog() + ";";
+            a += "LinkData:" + putLinkData.toLog() + ";";
         }
         return a;
     }

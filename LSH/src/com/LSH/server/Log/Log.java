@@ -3,10 +3,13 @@ package com.LSH.server.Log;
 import com.LSH.server.Config.Config;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+
+import java.util.LinkedList;
 
 /**
  * Created by @author AlNat on 06.12.2016.
@@ -46,9 +49,14 @@ public class Log {
     public void WriteEvent (LogEvent logEvent) {
         Path path = Paths.get(filename);
 
-        String text = logEvent.Write() + "\n";
+        // Создали массив данных для записи
+        LinkedList<String> text = new LinkedList<>();
+        text.add(logEvent.Write());
+        text.add("\n");
+
+        // Пишем
         try {
-            Files.write(path, text.getBytes(), StandardOpenOption.APPEND);
+            Files.write(path, text, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
         } catch (Exception e) {
             e.printStackTrace();
         }
