@@ -9,10 +9,10 @@ v1.0 release COMPLETE
 
 - Логи
 - Брать данные об сервере и тд из внешнего окружения
+v1.1 release COMPLETE
+
+
 - URL Validator
-v1.1 release
-
-
 - Вносить создание ссылки в аналитику
 - Вывод аналитики
 v1.2 release

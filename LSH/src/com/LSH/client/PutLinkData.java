@@ -73,7 +73,7 @@ public class PutLinkData implements Serializable {
     }
 
     public String toLog () {
-        return "{originalLink=" + originalLink + ";shortLink=" + shortLink + ";ttl" + ttl + ";maxVisits" + maxVisits + "}";
+        return "{originalLink=" + originalLink + "; shortLink=" + shortLink + "; ttl" + ttl + "; maxVisits" + maxVisits + "}";
     }
 
 }

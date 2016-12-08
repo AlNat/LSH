@@ -1,9 +1,12 @@
 package com.LSH.server.Log;
 
+import com.LSH.server.Config;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 /**
  * Created by @author AlNat on 06.12.2016.
@@ -16,22 +19,24 @@ public class Log {
     // Инстанс - паттерн Синглтон
     public static final Log instance = new Log();
 
-    private String filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\log.txt"; // TODO брать его из окружения
-    // Config.instance.getLog();
+    private String filename;// = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\log.txt";
 
     /**
      * Конструктор, создает или открывает файл лога
      */
     private Log () {
+        filename = Config.instance.getLogFile();
+
         File file = new File(filename); // Создаем ссылку на файл
 
+        /*
         if (!file.exists()) { // Если файл не существует
             try {
                 file.createNewFile(); // То создадим его
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     /**
@@ -40,8 +45,10 @@ public class Log {
      */
     public void WriteEvent (LogEvent logEvent) {
         Path path = Paths.get(filename);
+
+        String text = logEvent.Write() + "\n";
         try {
-            Files.write(path, logEvent.Write().getBytes());
+            Files.write(path, text.getBytes(), StandardOpenOption.APPEND);
         } catch (Exception e) {
             e.printStackTrace();
         }

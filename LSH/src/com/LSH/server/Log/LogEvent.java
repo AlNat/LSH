@@ -58,9 +58,9 @@ public class LogEvent {
         String a = "[" + date + "] Event=" + type + "; ClassName=" + className + "; Message=" + massage + ";";
 
         if (getLinkData != null) {
-            a += "Data:" + putLinkData.toLog() + ";";
+            a += " Data:" + getLinkData.toLog() + ";";
         } else if (putLinkData != null) {
-            a += "Data:" + putLinkData.toLog() + ";";
+            a += " Data:" + putLinkData.toLog() + ";";
         }
         return a;
     }

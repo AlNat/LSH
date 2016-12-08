@@ -42,7 +42,7 @@ public class GetLinkData implements Serializable {
     }
 
     public String toLog () {
-        return "{code=" + code + ";ip=" + ip + ";browser" + browser + "}";
+        return "{code=" + code + "; ip=" + ip + "; browser" + browser + "}";
     }
 
 }
