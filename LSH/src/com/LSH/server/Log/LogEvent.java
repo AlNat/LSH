@@ -4,37 +4,56 @@ import com.LSH.client.GetLinkData;
 import com.LSH.client.PutLinkData;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by @author AlNat on 06.12.2016.
  * Licensed by Apache License, Version 2.0
  */
-public class LogEvent implements Serializable {
-    // TODO Сеттеры на data.
+class LogEvent implements Serializable {
     // TODO Комменатрии
     // TODO Придумать типа id сессии или что-то подобное
 
     private String date;
     private String massage;
     private String type;
+    private String className;
     private GetLinkData getLinkData = null;
     private PutLinkData putLinkData = null;
 
-    String Write () {
-        if (getLinkData != null) {
-            // Write putLinkData
-        } else if (putLinkData != null) {
-            // Write getLinkData
-        } else {
-            // Write Other
-        }
-        return "";
+    void setMassage(String massage) {
+        this.massage = massage;
     }
 
-    LogEvent (String massage, String type) {
-        this.massage = massage;
+    void setType(String type) {
         this.type = type;
-        //date = System.currentTimeMillis(); // TODO В нормальном виде
     }
+
+    void setClassName(String className) {
+        this.className = className;
+    }
+
+    LogEvent (GetLinkData getLinkData) {
+        this.getLinkData = getLinkData;
+    }
+
+    LogEvent (PutLinkData putLinkData) {
+        this.putLinkData = putLinkData;
+    }
+
+
+    String Write () {
+
+        date = new Date (System.currentTimeMillis() ).toString();
+        String a = "[" + date + "] Event=" + type + "; ClassName=" + className + "; Message=" + massage + ";";
+
+        if (getLinkData != null) {
+            a += "Data:" + putLinkData.toLog() + ";";
+        } else if (putLinkData != null) {
+            a += "Data:" + putLinkData.toLog() + ";";
+        }
+        return a;
+    }
+
 
 }
