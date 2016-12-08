@@ -1,0 +1,2 @@
+After create WAR artifact need to delete .devmode.js files from war inside folders 404 and LSH
+And FIX in config file adress to localhost if deploy will be in local Tomcat

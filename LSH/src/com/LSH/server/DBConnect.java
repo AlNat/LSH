@@ -31,6 +31,9 @@ class DBConnect {
         Properties props;
 
         try { // Попытались установить соединение с БД
+
+            Class.forName("org.postgresql.Driver");
+
             props = new Properties();
             props.setProperty("user", login);
             props.setProperty("password", password);
@@ -45,6 +48,18 @@ class DBConnect {
             l.setClassName("DBConnect");
             l.setType("Connecton");
             l.setMessage("Cannot connect to DB");
+            Log.instance.WriteEvent(l);
+        } catch (ClassNotFoundException e) {
+
+            System.out.println("Please, check Tomcat lib folder for JDBC jar archive");
+
+            e.printStackTrace();
+
+            // Пишем лог
+            LogEvent l = new LogEvent();
+            l.setClassName("DBConnect");
+            l.setType("Connecton");
+            l.setMessage("Cannot find jdbc driver");
             Log.instance.WriteEvent(l);
         }
     }
