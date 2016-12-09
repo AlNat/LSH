@@ -33,9 +33,9 @@ public class LSH implements EntryPoint {
     private final HTML complexTimeText = new HTML("Set link live duration:"); // Текст перед полем для времени жизни ссылки
     private final ListBox complexTime = new ListBox(); // Поле для указания времени жизни ссылки
 
-    private final HTML complexCountText = new HTML("Set count of visits <br>(0 for unlimited):"); // Тест перед полем для кол-во переходов
+    private final HTML complexCountText = new HTML("Set count of visits:<br>(0 for unlimited)"); // Тест перед полем для кол-во переходов
     private final IntegerBox complexCount = new IntegerBox(); // Поле ввода кол-во переходов
-    private final HTML complexNameText = new HTML("Customize link:"); // Текст перед полем для кастомизации ссыли
+    private final HTML complexNameText = new HTML("Customize link:<br>(i, l, o, 1, 0 - illegal)"); // Текст перед полем для кастомизации ссыли
     private final TextBox complexName = new TextBox(); // Само поле кастомизации ссылки
 
     /**

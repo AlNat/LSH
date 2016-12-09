@@ -11,8 +11,6 @@ import static com.LSH.server.LSHService.siteLink;
  */
 public final class Normalizer {
 
-    // TODO URLValidator from Apache
-
     private static String stopSymbols = "\n\t;'\'\"^{}[]<>|`";
     // См https://stackoverflow.com/questions/1547899/which-characters-make-a-url-invalid
 

@@ -9,12 +9,12 @@ import static com.LSH.server.LSHService.errorCode;
  * По сути класс перевод из одной системы исчисления (10-ичной)
  * в другую - мою. В ней набор символов - ALPHABET
  *
- * Из алфавита удалены: 'I', 'l', '1', 'O', '0', 'i'
- * По причинам их похожести и возмоности спутать
+ * Из алфавита удалены: 'I', 'i', 'l', '1', 'O', 'o', '0',
+ * По причинам их похожести и возможности спутать
  */
 public final class Shortner {
 
-    private static final String ALPHABET = "23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ-_";
+    private static final String ALPHABET = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789-_";
     private static final int BASE = ALPHABET.length();
 
     /**
