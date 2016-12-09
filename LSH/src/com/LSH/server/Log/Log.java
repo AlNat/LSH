@@ -52,7 +52,6 @@ public class Log {
         // Создали массив данных для записи
         LinkedList<String> text = new LinkedList<>();
         text.add(logEvent.Write());
-        text.add("\n");
 
         // Пишем
         try {

@@ -58,7 +58,7 @@ public final class Normalizer {
      */
     public static String ShortNormalize (String in) {
 
-        if (in.length() < siteLink.substring(7).length() || in.trim().isEmpty()) { // Если передали пустую строку
+        if (in.length() < 3 || in.trim().isEmpty()) { // Если передали пустую строку
             return errorCode;
         }
 
