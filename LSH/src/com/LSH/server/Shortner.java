@@ -6,17 +6,15 @@ import static com.LSH.server.LSHService.errorCode;
  * Created by @author AlNat on 14.09.2016.
  * Licensed by Apache License, Version 2.0
  *
- * По сути класс перевод из одной системы исчисленя (10-ичной)
+ * По сути класс перевод из одной системы исчисления (10-ичной)
  * в другую - мою. В ней набор символов - ALPHABET
  *
- * Из алфавита удалены:
- * 'a', 'e', 'i', 'o', 'u'
- * 'I', 'l', '1', 'O', '0'
- * По причинам их похожести
+ * Из алфавита удалены: 'I', 'l', '1', 'O', '0', 'i'
+ * По причинам их похожести и возмоности спутать
  */
 public final class Shortner {
 
-    private static final String ALPHABET = "23456789bcdfghjkmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ-_";
+    private static final String ALPHABET = "23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ-_";
     private static final int BASE = ALPHABET.length();
 
     /**
