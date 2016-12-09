@@ -261,7 +261,7 @@ class DBConnect {
 
             WriteGetLog(in); // Пишем лог
 
-            return errorCode + "<br>Invalid code!";
+            return errorCode + "<br>Error code!";
         }
 
         ResultSet resultSet;
@@ -279,6 +279,10 @@ class DBConnect {
             boolean t = resultSet.getBoolean(1);
 
             if (!t) { // Если этот id false = свободен, то выдаем ошибку
+
+                // Пишем в лог
+                WriteGetLog(in);
+
                 return errorCode + "<br>Invalid code!";
             }
 
