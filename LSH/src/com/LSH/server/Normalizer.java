@@ -73,10 +73,12 @@ public final class Normalizer {
         if (in.startsWith(siteLink)) { // Если ссылка полная - то обрезали ее и вернули код
             return in.substring(siteLink.length());
         }
+
+        // Обрезаем
         in = in.replace("http://", ""); // Убрали протокол
         in = in.replace("https://", ""); // Убрали протокол
         in = in.replace("www.", ""); // Убрали адрес
-        in = in.replace(siteLink.substring(7), ""); // Убрали наш адрес без протокола и http
+        in = in.replace(siteLink.substring(7), ""); // Убрали наш адрес без http
 
         return in; // Вернули код
 

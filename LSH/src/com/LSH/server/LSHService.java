@@ -70,6 +70,7 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
     public String getOriginal (GetLinkData msg) {
 
         String code = msg.getCode();
+
         code = Normalizer.ShortNormalize(code); // Нормализуем код
 
         if (code.equals(errorCode)) { // Если это ошибка то вернули ее
