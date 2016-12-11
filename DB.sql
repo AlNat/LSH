@@ -10,7 +10,7 @@ CREATE DATABASE "LSH" WITH ENCODING='UTF8' CONNECTION LIMIT=1;
 
 -- Таблица для сокращенных ссылок
 CREATE TABLE short (
-	id SERIAL CONSTRAINT shot_pk PRIMARY KEY, -- Внутрениий id
+	id SERIAL CONSTRAINT short_pk PRIMARY KEY, -- Внутрениий id
 	user_id INT NOT NULL, -- id записи пользователя - повторяемый. Выдаеться заново, после того как запись становиться не валидной
 	-- когда действие ссылки кончилось, И\ИЛИ колво переходов превышено
 	link VARCHAR(1024), -- Оригинальная ссылка, приведенная к виду www.site.zone
@@ -25,7 +25,7 @@ CREATE TABLE short (
 
 -- Таблица для аналитики - отслеживание переходов по ссылкам
 CREATE TABLE analitics (
-	id SERIAL CONSTRAINT analyze_pk PRIMARY KEY, -- Внутрениий id
+	id SERIAL CONSTRAINT analitics_pk PRIMARY KEY, -- Внутрениий id
 	short_id INT NOT NULL REFERENCES short(id) ON UPDATE CASCADE, -- Запись перехода 
 	visit_time TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp, -- Время перехода
 	ip CIDR, -- IP откуда пришли
@@ -41,7 +41,8 @@ CREATE TABLE status (
 
 
 -- Триггерная функция, обновляющая таблицу статуса, при вставке нового значения в таблицу short
-CREATE FUNCTION shortTGP () RETURNS trigger AS
+CREATE FUNCTION shortTGFUNC () 
+RETURNS trigger AS
 $$
 	BEGIN
 		IF EXISTS (SELECT valid FROM status WHERE user_id = NEW.user_id)
@@ -57,15 +58,53 @@ LANGUAGE plpgsql;
 
 
 -- Триггер на вставку данных в таблицу short
-CREATE TRIGGER shortTG AFTER INSERT ON short FOR EACH ROW EXECUTE PROCEDURE shortTGP();
+CREATE TRIGGER shortTG AFTER INSERT ON short FOR EACH ROW EXECUTE PROCEDURE shortTGFUNC();
 
 
 -- Индекс на user_id
-CREATE INDEX user_id_index ON short (user_id);
+CREATE INDEX user_id_index ON short(user_id);
+CREATE INDEX analitics_user_id_index ON analitics(user_id);
 
 
 -- Последовательность user_id
 CREATE SEQUENCE usr START 1;
+
+
+-- Функция, запускающаяся по времени и инвалидирующая все записи, где время вышло 
+-- НЕИМОВЕРНО ДОЛГО!
+CREATE FUNCTION invalidate ()
+RETURNS VOID AS  
+$$
+BEGIN
+
+	-- Логика - мы должны получить набор user_id из статуса, где статус валиден. Затем, пойти по всем этим id в таблице short
+	-- С конца по одному (у нас может быть несколько строчек с одинаковым user_id, нам нужна только последняя - первая с конца) 
+	-- И изменить таблицу status по некому правилу (дата истекла, кол-во переходов больше)
+
+	-- 3 подзапроса(каскадно) в одном запросе. Да ешё и с оконной функцией! Рекорд! 
+	UPDATE status SET valid = FALSE WHERE user_id IN ( -- Обновляем статус на невалидный где id в
+
+		SELECT user_id FROM short WHERE id in ( -- Выбрали все не валидные user_id по условию
+
+			SELECT id FROM ( 
+
+				SELECT row_number() over(PARTITION BY user_id ORDER BY id DESC) AS c, id, user_id FROM short  -- Получили другие данные из short с номерами строк у столбца user_id
+				WHERE user_id IN (
+					SELECT user_id FROM status WHERE valid = true -- Получили набор валидных user_id
+				) 
+
+			) t WHERE c = 1 -- Этим мы выбираем первые уникальные c конца - см выше
+
+		) 
+		AND expired_date < current_timestamp -- где дата еще истекла
+		AND max_count != 0 -- и где кол-во переходов не бесконечно
+		AND current_count > max_count  -- и кол-во переходов превышена
+
+	);
+
+END
+$$ 
+LANGUAGE plpgsql;
 
 
 -- Функция возвращая новый user_id
@@ -77,7 +116,7 @@ DECLARE rett INT;
 BEGIN
 
 	-- Вызвали функцию инвалидации
-	PERFORM validate(); 
+	PERFORM invalidate(); 
 
 	-- Ищем свободные user_id
 	SELECT user_id INTO ret
@@ -99,43 +138,6 @@ BEGIN
 	END IF;
 
 	RETURN ret;
-END
-$$ 
-LANGUAGE plpgsql;
-
-
--- Функция, запускающаяся по времени и инвалидирующая все записи, где время вышло 
--- НЕИМОВЕРНО ДОЛГО!
-CREATE FUNCTION invalidate ()
-RETURNS VOID AS  
-$$
-BEGIN
-
-	-- Логика - мы должны получить набор user_id из статуса, где статус валиден. Затем, пойти по всем этим id в таблице short
-	-- С конца по одному (у нас может быть несколько строчек с одинаковым user_id, нам нужна только последняя - первая с конца) 
-	-- И изменить таблицу status по некому правилу (дата истекла, кол-во переходов больше)
-
-	-- 3 подзапроса в каскадно в одном запросе. Рекорд! 
-	UPDATE status SET valid = FALSE WHERE user_id IN ( -- Обновляем статус на невалидный где id в
-
-		SELECT user_id FROM short WHERE id in ( -- Выбрали все не валидные user_id по условию
-
-			SELECT id FROM ( 
-
-				SELECT row_number() over(PARTITION BY user_id ORDER BY id DESC) AS c, id, user_id FROM short  -- Получили другие данные из short с номерами строк у столбца user_id
-				WHERE user_id IN (
-					SELECT user_id FROM status WHERE valid = true -- Получили набор валидных user_id
-				) 
-
-			) t WHERE c = 1 -- Этим мы выбираем первые уникальные c конца - см выше
-
-		) 
-		AND expired_date < current_timestamp -- где дата еще истекла
-		AND max_count != 0 -- и где кол-во переходов не бесконечно
-		AND current_count > max_count  -- и кол-во переходов превышена
-
-	);
-
 END
 $$ 
 LANGUAGE plpgsql;
