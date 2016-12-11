@@ -16,7 +16,10 @@ CREATE TABLE short (
 	link VARCHAR(1024), -- Оригинальная ссылка, приведенная к виду www.site.zone
 	expired_date TIMESTAMP WITH TIME ZONE, -- До какого времени ссылка рабочая
 	max_count INT, -- Максимальное кол-во переходов - если 0, то бесконечно
-	current_count INT -- Текущее кол-во переходов
+	current_count INT, -- Текущее кол-во переходов
+	create_time TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp, -- Время создания	
+	ip CIDR, -- IP откуда создали
+	user_agent VARCHAR(180) -- Браузер, откуда создали
 );
 
 
@@ -66,7 +69,7 @@ CREATE SEQUENCE usr START 1;
 
 
 -- Функция возвращая новый user_id
-CREATE OR REPLACE FUNCTION get_next_id () 
+CREATE FUNCTION get_next_id () 
 RETURNS INT AS 
 $$
 DECLARE ret INT;
@@ -103,7 +106,7 @@ LANGUAGE plpgsql;
 
 -- Функция, запускающаяся по времени и инвалидирующая все записи, где время вышло 
 -- НЕИМОВЕРНО ДОЛГО!
-CREATE OR REPLACE FUNCTION validate ()
+CREATE FUNCTION invalidate ()
 RETURNS VOID AS  
 $$
 BEGIN
@@ -118,14 +121,18 @@ BEGIN
 		SELECT user_id FROM short WHERE id in ( -- Выбрали все не валидные user_id по условию
 
 			SELECT id FROM ( 
-				SELECT row_number() over(PARTITION BY user_id ORDER BY id DESC) AS c, id, user_id FROM short  
-				WHERE user_id IN (SELECT user_id FROM status WHERE valid = true ) -- Получили набор валидных user_id
-			) t 
-			WHERE c = 1 -- Этим мы выбираем первые уникальные c конца - см выше
+
+				SELECT row_number() over(PARTITION BY user_id ORDER BY id DESC) AS c, id, user_id FROM short  -- Получили другие данные из short с номерами строк у столбца user_id
+				WHERE user_id IN (
+					SELECT user_id FROM status WHERE valid = true -- Получили набор валидных user_id
+				) 
+
+			) t WHERE c = 1 -- Этим мы выбираем первые уникальные c конца - см выше
 
 		) 
 		AND expired_date < current_timestamp -- где дата еще истекла
-		AND max_count != 0 AND current_count > max_count  -- и кол-во переходов превышена
+		AND max_count != 0 -- и где кол-во переходов не бесконечно
+		AND current_count > max_count  -- и кол-во переходов превышена
 
 	);
 
@@ -134,13 +141,12 @@ $$
 LANGUAGE plpgsql;
 
 
-
 -- Создание пользователя для приложения
 CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf' VALID UNTIL 'infinity' CONNECTION LIMIT 1;
 
 
 -- Разрешения. Владелец - POSTGRES, но LSH может SELECT, INSERT, EXECUTE
-GRANT EXECUTE ON FUNCTION check_time_valid() to "LSH";
+GRANT EXECUTE ON FUNCTION invalidate() to "LSH";
 GRANT EXECUTE ON FUNCTION get_next_id() to "LSH";
 
 GRANT SELECT, INSERT ON short TO "LSH";

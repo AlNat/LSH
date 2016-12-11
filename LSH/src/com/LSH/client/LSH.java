@@ -158,6 +158,8 @@ public class LSH implements EntryPoint {
         public void onClick(ClickEvent event) {
 
             PutLinkData putLinkData = new PutLinkData(simpleOriginalLink.getText()); // Формируем сообщение на сервер
+            putLinkData.setBrowser(Window.Navigator.getUserAgent()); // user-agent пользователя
+            putLinkData.setBrowser(getIP()); // IP адрес пользователя
 
             LSHServiceInterface.App.getInstance().getShort(putLinkData, new AsyncCallback<String>() { // Отпраляем сообщение и получаем ответ
                 @Override
@@ -193,6 +195,8 @@ public class LSH implements EntryPoint {
             } else {
                 putLinkData = new PutLinkData( complexOriginalLink.getText(), complexTime.getSelectedItemText(), complexCount.getValue(), complexName.getText());
             }
+            putLinkData.setBrowser(Window.Navigator.getUserAgent()); // user-agent пользователя
+            putLinkData.setBrowser(getIP()); // IP адрес пользователя
 
             // И отправляем его. Что внутри - см выше
             LSHServiceInterface.App.getInstance().getShort(putLinkData, new AsyncCallback<String>() {
@@ -263,6 +267,14 @@ public class LSH implements EntryPoint {
         selection.addRange(range);
         $doc.execCommand('copy');
         selection.removeAllRanges();
+    }-*/;
+
+    /**
+     * Функция получающая ip пользователя
+     * @return ip
+     */
+    private native String getIP () /*-{
+        return $wnd.userip;
     }-*/;
 
 }

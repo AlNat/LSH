@@ -216,12 +216,16 @@ class DBConnect {
 
         try { // Пишем в базу
             // Создали соединение
-            preparedStatement = connection.prepareStatement("INSERT INTO short(user_id, link, expired_date, max_count, current_count) VALUES (?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement(
+                    "INSERT INTO short(user_id, link, expired_date, max_count, current_count, ip, user_agent) VALUES (?, ?, ?, ?, ?, ?::cidr, ?)"
+            );
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, in.getOriginalLink());
             preparedStatement.setTimestamp(3, date);
             preparedStatement.setInt(4, in.getMaxVisits());
             preparedStatement.setInt(5, 0);
+            preparedStatement.setString(6, in.getIp());
+            preparedStatement.setString(7, in.getBrowser());
 
             // Выолнили вставку и закрыли соединение
             preparedStatement.execute();
@@ -233,8 +237,6 @@ class DBConnect {
 
             return errorCode + "<br>SQL Error!";
         }
-
-        //TODO Писать в аналитку про создание ссылки
 
         // Пишем лог
         LogEvent l = new LogEvent(in);

@@ -32,12 +32,30 @@ public class PutLinkData implements Serializable {
         return maxVisits;
     }
 
+    public String getBrowser() {
+        return browser;
+    }
+
+    public void setBrowser(String browser) {
+        this.browser = browser;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
 
     /* Данные */
     private String originalLink; // Оригинальный линк
     private String shortLink; // Короткая ссылка - мнемоническая
     private String ttl; // Время жизни ссылки
     private Integer maxVisits; // Максимальное кол-во визитов
+    private String browser;  // user-agent пользователя
+    private String ip; // IP адрес пользователя
 
 
     /* Конструкторы */
@@ -67,7 +85,9 @@ public class PutLinkData implements Serializable {
     }
 
     public String toLog () {
-        return "{originalLink = " + originalLink + "; shortLink = " + shortLink + "; ttl = " + ttl + "; maxVisits = " + maxVisits + "}";
+        return "{originalLink = " + originalLink + "; shortLink = " + shortLink +
+                "; ttl = " + ttl + "; maxVisits = " + maxVisits +
+                "; IP = " + ip + "; browser = " + browser + "}";
     }
 
 }
