@@ -11,7 +11,8 @@ import static com.LSH.server.LSHService.siteLink;
  */
 public final class Normalizer {
 
-    private static String stopSymbols = "\n\t;'\'\"^{}[]<>|`";
+    @SuppressWarnings("FieldCanBeLocal")
+    private static final String stopSymbols = "\n\t;'\'\"^{}[]<>|`";
     // См https://stackoverflow.com/questions/1547899/which-characters-make-a-url-invalid
 
     /**

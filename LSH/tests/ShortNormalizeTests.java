@@ -13,7 +13,7 @@ import static com.LSH.server.LSHService.siteLink;
  */
 public class ShortNormalizeTests {
 
-    private static String errorCode = "Error!";
+    private static final String errorCode = "Error!";
 
     @Test//(timeOut = 100)
     public void TestShort() throws Exception {

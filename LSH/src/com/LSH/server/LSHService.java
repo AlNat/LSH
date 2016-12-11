@@ -15,8 +15,8 @@ import com.LSH.client.LSHServiceInterface;
  */
 public class LSHService extends RemoteServiceServlet implements LSHServiceInterface {
 
-    static String errorCode = "Error!";
-    public static String siteLink = Config.instance.getSiteLink(); // Префикс ссылки.
+    final static String errorCode = "Error!";
+    public static final String siteLink = Config.instance.getSiteLink(); // Префикс ссылки.
 
     /**
      * Метод сокращающий ссылу

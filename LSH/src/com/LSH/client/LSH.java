@@ -12,7 +12,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class LSH implements EntryPoint {
 
-    private static String errorCode = "Error!"; // Код ошибки
+    private static final String errorCode = "Error!"; // Код ошибки
 
     /* Набор полей для простом сокращении */
     private final TextBox simpleOriginalLink = new TextBox(); // Оригинальная ссылка

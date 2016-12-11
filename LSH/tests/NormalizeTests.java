@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
  */
 public class NormalizeTests {
 
-    private static String errorCode = "Error!";
+    private static final String errorCode = "Error!";
 
     // Тесты для свертки
 

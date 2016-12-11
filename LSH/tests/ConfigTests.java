@@ -13,7 +13,7 @@ public class ConfigTests {
 
     @BeforeTest
     public void Test() throws Exception {
-        Config.instance.equals(""); // Создали экземпляр конфига
+        Config.instance.hashCode(); // Создали экземпляр конфига перед работой
     }
 
     @Test(timeOut = 100)

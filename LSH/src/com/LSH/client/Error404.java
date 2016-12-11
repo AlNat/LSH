@@ -16,7 +16,7 @@ import com.google.gwt.core.client.EntryPoint;
  */
 public class Error404 implements EntryPoint {
 
-    private static String errorCode = "Error!"; // Код ошибки
+    private static final String errorCode = "Error!"; // Код ошибки
 
     private HTML label; // Место вывода ошибок
 

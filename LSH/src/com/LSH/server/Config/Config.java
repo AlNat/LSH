@@ -17,7 +17,8 @@ import java.io.File;
  */
 public class Config {
 
-    private String filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml";
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml";
     // TODO искать эти данные рядом с сервером
 
     // Инстанс - паттерн Синглтон

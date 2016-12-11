@@ -10,7 +10,8 @@ import org.testng.annotations.Test;
  */
 public class ShortnerTests {
 
-    private static String errorCode = "Error!";
+    @SuppressWarnings("FieldCanBeLocal")
+    private static final String errorCode = "Error!";
 
     @Test(timeOut = 100)
     public void TestEncode() throws Exception {
