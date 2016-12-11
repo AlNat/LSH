@@ -46,7 +46,7 @@ class DBConnect {
             // Пишем лог
             LogEvent l = new LogEvent();
             l.setClassName("DBConnect");
-            l.setType("Connecton");
+            l.setType("Connection");
             l.setMessage("Cannot connect to DB");
             Log.instance.WriteEvent(l);
         } catch (ClassNotFoundException e) {
@@ -58,7 +58,7 @@ class DBConnect {
             // Пишем лог
             LogEvent l = new LogEvent();
             l.setClassName("DBConnect");
-            l.setType("Connecton");
+            l.setType("Connection");
             l.setMessage("Cannot find jdbc driver");
             Log.instance.WriteEvent(l);
         }
@@ -150,7 +150,7 @@ class DBConnect {
                 LogEvent l = new LogEvent(in);
                 l.setClassName("DBConnect.Put");
                 l.setType("CodeError");
-                l.setMessage("MemoUnavaliable");
+                l.setMessage("MemoUnavailable");
                 Log.instance.WriteEvent(l);
 
                 return errorCode + "<br>Unfortunately, your memo is not available";
@@ -240,7 +240,7 @@ class DBConnect {
         LogEvent l = new LogEvent(in);
         l.setClassName("DBConnect.Put");
         l.setType("Success");
-        l.setMessage("Return code");
+        l.setMessage("Return code:" + code);
         Log.instance.WriteEvent(l);
 
         return code; // И возращаем саму ссылки
@@ -309,7 +309,7 @@ class DBConnect {
             return errorCode + "<br>SQL Error!";
         }
 
-        Integer tableID; // id в таблице для foregin key в аналитике
+        Integer tableID; // id в таблице для foreign key в аналитике
         Integer curCount; // Текущее кол-во переходов
         String answer; // Сам линк
         try { // Получили оригинальную ссылку
