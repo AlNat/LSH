@@ -1,4 +1,5 @@
 #.travis.yml
 language: java
-
-mvn test
+jdk:
+  - oraclejdk8
+script: mvn test
