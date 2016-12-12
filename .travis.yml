@@ -1,2 +1,4 @@
- #.travis.yml
- language: java
+#.travis.yml
+language: java
+
+mvn test
