@@ -18,16 +18,33 @@ p {
 
 body {
     font-family: Helvetica, sans-serif;
+  	height: 100%;
     margin: 0;
-}
-
-div {
-    align: center;
+    background: #FAFAFA;
 }
 
 .blockTitle {
-    background: #304FFE; /*304FFE*/
+    background: #304FFE;
     height: 20%;
+    border: none;
+    position: relative;
+  	flex: 1 0 auto;
+}
+
+.blockAbout {
+    background: #E8EAF6;
+    text-align: center;
+    height: 70%;
+    margin: 2% 20% 0% 20%;
+    border: none;
+    position: relative;
+}
+
+.blockInfo {
+    background: #E8EAF6;
+    text-align: center;
+    height: 10%;
+    margin: 2% 20% 0% 20%;
     border: none;
     position: relative;
 }
