@@ -1,5 +1,6 @@
 #LSH
-
+[![GitHub tag](https://img.shields.io/github/tag/strongloop/express.svg)]()
+[![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)]()
 The little shortner to URL with Java, GWT, PostgreSQL
 
 For feature see CHANGELOG
