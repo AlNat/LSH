@@ -1,0 +1,5 @@
+#drone.io
+psql -f DB.sql
+cd /home/ubuntu/src/github.com/AlNat/LSH/LSH
+mvn install -X -q -DskipTests=true
+mvn test
