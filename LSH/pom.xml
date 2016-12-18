@@ -8,11 +8,6 @@
     <artifactId>LSH</artifactId>
     <version>1.2.1</version>
 
-    <build>
-        <sourceDirectory>src/com/LSH</sourceDirectory>
-        <testSourceDirectory>tests</testSourceDirectory>
-    </build>
-
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
