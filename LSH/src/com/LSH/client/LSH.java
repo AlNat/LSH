@@ -218,7 +218,7 @@ public class LSH implements EntryPoint {
                 putLinkData = new PutLinkData( complexOriginalLink.getText(), complexTime.getSelectedItemText(), complexCount.getValue(), complexName.getText());
             }
             putLinkData.setBrowser(Window.Navigator.getUserAgent()); // user-agent пользователя
-            putLinkData.setBrowser(getIP()); // IP адрес пользователя
+            putLinkData.setIp(getIP()); // IP адрес пользователя
             String t = complexPassword.getText();
 
             if (!t.isEmpty()) {
