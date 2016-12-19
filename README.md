@@ -1,4 +1,5 @@
 #LSH
+TODO - Badges(License, Version)
 
 The little shortner to URL with Java, GWT, PostgreSQL
 
