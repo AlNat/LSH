@@ -5,7 +5,7 @@ h1 {
     vertical-align: center;
     font-family: "Segoe UI Symbol", monospace;
     margin: 0;
-    padding: 2%;
+    padding: 1%;
 }
 
 p {
@@ -41,7 +41,15 @@ div {
 
 .blockComplex {
     background: #82B1FF;
-    height: 80%;
+    height: 45%;
     border: none;
     position: relative;
+}
+
+.blockAbout {
+    background: #82B1FF;
+    height: 5%;
+    border: none;
+    position: relative;
+    text-align: center;
 }
