@@ -1,7 +1,7 @@
 package com.LSH.client;
 
 import com.LSH.client.DataType.GetLinkData;
-import com.LSH.client.DataType.Link;
+import com.LSH.client.DataType.ReturnLinkData;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -32,21 +32,21 @@ public class Error404 implements EntryPoint {
         GetLinkData getLinkData = new GetLinkData(url, ip, browser); // Блок данных про пользователя
 
         // Пошли на сервер
-        LSHServiceInterface.App.getInstance().getOriginal(getLinkData, new AsyncCallback<Link>() {
+        LSHServiceInterface.App.getInstance().getOriginal(getLinkData, new AsyncCallback<ReturnLinkData>() {
             @Override
             public void onFailure(Throwable caught) { // Если не смогли соединиться
                 Print404();
             }
 
             @Override
-            public void onSuccess(Link link) { // Если получили ответ
-                if (link.getErrorCode()!= null) { // Если там ошибка то напечатали ее
-                    PrintError(link);
+            public void onSuccess(ReturnLinkData returnLinkData) { // Если получили ответ
+                if (returnLinkData.getErrorCode()!= null) { // Если там ошибка то напечатали ее
+                    PrintError(returnLinkData);
                 } else {
-                    if (link.getPassword() == null) { // Если пароля нет, то редиректим
-                        Window.Location.assign(link.getOriginalLink());
+                    if (returnLinkData.getPassword() == null) { // Если пароля нет, то редиректим
+                        Window.Location.assign(returnLinkData.getOriginalLink());
                     } else { // Иначе просим ввести пароль
-                        PasswordDialog d = new PasswordDialog(link);
+                        PasswordDialog d = new PasswordDialog(returnLinkData);
                         d.show();
                         d.center();
                     }
@@ -68,11 +68,11 @@ public class Error404 implements EntryPoint {
 
     /**
      * Функция вывода ошибок
-     * @param link данные ссылки
+     * @param returnLinkData данные ссылки
      */
-    private void PrintError (Link link) {
+    private void PrintError (ReturnLinkData returnLinkData) {
 
-        String result = link.getErrorCode();
+        String result = returnLinkData.getErrorCode();
 
         Window.setTitle("404 - Page Not Found");
         label.setHTML("<h1>404 Page!</h1><br>" + result);
@@ -92,7 +92,7 @@ public class Error404 implements EntryPoint {
      */
     private class PasswordDialog extends DialogBox {
 
-        PasswordDialog(final Link link) {
+        PasswordDialog(final ReturnLinkData returnLinkData) {
             setHTML("<h3>Please, input password</h3>");
             setAnimationEnabled(true);
             setGlassEnabled(true);
@@ -120,8 +120,8 @@ public class Error404 implements EntryPoint {
 
                     String t = getMD5(textBox.getText()); // Получили хэш текст пароля
 
-                    if (t.equals(link.getPassword())) { // Если пароли совпадают
-                        Window.Location.assign(link.getOriginalLink()); // Редиректим
+                    if (t.equals(returnLinkData.getPassword())) { // Если пароли совпадают
+                        Window.Location.assign(returnLinkData.getOriginalLink()); // Редиректим
                     } else { // Иначе ошибка
                         label.setHTML("<h1>Wrong password!</h1><br>");
                     }

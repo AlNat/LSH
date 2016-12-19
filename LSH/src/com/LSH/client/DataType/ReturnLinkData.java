@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by @author AlNat on 20.12.2016.
  * Licensed by Apache License, Version 2.0
  */
-public class Link implements Serializable {
+public class ReturnLinkData implements Serializable {
 
     /* Геттеры и сеттеры */
     public String getOriginalLink() {
@@ -39,14 +39,16 @@ public class Link implements Serializable {
     private String password; // Пароль
     private String errorCode; // Код ошибки
 
-    public Link () {}
 
-    public Link(String originalLink, String password) {
+    /* Конструкторы */
+    public ReturnLinkData() {}
+
+    public ReturnLinkData(String originalLink, String password) {
         this.originalLink = originalLink;
         this.password = password;
     }
 
-    public Link(String errorCode) {
+    public ReturnLinkData(String errorCode) {
         this.errorCode = errorCode;
     }
 

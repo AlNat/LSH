@@ -20,19 +20,19 @@ public class LSH implements EntryPoint {
 
     /* Набор полей для простом сокращении */
     private final TextBox simpleOriginalLink = new TextBox(); // Оригинальная ссылка
-    private final Button simpleShortButton = new Button("Get Short Link"); // Кнопка получить короткую ссылку
+    private final Button simpleShortButton = new Button("Get Short ReturnLinkData"); // Кнопка получить короткую ссылку
     private final Button simpleCopyButton = new Button("Copy to clipboard"); // Кнопа копировать в буфер обмена
     private final HTML simpleShortText = new HTML("Your shortlink — "); // Текст перед короткой ссылкой
     private final HTML simpleShortLink = new HTML(""); // Сама ссылка
 
 
     /* Набор полей для управляемого сокращения */
-    private final Button complexShortButton = new Button("Get Short Link"); // Кнопка получить короткую ссылку
+    private final Button complexShortButton = new Button("Get Short ReturnLinkData"); // Кнопка получить короткую ссылку
     private final Button complexCopyButton = new Button("Copy to clipboard"); // Кнопа копировать в буфер обмена
     private final HTML complexShortText = new HTML("Your shortlink — "); // Текст перед короткой ссылкой
     private final HTML complexShortLink = new HTML(""); // Сама ссылка
 
-    private final HTML complexText = new HTML("Link:"); // Текст перед полем для оригинальной ссылки
+    private final HTML complexText = new HTML("ReturnLinkData:"); // Текст перед полем для оригинальной ссылки
     private final TextBox complexOriginalLink = new TextBox(); // Оригинальная ссылка
 
     private final HTML complexTimeText = new HTML("Set link live duration:"); // Текст перед полем для времени жизни ссылки
@@ -324,7 +324,6 @@ public class LSH implements EntryPoint {
     /**
      * Функция получающая ip пользователя
      * @return ip
-     * TODO fix
      */
     private native String getIP () /*-{
         return $wnd.userip;

@@ -1,6 +1,6 @@
 package com.LSH.server;
 
-import com.LSH.client.DataType.Link;
+import com.LSH.client.DataType.ReturnLinkData;
 import com.LSH.server.Config.Config;
 import com.LSH.client.DataType.GetLinkData;
 import com.LSH.client.DataType.PutLinkData;
@@ -255,7 +255,7 @@ class DBConnect {
      * @param in данные об переходе
      * @return оригинальная ссылка или сообщение об ошибке
      */
-    Link Get (GetLinkData in) {
+    ReturnLinkData Get (GetLinkData in) {
 
         String code = in.getCode(); // Получили код
 
@@ -265,7 +265,7 @@ class DBConnect {
 
             WriteGetLog(in); // Пишем лог
 
-            return new Link("<br>Error code!");
+            return new ReturnLinkData("<br>Error code!");
         }
 
         ResultSet resultSet;
@@ -287,7 +287,7 @@ class DBConnect {
                 // Пишем в лог
                 WriteGetLog(in);
 
-                return new Link("<br>Invalid code!");
+                return new ReturnLinkData("<br>Invalid code!");
             }
 
             // Закрыли соединение
@@ -299,7 +299,7 @@ class DBConnect {
                 // Пишем в лог
                 WriteGetLog(in);
 
-                return new Link("<br>Invalid code!");
+                return new ReturnLinkData("<br>Invalid code!");
             }
             e.printStackTrace();
 
@@ -310,7 +310,7 @@ class DBConnect {
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
 
-            return new Link("<br>SQL Error!");
+            return new ReturnLinkData("<br>SQL Error!");
         }
 
         Integer tableID; // id в таблице для foreign key в аналитике
@@ -336,7 +336,7 @@ class DBConnect {
 
             WriteGetELog(in, e);// Пишем в лог
 
-            return new Link("<br>SQL Error!");
+            return new ReturnLinkData("<br>SQL Error!");
         }
 
         try { // Обновили ко-во переходов
@@ -350,7 +350,7 @@ class DBConnect {
 
             WriteGetELog(in, e);// Пишем в лог
 
-            return new Link("<br>SQL Error!");
+            return new ReturnLinkData("<br>SQL Error!");
         }
 
         try { // Запись аналитики
@@ -369,7 +369,7 @@ class DBConnect {
 
             WriteGetELog(in, e);// Пишем в лог
 
-            return new Link("<br>SQL Error!");
+            return new ReturnLinkData("<br>SQL Error!");
         }
 
         // Пишем лог
@@ -379,7 +379,7 @@ class DBConnect {
         l.setMessage("Return link");
         Log.instance.WriteEvent(l);
 
-        return new Link(link, password); // Вернули оригинальную ссылку для редиректа
+        return new ReturnLinkData(link, password); // Вернули оригинальную ссылку для редиректа
     }
 
 

@@ -1,6 +1,6 @@
 package com.LSH.server;
 
-import com.LSH.client.DataType.Link;
+import com.LSH.client.DataType.ReturnLinkData;
 import com.LSH.server.Config.Config;
 import com.LSH.server.Log.Log;
 import com.LSH.server.Log.LogEvent;
@@ -68,7 +68,7 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
      * @param msg данные об переходе
      * @return оригинальную ссылку или код ошибки
      */
-    public Link getOriginal (GetLinkData msg) {
+    public ReturnLinkData getOriginal (GetLinkData msg) {
 
         String code = msg.getCode();
 
@@ -82,7 +82,7 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
             l.setMessage("Invalid code");
             Log.instance.WriteEvent(l);
 
-            return new Link("<br>Invalid code!");
+            return new ReturnLinkData("<br>Invalid code!");
         }
 
         msg.setCode(code); // Установили нормализованный код
