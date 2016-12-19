@@ -7,6 +7,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+
 /**
  * Класс, отвечающий за главную страницу UI
  */
@@ -33,10 +36,12 @@ public class LSH implements EntryPoint {
     private final HTML complexTimeText = new HTML("Set link live duration:"); // Текст перед полем для времени жизни ссылки
     private final ListBox complexTime = new ListBox(); // Поле для указания времени жизни ссылки
 
-    private final HTML complexCountText = new HTML("Set count of visits:<br>(0 for unlimited)"); // Тест перед полем для кол-во переходов
+    private final HTML complexCountText = new HTML("Set count of visits:<br>(0 for unlimited)"); // Текст перед полем для кол-во переходов
     private final IntegerBox complexCount = new IntegerBox(); // Поле ввода кол-во переходов
     private final HTML complexNameText = new HTML("Customize link:<br>(i, l, o, 1, 0 - illegal)"); // Текст перед полем для кастомизации ссыли
     private final TextBox complexName = new TextBox(); // Само поле кастомизации ссылки
+    private final HTML complexPasswordText = new HTML("Set password"); // Текст перед полем для пароля ссыли
+    private final TextBox complexPassword = new TextBox(); // Само поле пароля ссылки
 
     /**
      * Основной метод в UI
@@ -85,10 +90,13 @@ public class LSH implements EntryPoint {
 
         /* Создаем управляемое сокращение */
         // Панели для хранения
+        final HorizontalPanel complexLinkHP = new HorizontalPanel(); // Строка с оригинальной ссылокой
         final HorizontalPanel complexDataHP = new HorizontalPanel(); // Данные
-        final HorizontalPanel complexData2HP = new HorizontalPanel(); // Данные 2
+        final HorizontalPanel complexOptionalData = new HorizontalPanel(); // Опциональные данные
         final HorizontalPanel complexAnswerHP = new HorizontalPanel(); // Ответ
+
         final VerticalPanel complexVP = new VerticalPanel(); // Хранение того, что выше
+        final VerticalPanel complexOptionalVP = new VerticalPanel(); // Хранение того, что выше
 
         EnterKeyListener complexKey = new EnterKeyListener(complexShortButton); // Хендлер наатия на клавишу Enter
         complexCopyButton.addClickHandler(new CopyClickHandler("complexAnswer"));
@@ -113,21 +121,28 @@ public class LSH implements EntryPoint {
         complexName.addKeyDownHandler(complexKey);
         complexCount.addKeyDownHandler(complexKey);
         complexTime.addKeyDownHandler(complexKey);
+        complexPassword.addKeyDownHandler(complexKey);
+
 
         // Настроили и добавили данные к панелям
+        complexLinkHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexLinkHP.setSpacing(5);
+        complexLinkHP.add(complexText);
+        complexLinkHP.add(complexOriginalLink);
+
         complexDataHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexDataHP.setSpacing(5);
-        complexDataHP.add(complexText);
-        complexDataHP.add(complexOriginalLink);
         complexDataHP.add(complexTimeText);
         complexDataHP.add(complexTime);
+        complexDataHP.add(complexCountText);
+        complexDataHP.add(complexCount);
 
-        complexData2HP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        complexData2HP.setSpacing(5);
-        complexData2HP.add(complexCountText);
-        complexData2HP.add(complexCount);
-        complexData2HP.add(complexNameText);
-        complexData2HP.add(complexName);
+        complexOptionalData.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexOptionalData.setSpacing(5);
+        complexOptionalData.add(complexNameText);
+        complexOptionalData.add(complexName);
+        complexOptionalData.add(complexPasswordText);
+        complexOptionalData.add(complexPassword);
 
         complexAnswerHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexAnswerHP.setSpacing(5);
@@ -136,11 +151,15 @@ public class LSH implements EntryPoint {
         complexAnswerHP.add(complexCopyButton);
 
         complexVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        complexVP.setSpacing(15);
+        complexVP.setSpacing(5);
+        complexVP.add(complexLinkHP);
         complexVP.add(complexDataHP);
-        complexVP.add(complexData2HP);
-        complexVP.add(complexShortButton);
-        complexVP.add(complexAnswerHP);
+
+        complexOptionalVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexOptionalVP.setSpacing(5);
+        complexOptionalVP.add(complexOptionalData);
+        complexOptionalVP.add(complexShortButton);
+        complexOptionalVP.add(complexAnswerHP);
 
         // Скрыли кнопки ответа
         complexShortText.setVisible(false);
@@ -149,6 +168,7 @@ public class LSH implements EntryPoint {
         // Устанавливаем наши панель на страницу
         RootPanel.get("SimpleShort").add(simpleVP);
         RootPanel.get("ComplexShort").add(complexVP);
+        RootPanel.get("ComplexShortOptional").add(complexOptionalVP);
     }
 
     /**
@@ -168,7 +188,7 @@ public class LSH implements EntryPoint {
                     }
                 @Override
                 public void onSuccess(String result) { // При удаче
-                    if (result.startsWith(errorCode)) { // Если вернули код ошиби то показываем его
+                    if (result.startsWith(errorCode)) { // Если вернули код ошибки то показываем его
                         simpleShortLink.setHTML(result);
                     } else {
                         // Иначе активируем кнопки про короткую ссылку
@@ -197,7 +217,11 @@ public class LSH implements EntryPoint {
             }
             putLinkData.setBrowser(Window.Navigator.getUserAgent()); // user-agent пользователя
             putLinkData.setBrowser(getIP()); // IP адрес пользователя
+            String t = complexPassword.getText();
 
+            if (!t.isEmpty()) {
+                putLinkData.setPassword(getMD5(t));
+            }
             // И отправляем его. Что внутри - см выше
             LSHServiceInterface.App.getInstance().getShort(putLinkData, new AsyncCallback<String>() {
                 @Override
@@ -248,10 +272,36 @@ public class LSH implements EntryPoint {
         @Override
         public void onKeyDown(KeyDownEvent event) {
             if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                button.click(); // Наимаем на кнопку по наатию клавиши Enter
+                button.click(); // Нажимаем на кнопку по нажатию клавиши Enter
             }
         }
 
+    }
+
+    /**
+     * Функция, получения MD5 хэша от строи
+     * @param in входная строка
+     * @return хэш строки или null если ошибка
+     */
+    private String getMD5 (String in) {
+
+        if (in.isEmpty()) {
+            return null;
+        }
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(in.getBytes());
+            BigInteger number = new BigInteger(1, messageDigest);
+            String hashtext = number.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**

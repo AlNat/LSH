@@ -13,7 +13,7 @@ p {
     font-family: Verdana, Geneva, sans-serif;
     text-align: center;
     margin: 0;
-    padding: 20px;
+    padding: 10px;
 }
 
 body {
@@ -26,22 +26,22 @@ div {
 }
 
 .blockTitle {
-    background: #304FFE; /*304FFE*/
+    background: #304FFE;
     height: 20%;
     border: none;
     position: relative;
 }
 
 .blockSimple {
-    background: #2196F3; /*03A9F4, 2196F3*/
-    height: 35%;
+    background: #2196F3;
+    height: 30%;
     border: none;    
     position: relative;
 }
 
 .blockComplex {
-    background: #82B1FF;  /*009688, 607D8B*/
-    height: 45%;
+    background: #82B1FF;
+    height: 80%;
     border: none;
     position: relative;
 }

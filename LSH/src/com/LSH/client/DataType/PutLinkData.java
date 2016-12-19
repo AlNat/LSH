@@ -48,6 +48,14 @@ public class PutLinkData implements Serializable {
         this.ip = ip;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 
     /* Данные */
     private String originalLink; // Оригинальный линк
@@ -56,6 +64,7 @@ public class PutLinkData implements Serializable {
     private Integer maxVisits; // Максимальное кол-во визитов
     private String browser;  // user-agent пользователя
     private String ip; // IP адрес пользователя
+    private String password; // Пароль на ссылку
 
 
     /* Конструкторы */
@@ -87,7 +96,9 @@ public class PutLinkData implements Serializable {
     public String toLog () {
         return "{originalLink = " + originalLink + "; shortLink = " + shortLink +
                 "; ttl = " + ttl + "; maxVisits = " + maxVisits +
-                "; IP = " + ip + "; browser = " + browser + "}";
+                "; IP = " + ip + "; browser = " + browser +
+                "; Password(MD5) = " + password +
+                "}";
     }
 
 }
