@@ -39,14 +39,14 @@ public class Error404 implements EntryPoint {
             }
 
             @Override
-            public void onSuccess(ReturnLinkData returnLinkData) { // Если получили ответ
-                if (returnLinkData.getErrorCode()!= null) { // Если там ошибка то напечатали ее
-                    PrintError(returnLinkData);
+            public void onSuccess(ReturnLinkData link) { // Если получили ответ
+                if (link.getErrorCode()!= null) { // Если там ошибка то напечатали ее
+                    PrintError(link);
                 } else {
-                    if (returnLinkData.getPassword() == null) { // Если пароля нет, то редиректим
-                        Window.Location.assign(returnLinkData.getOriginalLink());
+                    if (link.getPassword() == null) { // Если пароля нет, то редиректим
+                        Window.Location.assign(link.getOriginalLink());
                     } else { // Иначе просим ввести пароль
-                        PasswordDialog d = new PasswordDialog(returnLinkData);
+                        PasswordDialog d = new PasswordDialog(link);
                         d.show();
                         d.center();
                     }
@@ -68,11 +68,11 @@ public class Error404 implements EntryPoint {
 
     /**
      * Функция вывода ошибок
-     * @param returnLinkData данные ссылки
+     * @param link данные ссылки
      */
-    private void PrintError (ReturnLinkData returnLinkData) {
+    private void PrintError (ReturnLinkData link) {
 
-        String result = returnLinkData.getErrorCode();
+        String result = link.getErrorCode();
 
         Window.setTitle("404 - Page Not Found");
         label.setHTML("<h1>404 Page!</h1><br>" + result);
@@ -92,7 +92,7 @@ public class Error404 implements EntryPoint {
      */
     private class PasswordDialog extends DialogBox {
 
-        PasswordDialog(final ReturnLinkData returnLinkData) {
+        PasswordDialog(final ReturnLinkData link) {
             setHTML("<h3>Please, input password</h3>");
             setAnimationEnabled(true);
             setGlassEnabled(true);
@@ -120,8 +120,8 @@ public class Error404 implements EntryPoint {
 
                     String t = getMD5(textBox.getText()); // Получили хэш текст пароля
 
-                    if (t.equals(returnLinkData.getPassword())) { // Если пароли совпадают
-                        Window.Location.assign(returnLinkData.getOriginalLink()); // Редиректим
+                    if (t.equals(link.getPassword())) { // Если пароли совпадают
+                        Window.Location.assign(link.getOriginalLink()); // Редиректим
                     } else { // Иначе ошибка
                         label.setHTML("<h1>Wrong password!</h1><br>");
                     }

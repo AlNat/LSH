@@ -17,7 +17,7 @@ CREATE TABLE short (
 	expired_date TIMESTAMP WITH TIME ZONE, -- До какого времени ссылка рабочая
 	max_count INT, -- Максимальное кол-во переходов - если 0, то бесконечно
 	current_count INT, -- Текущее кол-во переходов
-	password VARCHAR(100); -- Пароль на ссылку
+	password VARCHAR(32); -- Пароль на ссылку - хэш
 	create_time TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp, -- Время создания	
 	ip CIDR, -- IP откуда создали
 	user_agent VARCHAR(180) -- Браузер, откуда создали

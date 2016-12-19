@@ -20,19 +20,19 @@ public class LSH implements EntryPoint {
 
     /* Набор полей для простом сокращении */
     private final TextBox simpleOriginalLink = new TextBox(); // Оригинальная ссылка
-    private final Button simpleShortButton = new Button("Get Short ReturnLinkData"); // Кнопка получить короткую ссылку
+    private final Button simpleShortButton = new Button("Get Short Link"); // Кнопка получить короткую ссылку
     private final Button simpleCopyButton = new Button("Copy to clipboard"); // Кнопа копировать в буфер обмена
     private final HTML simpleShortText = new HTML("Your shortlink — "); // Текст перед короткой ссылкой
     private final HTML simpleShortLink = new HTML(""); // Сама ссылка
 
 
     /* Набор полей для управляемого сокращения */
-    private final Button complexShortButton = new Button("Get Short ReturnLinkData"); // Кнопка получить короткую ссылку
+    private final Button complexShortButton = new Button("Get Short Link"); // Кнопка получить короткую ссылку
     private final Button complexCopyButton = new Button("Copy to clipboard"); // Кнопа копировать в буфер обмена
     private final HTML complexShortText = new HTML("Your shortlink — "); // Текст перед короткой ссылкой
     private final HTML complexShortLink = new HTML(""); // Сама ссылка
 
-    private final HTML complexText = new HTML("ReturnLinkData:"); // Текст перед полем для оригинальной ссылки
+    private final HTML complexText = new HTML("Link:"); // Текст перед полем для оригинальной ссылки
     private final TextBox complexOriginalLink = new TextBox(); // Оригинальная ссылка
 
     private final HTML complexTimeText = new HTML("Set link live duration:"); // Текст перед полем для времени жизни ссылки
@@ -281,25 +281,30 @@ public class LSH implements EntryPoint {
     }
 
     /**
-     * Функция, получения MD5 хэша от строи
+     * Функция, получения MD5 хэша от строки + соль
      * @param in входная строка
      * @return хэш строки или null если ошибка
      */
+    // TODO Улучшенный алгоритм шифрования
     static String getMD5 (String in) {
 
         if (in.isEmpty()) {
             return null;
         }
 
+        String salt = "SaltSalt";
+        in = salt.toUpperCase() + in + salt.toLowerCase(); // "Солим" пароль
+        // См https://ru.wikipedia.org/wiki/Соль_(криптография)
+
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] messageDigest = md.digest(in.getBytes());
             BigInteger number = new BigInteger(1, messageDigest);
-            String hashtext = number.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
+            String hashText = number.toString(16);
+            while (hashText.length() < 32) {
+                hashText = "0" + hashText;
             }
-            return hashtext;
+            return hashText;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
