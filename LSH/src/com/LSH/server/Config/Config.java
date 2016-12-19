@@ -13,13 +13,9 @@ import java.io.File;
  * Created by @author AlNat on 07.12.2016.
  * Licensed by Apache License, Version 2.0
  *
- * Класс, читающий конфиг файл и отдающий данные
+ * Класс, читающий конфигурационный файл и отдающий данные
  */
 public class Config {
-
-    @SuppressWarnings("FieldCanBeLocal")
-    private final String filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml";
-    // TODO искать эти данные рядом с сервером
 
     // Инстанс - паттерн Синглтон
     public static final Config instance = new Config();
@@ -63,12 +59,26 @@ public class Config {
      */
     private void ReadConfig () {
 
+        String filename = "File System Error";
+
+        try {
+            File currentDir = new File("."); // Определили теущий каталог
+            String sDirSeparator = System.getProperty("file.separator"); // Определили разделитель - вид кавычек
+            filename = currentDir.getCanonicalPath() + sDirSeparator + "config.xml";
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Please, sure that config file placed in:");
+        System.out.println(filename);
+
         try {
 
-            File file = new File(filename);
+            filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml"; // TODO del in release version
+            File file = new File(filename); //tt
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true); // never forget this!
+            factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(file);
 
@@ -101,6 +111,7 @@ public class Config {
             }
 
         } catch (Exception e) {
+            System.out.println("Config File Error!");
             e.printStackTrace();
         }
     }
