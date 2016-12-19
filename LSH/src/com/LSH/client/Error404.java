@@ -8,8 +8,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.EntryPoint;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
 
 /**
  * Created by @author AlNat on 06.12.2016.
@@ -18,8 +16,6 @@ import java.security.MessageDigest;
  * Класс UI на 404 код ошибки
  */
 public class Error404 implements EntryPoint {
-
-    private static final String errorCode = "Error!"; // Код ошибки
 
     private HTML label; // Место вывода ошибок
 
@@ -50,7 +46,7 @@ public class Error404 implements EntryPoint {
                     if (link.getPassword().isEmpty()) { // Если пароля нет, то редиретим
                         Window.Location.assign(link.getOriginalLink());
                     } else { // Иначе просим ввести пароль
-                        MyDialog d = new MyDialog(link);
+                        PasswordDialog d = new PasswordDialog(link);
                         d.show();
                         d.center();
                     }
@@ -63,7 +59,7 @@ public class Error404 implements EntryPoint {
     }
 
     /**
-     * Функция вывода ошибок
+     * Функция вывода 404 страницы
      */
     private void Print404 () {
         Window.setTitle("404 - Page Not Found");
@@ -78,81 +74,54 @@ public class Error404 implements EntryPoint {
 
         String result = link.getErrorCode();
 
-        if (result.startsWith(errorCode)) { // Обрезали фразу errorCode
-            result = result.substring(errorCode.length());
-        }
-
         Window.setTitle("404 - Page Not Found");
         label.setHTML("<h1>404 Page!</h1><br>" + result);
     }
-
-    /**
-     * Функция получающая ip пользователя
-     * @return ip
-     */
-    private native String getIP () /*-{
-        return $wnd.userip;
-    }-*/;
 
     /**
      * Функция, получения MD5 хэша от строи
      * @param in входная строка
      * @return хэш строки или null если ошибка
      */
-    private String getMD5 (String in) {
-
-        if (in.isEmpty()) {
-            return null;
-        }
-
-        // TODO Подумать как это оптимизировать
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(in.getBytes());
-            BigInteger number = new BigInteger(1, messageDigest);
-            String hashtext = number.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            return hashtext;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    private String getMD5(String in) {
+        return LSH.getMD5(in);
     }
 
-    // TODO Комментарии
-    private class MyDialog extends DialogBox {
+    /**
+     * Диалоговое окно для ввода пароля
+     */
+    private class PasswordDialog extends DialogBox {
 
-        MyDialog(final Link link) {
+        PasswordDialog(final Link link) {
             setHTML("<h3>Please, input password</h3>");
             setAnimationEnabled(true);
             setGlassEnabled(true);
 
+            // Данные
             HorizontalPanel panel = new HorizontalPanel();
-            final Button ok = new Button("OK");
+            final Button button = new Button("OK");
             final TextBox textBox = new TextBox();
 
-            textBox.addKeyDownHandler(new KeyDownHandler() {
+            textBox.addKeyDownHandler(new KeyDownHandler() { // Повесели хэндлер кликов
                 @Override
                 public void onKeyDown(KeyDownEvent event) {
                     if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                        ok.click(); // Нажимаем на кнопку по нажатию клавиши Enter
+                        button.click(); // Нажимаем на кнопку по нажатию клавиши Enter
                     }
                 }
             });
 
+            // Добавили поле и кнопку в панель
             panel.add(textBox);
-            panel.add(ok);
+            panel.add(button);
 
-            // Иначе запрашиваем пароль и редиректим пользователя
-            ok.addClickHandler(new ClickHandler() {
+            button.addClickHandler(new ClickHandler() { // Повесли обработчик наатия на кнопку
                 public void onClick(ClickEvent event) {
 
-                    String t = getMD5(textBox.getText());
+                    String t = getMD5(textBox.getText()); // Получили хэш текст пароля
 
-                    if (t.equals(link.getPassword())) {
-                        Window.Location.assign(link.getOriginalLink());
+                    if (t.equals(link.getPassword())) { // Если пароли совпадают
+                        Window.Location.assign(link.getOriginalLink()); // Редиректим
                     } else { // Иначе ошибка
                         label.setHTML("<h1>Wrong password!</h1><br>");
                     }
@@ -164,4 +133,14 @@ public class Error404 implements EntryPoint {
 
         }
     }
+
+    /**
+     * Функция получающая ip пользователя
+     * @return ip
+     */
+    private native String getIP () /*-{
+        return $wnd.userip;
+    }-*/;
+
+
 }

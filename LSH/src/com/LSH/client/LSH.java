@@ -1,6 +1,7 @@
 package com.LSH.client;
 
 import com.LSH.client.DataType.PutLinkData;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Window;
@@ -33,14 +34,15 @@ public class LSH implements EntryPoint {
 
     private final HTML complexText = new HTML("Link:"); // Текст перед полем для оригинальной ссылки
     private final TextBox complexOriginalLink = new TextBox(); // Оригинальная ссылка
+
     private final HTML complexTimeText = new HTML("Set link live duration:"); // Текст перед полем для времени жизни ссылки
     private final ListBox complexTime = new ListBox(); // Поле для указания времени жизни ссылки
-
     private final HTML complexCountText = new HTML("Set count of visits:<br>(0 for unlimited)"); // Текст перед полем для кол-во переходов
     private final IntegerBox complexCount = new IntegerBox(); // Поле ввода кол-во переходов
+
     private final HTML complexNameText = new HTML("Customize link:<br>(i, l, o, 1, 0 - illegal)"); // Текст перед полем для кастомизации ссыли
     private final TextBox complexName = new TextBox(); // Само поле кастомизации ссылки
-    private final HTML complexPasswordText = new HTML("Set password"); // Текст перед полем для пароля ссыли
+    private final HTML complexPasswordText = new HTML("Set password:"); // Текст перед полем для пароля ссыли
     private final TextBox complexPassword = new TextBox(); // Само поле пароля ссылки
 
     /**
@@ -222,7 +224,7 @@ public class LSH implements EntryPoint {
             if (!t.isEmpty()) {
                 putLinkData.setPassword(getMD5(t));
             }
-            // И отправляем его. Что внутри - см выше
+            // И отправляем его
             LSHServiceInterface.App.getInstance().getShort(putLinkData, new AsyncCallback<String>() {
                 @Override
                 public void onFailure(Throwable caught) {
@@ -230,9 +232,9 @@ public class LSH implements EntryPoint {
                 }
                 @Override
                 public void onSuccess(String result) {
-                    if (result.startsWith(errorCode)) {
+                    if (result.startsWith(errorCode)) { // Если ошибка то пишем ее
                         complexShortLink.setHTML(result);
-                    } else {
+                    } else { // Иначе активируем кнопки
                         complexShortText.setVisible(true);
                         complexCopyButton.setVisible(true);
                         complexShortLink.setText(result);
@@ -283,7 +285,7 @@ public class LSH implements EntryPoint {
      * @param in входная строка
      * @return хэш строки или null если ошибка
      */
-    private String getMD5 (String in) {
+    static String getMD5 (String in) {
 
         if (in.isEmpty()) {
             return null;

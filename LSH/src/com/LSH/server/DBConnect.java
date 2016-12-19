@@ -265,7 +265,7 @@ class DBConnect {
 
             WriteGetLog(in); // Пишем лог
 
-            return new Link(errorCode + "<br>Error code!");
+            return new Link("<br>Error code!");
         }
 
         ResultSet resultSet;
@@ -287,7 +287,7 @@ class DBConnect {
                 // Пишем в лог
                 WriteGetLog(in);
 
-                return new Link(errorCode + "<br>Invalid code!");
+                return new Link("<br>Invalid code!");
             }
 
             // Закрыли соединение
@@ -299,7 +299,7 @@ class DBConnect {
                 // Пишем в лог
                 WriteGetLog(in);
 
-                return new Link(errorCode + "<br>Invalid code!");
+                return new Link("<br>Invalid code!");
             }
             e.printStackTrace();
 
@@ -310,7 +310,7 @@ class DBConnect {
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
 
-            return new Link(errorCode + "<br>SQL Error!");
+            return new Link("<br>SQL Error!");
         }
 
         Integer tableID; // id в таблице для foreign key в аналитике
@@ -336,7 +336,7 @@ class DBConnect {
 
             WriteGetELog(in, e);// Пишем в лог
 
-            return new Link(errorCode + "<br>SQL Error!");
+            return new Link("<br>SQL Error!");
         }
 
         try { // Обновили ко-во переходов
@@ -350,7 +350,7 @@ class DBConnect {
 
             WriteGetELog(in, e);// Пишем в лог
 
-            return new Link(errorCode + "<br>SQL Error!");
+            return new Link("<br>SQL Error!");
         }
 
         try { // Запись аналитики
@@ -369,7 +369,7 @@ class DBConnect {
 
             WriteGetELog(in, e);// Пишем в лог
 
-            return new Link(errorCode + "<br>SQL Error!");
+            return new Link("<br>SQL Error!");
         }
 
         // Пишем лог
@@ -383,8 +383,7 @@ class DBConnect {
     }
 
 
-
-    // Функции для записи в лог - вынес, тк надоела подсветка в IDEA о дубликате кода
+    // Функции для записи в лог - вынес, тк надоела подсветка в IDEA о дублировании кода
 
     /**
      * Функция, пишушья код ошибки в лог.

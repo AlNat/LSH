@@ -82,7 +82,7 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
             l.setMessage("Invalid code");
             Log.instance.WriteEvent(l);
 
-            return new Link(errorCode + "<br>Invalid code!");
+            return new Link("<br>Invalid code!");
         }
 
         msg.setCode(code); // Установили нормализованный код
