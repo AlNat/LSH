@@ -43,7 +43,7 @@ public class Error404 implements EntryPoint {
                 if (link.getErrorCode()!= null) { // Если там ошибка то напечатали ее
                     PrintError(link);
                 } else {
-                    if (link.getPassword().isEmpty()) { // Если пароля нет, то редиретим
+                    if (link.getPassword() == null) { // Если пароля нет, то редиректим
                         Window.Location.assign(link.getOriginalLink());
                     } else { // Иначе просим ввести пароль
                         PasswordDialog d = new PasswordDialog(link);

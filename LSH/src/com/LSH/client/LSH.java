@@ -324,6 +324,7 @@ public class LSH implements EntryPoint {
     /**
      * Функция получающая ip пользователя
      * @return ip
+     * TODO fix
      */
     private native String getIP () /*-{
         return $wnd.userip;
