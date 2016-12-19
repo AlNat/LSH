@@ -63,7 +63,7 @@ CREATE TRIGGER shortTG AFTER INSERT ON short FOR EACH ROW EXECUTE PROCEDURE shor
 
 -- Индекс на user_id
 CREATE INDEX user_id_index ON short(user_id);
-CREATE INDEX analitics_user_id_index ON analitics(user_id);
+CREATE INDEX analitics_user_id_index ON analitics(short_id);
 
 
 -- Последовательность user_id
