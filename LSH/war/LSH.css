@@ -19,6 +19,7 @@ p {
 body {
     font-family: Helvetica, sans-serif;
     margin: 0;
+    background: #82B1FF;
 }
 
 div {
@@ -40,14 +41,12 @@ div {
 }
 
 .blockComplex {
-    background: #82B1FF;
-    height: 45%;
+    height: 60%;
     border: none;
     position: relative;
 }
 
 .blockAbout {
-    background: #82B1FF;
     height: 5%;
     border: none;
     position: relative;
