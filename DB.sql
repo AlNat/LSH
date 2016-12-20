@@ -96,11 +96,11 @@ BEGIN
 
 			) t WHERE c = 1 -- Этим мы выбираем первые уникальные c конца - см выше
 
+		) AND ( -- и где
+			max_count != 0 -- кол-во переходов не бесконечно
+			AND current_count > max_count -- и кол-во переходов превышена
+			OR expired_date < current_timestamp -- или где дата уже истекла
 		) 
-		AND expired_date < current_timestamp -- где дата еще истекла
-		AND max_count != 0 -- и где кол-во переходов не бесконечно
-		AND current_count > max_count  -- и кол-во переходов превышена
-
 	);
 
 END

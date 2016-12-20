@@ -123,7 +123,7 @@ public class Error404 implements EntryPoint {
                     if (t.equals(link.getPassword())) { // Если пароли совпадают
                         Window.Location.assign(link.getOriginalLink()); // Редиректим
                     } else { // Иначе ошибка
-                        label.setHTML("<h1>Wrong password!</h1><br>");
+                        label.setHTML("<h3>Wrong password!</h3><br>");
                     }
 
                 }

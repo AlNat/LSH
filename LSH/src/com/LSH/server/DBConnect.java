@@ -290,6 +290,10 @@ class DBConnect {
                 return new ReturnLinkData("<br>Invalid code!");
             }
 
+            // Инвалидируем ссылки
+            preparedStatement = connection.prepareStatement("SELECT invalidate()");
+            resultSet = preparedStatement.executeQuery();
+
             // Закрыли соединение
             resultSet.close();
             preparedStatement.close();

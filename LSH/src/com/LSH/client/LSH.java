@@ -181,7 +181,7 @@ public class LSH implements EntryPoint {
 
             PutLinkData putLinkData = new PutLinkData(simpleOriginalLink.getText()); // Формируем сообщение на сервер
             putLinkData.setBrowser(Window.Navigator.getUserAgent()); // user-agent пользователя
-            putLinkData.setBrowser(getIP()); // IP адрес пользователя
+            putLinkData.setIp(getIP()); // IP адрес пользователя
 
             LSHServiceInterface.App.getInstance().getShort(putLinkData, new AsyncCallback<String>() { // Отпраляем сообщение и получаем ответ
                 @Override
@@ -285,7 +285,6 @@ public class LSH implements EntryPoint {
      * @param in входная строка
      * @return хэш строки или null если ошибка
      */
-    // TODO Улучшенный алгоритм шифрования
     static String getMD5 (String in) {
 
         if (in.isEmpty()) {
@@ -309,6 +308,7 @@ public class LSH implements EntryPoint {
             e.printStackTrace();
             return null;
         }
+
     }
 
     /**
