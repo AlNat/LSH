@@ -1,12 +1,9 @@
 package com.LSH.client.Administration;
 
-import com.LSH.client.DataType.ReturnLinkData;
 import com.LSH.client.LSH;
-import com.LSH.client.LSHServiceInterface;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
@@ -21,21 +18,19 @@ public class Administration implements EntryPoint {
     private String login;
     private String password;
     private LinkedList<LinkData> list;
-    HTML label;
-    PasswordDialog dialog;
-    CellTable <LinkData> dataPanel;
+    private HTML label;
+    private PasswordDialog dialog;
+    private CellTable <LinkData> dataPanel;
 
     /**
      * Основной метод в UI
      */
     public void onModuleLoad() {
 
-
         // TODO login popup для логина.
         // TODO Таблица с данными ссылками пользователя
         // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
         // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellSampler
-
 
         label = new HTML();
         label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -44,12 +39,30 @@ public class Administration implements EntryPoint {
 
         RootPanel.get().add(label);
         RootPanel.get("Data").add(dataPanel);
-        /// Придеться делать отедльное приложение от слова совсем
+        // Придется делать отдельное приложение от слова совсем
         // И писать взаимодействие сервлетов
-
+        // TODO Придумать способ поставить это на другую страницу - Administration.html
 
         dialog.show();
         dataPanel.setVisible(false);
+
+    }
+
+    private void GetData () {
+        AdministrationServiceInterface.App.getInstance().getData(login, new AsyncCallback<LinkedList<LinkData>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                label.setHTML("<h3>Server error!</h3><br>");
+            }
+
+            @Override
+            public void onSuccess(LinkedList<LinkData> result) {
+                list = result;
+                dataPanel.setVisible(true);
+            }
+        });
+
+        // TODO Нарисовать таблицу с данными
 
     }
 
@@ -112,15 +125,14 @@ public class Administration implements EntryPoint {
                     AdministrationServiceInterface.App.getInstance().isUser(login, password, new AsyncCallback<Boolean>() {
                         @Override
                         public void onFailure(Throwable caught) {
-
+                            label.setHTML("<h3>Server error!</h3><br>");
                         }
 
                         @Override
                         public void onSuccess(Boolean result) {
                             if (result) {
-                                // TODO hide панель и показывать дата провайдер
                                 dialog.hide();
-                                dataPanel.setVisible(true);
+                                GetData();
                             } else {
                                 label.setHTML("<h3>User not found!</h3><br>");
                             }
