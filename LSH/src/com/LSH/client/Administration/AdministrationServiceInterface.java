@@ -4,13 +4,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import java.util.LinkedList;
+
 /**
  * Интрефейс для клиента
  */
 @RemoteServiceRelativePath("AdministrationService")
 public interface AdministrationServiceInterface extends RemoteService {
 
-    LinkData getData(String msg);
+    LinkedList<LinkData> getData(String login);
+    Boolean isUser (String login, String password);
 
     class App {
         private static AdministrationServiceInterfaceAsync ourInstance = GWT.create(AdministrationServiceInterface.class);

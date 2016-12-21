@@ -285,7 +285,7 @@ public class LSH implements EntryPoint {
      * @param in входная строка
      * @return хэш строки или null если ошибка
      */
-    static String getMD5 (String in) {
+    public static String getMD5 (String in) {
 
         if (in.isEmpty()) {
             return null;

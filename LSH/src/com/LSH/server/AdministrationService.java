@@ -4,22 +4,34 @@ import com.LSH.client.Administration.AdministrationServiceInterface;
 import com.LSH.client.Administration.LinkData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import java.util.LinkedList;
+
 /**
  * Created by @author AlNat on 21.12.2016.
  * Licensed by Apache License, Version 2.0
+ *
+ * Сервис администрирования
  */
 public class AdministrationService extends RemoteServiceServlet implements AdministrationServiceInterface {
 
-    // TODO Пользователя для администрирования + таблицу users
-    // TODO http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
-
+    /**
+     * Функция, возращающая набор данных об ссылках пользователя
+     * @param login логин пользователя
+     * @return данные
+     */
     @Override
-    public LinkData getData(String in) {
+    public LinkedList<LinkData> getData(String login) {
+        return DBConnect.instance.getData (login);
+    }
 
-        //DBConnect.instance.Administration ()
-
-        // TODO Подключение к БД и возврат набора данных про ссылки этого пользователя
-
-        return null;
+    /**
+     * Функция, аутентифицирующая пользоватедя
+     * @param login логин
+     * @param password пароль
+     * @return true если есть такой пользователь с таким паролем, иначе false
+     */
+    @Override
+    public Boolean isUser (String login, String password) {
+        return DBConnect.instance.isUser(login, password);
     }
 }

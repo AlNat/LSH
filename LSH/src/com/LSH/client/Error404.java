@@ -79,7 +79,7 @@ public class Error404 implements EntryPoint {
     }
 
     /**
-     * Функция, получения MD5 хэша от строи
+     * Функция, получения MD5 хэша от строки
      * @param in входная строка
      * @return хэш строки или null если ошибка
      */

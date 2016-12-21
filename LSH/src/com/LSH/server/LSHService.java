@@ -12,6 +12,9 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.LSH.client.LSHServiceInterface;
 
 /**
+ * Created by @author AlNat on 20.10.2016.
+ * Licensed by Apache License, Version 2.0
+ *
  * Основной класс сервера
  */
 public class LSHService extends RemoteServiceServlet implements LSHServiceInterface {
@@ -20,7 +23,7 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
     public static final String siteLink = Config.instance.getSiteLink(); // Префикс ссылки.
 
     /**
-     * Метод сокращающий ссылу
+     * Метод сокращающий ссылку
      * @param msg сообщение с клиента с данными ссылки
      * @return короткую ссылку или сообщение об ошибке
      */

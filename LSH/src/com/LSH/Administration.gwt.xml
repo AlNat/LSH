@@ -5,5 +5,7 @@
     <inherits name='com.google.gwt.user.User'/>
     <entry-point class='com.LSH.client.Administration.Administration'/>
     <servlet path='/AdministrationService' class='com.LSH.server.AdministrationService'/>
+    <source path='/admin.html'/>
+    <source path="client"/>
 
 </module>

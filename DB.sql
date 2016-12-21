@@ -8,6 +8,14 @@
 CREATE DATABASE "LSH" WITH ENCODING='UTF8' CONNECTION LIMIT=1;
 
 
+-- Таблица пользователей
+CREATE TABLE users (
+	id SERIAL CONSTRAINT uses_pk PRIMARY KEY, -- id
+	login VARCHAR(128), -- Логин пользователя
+	password VARCHAR(32); -- Пароль на ссылку - хэш
+);
+
+
 -- Таблица для сокращенных ссылок
 CREATE TABLE short (
 	id SERIAL CONSTRAINT short_pk PRIMARY KEY, -- Внутрениий id
@@ -20,7 +28,8 @@ CREATE TABLE short (
 	password VARCHAR(32); -- Пароль на ссылку - хэш
 	create_time TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp, -- Время создания	
 	ip CIDR, -- IP откуда создали
-	user_agent VARCHAR(180) -- Браузер, откуда создали
+	user_agent VARCHAR(180), -- Браузер, откуда создали
+	owner INT REFERENCES user(id) ON UPDATE CASCADE DEFAULT 0 -- Владелец ссылки
 );
 
 
@@ -152,6 +161,7 @@ CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf'
 GRANT EXECUTE ON FUNCTION invalidate() to "LSH";
 GRANT EXECUTE ON FUNCTION get_next_id() to "LSH";
 
+GRANT SELECT, INSERT ON users TO "LSH";
 GRANT SELECT, INSERT ON short TO "LSH";
 GRANT SELECT, INSERT ON analitics TO "LSH";
 GRANT SELECT ON status TO "LSH";

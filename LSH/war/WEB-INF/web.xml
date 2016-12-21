@@ -17,9 +17,10 @@
         <servlet-class>com.LSH.server.LSHService</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>com.LSH.LSH AdministrationServiceInterface</servlet-name>
+        <servlet-name>com.LSH.LSH AdministrationService</servlet-name>
         <servlet-class>com.LSH.server.AdministrationService</servlet-class>
     </servlet>
+
 
     <servlet-mapping>
         <servlet-name>com.LSH.LSH LSHService</servlet-name>
@@ -30,7 +31,7 @@
         <url-pattern>/Error404/LSHService</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>com.LSH.LSH AdministrationServiceInterface</servlet-name>
+        <servlet-name>com.LSH.LSH AdministrationService</servlet-name>
         <url-pattern>/LSH/AdministrationService</url-pattern>
     </servlet-mapping>
 
