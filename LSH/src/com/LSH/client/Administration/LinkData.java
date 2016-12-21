@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class LinkData implements Serializable {
 
     // TODO Данные про линки
-    // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwDataGrid
+    // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
 
     LinkData () {
 

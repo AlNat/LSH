@@ -11,10 +11,12 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class AdministrationService extends RemoteServiceServlet implements AdministrationServiceInterface {
 
     // TODO Пользователя для администрирования + таблицу users
-    // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwDataGrid
+    // TODO http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
 
     @Override
-    public LinkData getData(String msg) {
+    public LinkData getData(String in) {
+
+        //DBConnect.instance.Administration ()
 
         // TODO Подключение к БД и возврат набора данных про ссылки этого пользователя
 

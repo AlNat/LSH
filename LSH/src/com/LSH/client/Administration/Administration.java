@@ -12,10 +12,13 @@ public class Administration implements EntryPoint {
      */
     public void onModuleLoad() {
 
-        // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwDataGrid
 
-        // TODO login popup.
+        // TODO login popup для логина.
+
+
         // TODO Таблица с данными ссылками пользователя
+        // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
+        // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellSampler
 
     }
 
