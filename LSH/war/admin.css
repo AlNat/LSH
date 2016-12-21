@@ -1,0 +1,47 @@
+h3 {
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: center;
+    font-family: "Segoe UI Symbol", monospace;
+    margin: 0;
+    padding: 2%;
+}
+
+p {
+    font-weight: bold;
+    font-family: Verdana, Geneva, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+body {
+    font-family: Helvetica, sans-serif;
+  	height: 100%;
+    margin: 0;
+    background: #FAFAFA;
+}
+
+.blockTitle {
+    background: #304FFE;
+    height: 15%;
+    border: none;
+    text-align: center;
+    position: relative;
+}
+
+.blockData {
+    height: 80%;
+    border: none;
+    position: relative;
+    text-align: center;
+}
+
+.blockAbout {
+    height: 5%;
+    border: none;
+    position: relative;
+    text-align: center;
+}
+

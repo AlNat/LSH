@@ -8,12 +8,17 @@
         <welcome-file>LSH.html</welcome-file>
         <welcome-file>404.html</welcome-file>
         <welcome-file>about.html</welcome-file>
+        <welcome-file>admin.html</welcome-file>
     </welcome-file-list>
 
 
     <servlet>
         <servlet-name>com.LSH.LSH LSHService</servlet-name>
         <servlet-class>com.LSH.server.LSHService</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>com.LSH.LSH AdministrationServiceInterface</servlet-name>
+        <servlet-class>com.LSH.server.AdministrationService</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -23,6 +28,10 @@
     <servlet-mapping>
         <servlet-name>com.LSH.LSH LSHService</servlet-name>
         <url-pattern>/Error404/LSHService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>com.LSH.LSH AdministrationServiceInterface</servlet-name>
+        <url-pattern>/LSH/AdministrationService</url-pattern>
     </servlet-mapping>
 
 
