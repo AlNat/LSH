@@ -10,7 +10,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 public class AdministrationService extends RemoteServiceServlet implements AdministrationServiceInterface {
 
-    // TODO Пользователя для администрирования
+    // TODO Пользователя для администрирования + таблицу users
+    // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwDataGrid
 
     @Override
     public LinkData getData(String msg) {
