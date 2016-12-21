@@ -1,7 +1,8 @@
-package com.LSH.server;
+package com.Administration.server;
 
-import com.LSH.client.Administration.AdministrationServiceInterface;
-import com.LSH.client.Administration.LinkData;
+import com.Administration.client.AdministrationServiceInterface;
+import com.Administration.client.LinkData;
+import com.LSH.server.DBConnect;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import java.util.LinkedList;

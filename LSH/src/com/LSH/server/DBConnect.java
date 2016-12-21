@@ -1,6 +1,6 @@
 package com.LSH.server;
 
-import com.LSH.client.Administration.LinkData;
+import com.Administration.client.LinkData;
 import com.LSH.client.DataType.ReturnLinkData;
 import com.LSH.server.Config.Config;
 import com.LSH.client.DataType.GetLinkData;
@@ -12,7 +12,6 @@ import static com.LSH.server.LSHService.errorCode;
 
 import java.sql.*;
 import java.util.*;
-import java.util.Date;
 
 /**
  * Created by @author AlNat on 16.09.2016.
@@ -20,9 +19,9 @@ import java.util.Date;
  *
  * Класс соединения приложения с БД
  */
-class DBConnect {
+public class DBConnect {
 
-    static final DBConnect instance = new DBConnect(); // Реализация паттерна Singleton
+    public static final DBConnect instance = new DBConnect(); // Реализация паттерна Singleton
 
     private Connection connection; // Соединение
 
@@ -395,7 +394,7 @@ class DBConnect {
      * @param password пароль
      * @return true если есть такой пользователь с таким паролем, иначе false
      */
-    Boolean isUser (String login, String password) {
+    public Boolean isUser (String login, String password) {
 
         // TODO Комментарии
 
@@ -446,7 +445,7 @@ class DBConnect {
      * @param login логин пользователя
      * @return данные
      */
-    LinkedList<LinkData> getData (String login) {
+    public LinkedList<LinkData> getData (String login) {
 
         // TODO Комментарии
         LinkedList<LinkData> list = new LinkedList<>();

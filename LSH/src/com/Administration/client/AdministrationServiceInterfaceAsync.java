@@ -1,4 +1,4 @@
-package com.LSH.client.Administration;
+package com.Administration.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

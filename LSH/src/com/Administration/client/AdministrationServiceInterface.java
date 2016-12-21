@@ -1,4 +1,4 @@
-package com.LSH.client.Administration;
+package com.Administration.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -9,7 +9,7 @@ import java.util.LinkedList;
 /**
  * Интрефейс для клиента
  */
-@RemoteServiceRelativePath("AdministrationService")
+//@RemoteServiceRelativePath("AdministrationService")
 public interface AdministrationServiceInterface extends RemoteService {
 
     LinkedList<LinkData> getData(String login);

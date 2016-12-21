@@ -1,20 +1,20 @@
-package com.LSH.client.Administration;
+package com.Administration.client;
 
-import com.LSH.client.LSH;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.LinkedList;
 
 /**
  * Класс, отвечающий за страницу администрированич
  */
 public class Administration implements EntryPoint {
-
-
+    
     private String login;
     private String password;
     private LinkedList<LinkData> list;
@@ -66,14 +66,35 @@ public class Administration implements EntryPoint {
 
     }
 
-
     /**
-     * Функция, получения MD5 хэша от строки
+     * Функция, получения MD5 хэша от строки + соль
      * @param in входная строка
      * @return хэш строки или null если ошибка
      */
-    private String getMD5(String in) {
-        return LSH.getMD5(in);
+    private static String getMD5 (String in) {
+
+        if (in.isEmpty()) {
+            return null;
+        }
+
+        String salt = "SaltSalt";
+        in = salt.toUpperCase() + in + salt.toLowerCase(); // "Солим" пароль
+        // См https://ru.wikipedia.org/wiki/Соль_(криптография)
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(in.getBytes());
+            BigInteger number = new BigInteger(1, messageDigest);
+            String hashText = number.toString(16);
+            while (hashText.length() < 32) {
+                hashText = "0" + hashText;
+            }
+            return hashText;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
 

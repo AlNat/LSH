@@ -1,4 +1,4 @@
-package com.LSH.client.Administration;
+package com.Administration.client;
 
 import java.io.Serializable;
 import java.util.Date;
