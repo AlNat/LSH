@@ -1,6 +1,5 @@
 package com.LSH.server;
 
-import com.Administration.client.LinkData;
 import com.LSH.client.DataType.ReturnLinkData;
 import com.LSH.server.Config.Config;
 import com.LSH.client.DataType.GetLinkData;
@@ -19,9 +18,9 @@ import java.util.*;
  *
  * Класс соединения приложения с БД
  */
-public class DBConnect {
+class DBConnect {
 
-    public static final DBConnect instance = new DBConnect(); // Реализация паттерна Singleton
+    static final DBConnect instance = new DBConnect(); // Реализация паттерна Singleton
 
     private Connection connection; // Соединение
 
@@ -386,145 +385,6 @@ public class DBConnect {
 
         return new ReturnLinkData(link, password); // Вернули оригинальную ссылку для редиректа
     }
-
-
-    /**
-     * Функция, аутентифицирующая пользоватедя
-     * @param login логин
-     * @param password пароль
-     * @return true если есть такой пользователь с таким паролем, иначе false
-     */
-    public Boolean isUser (String login, String password) {
-
-        // TODO Комментарии
-
-        try {
-            // Создаем запрос и выполняем его
-            PreparedStatement st = connection.prepareStatement("SELECT password FROM users WHERE login = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
-            st.setString(1, login);
-            ResultSet rs = st.executeQuery();
-
-            // Получаем ответ
-            rs.next();
-            String pass = rs.getString("password");
-
-            // Закрываем
-            rs.close();
-            st.close();
-
-            // Пишем лог
-            LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.isUser");
-            l.setType("Login");
-            l.setMessage("Login = " + login + "; Password = " + password);
-            Log.instance.WriteEvent(l);
-
-            return pass.equals(password);
-
-        } catch (SQLException e) { // Ловим ошибки
-            if (e.getSQLState().equals("24000")) { // Пустой ответ - нет такого логина
-                return false;
-            }
-            System.out.println("Connection Failed! Check output console");
-            e.printStackTrace();
-
-            // Пишем лог
-            LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.isUser");
-            l.setType("SQLException");
-            l.setMessage(e.getMessage());
-            Log.instance.WriteEvent(l);
-
-            return false; // И говорим про ошибку
-        }
-    }
-
-
-    /**
-     * Функция, возращающая набор данных об ссылках пользователя
-     * @param login логин пользователя
-     * @return данные
-     */
-    public LinkedList<LinkData> getData (String login) {
-
-        // TODO Комментарии
-        LinkedList<LinkData> list = new LinkedList<>();
-        Integer id;
-
-        try {
-            // Создаем запрос и выполняем его
-            PreparedStatement st = connection.prepareStatement("SELECT id FROM users WHERE login = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
-            st.setString(1, login);
-            ResultSet rs = st.executeQuery();
-
-            // Получаем id
-            rs.next();
-            id = rs.getInt("id");
-
-            // Закрываем
-            rs.close();
-            st.close();
-
-        } catch (SQLException e) { // Ловим ошибки
-            System.out.println("Connection Failed! Check output console");
-            e.printStackTrace();
-
-            // Пишем лог
-            LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.getData");
-            l.setType("SQLException");
-            l.setMessage(e.getMessage());
-            Log.instance.WriteEvent(l);
-
-            return list; // И говорим про ошибку
-        }
-
-
-
-        try {
-            // Создаем запрос и выполняем его
-            PreparedStatement st = connection.prepareStatement("SELECT * FROM short WHERE owner = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
-            st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
-
-            // Получаем данные
-            while (rs.next()) {
-                LinkData t = new LinkData();
-                t.setId(rs.getInt("user_id"));
-                t.setCode( Shortner.GetShort(rs.getInt("user_id")) ); // На лету преобразовали id в код
-                t.setExpiredDate(rs.getDate("expired_date"));
-                t.setCreateDate(rs.getDate("create_time"));
-                t.setLink(rs.getString("link"));
-                t.setCurrentCount(rs.getInt("current_count"));
-                t.setMaxCount(rs.getInt("max_count"));
-                t.setPassword(""); // Пустое поле - тк пароль зашифрован
-
-                list.add(t);
-            }
-
-            // Закрываем
-            rs.close();
-            st.close();
-
-        } catch (SQLException e) { // Ловим ошибки
-            System.out.println("Connection Failed! Check output console");
-            e.printStackTrace();
-
-            // Пишем лог
-            LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.getData");
-            l.setType("SQLException");
-            l.setMessage(e.getMessage());
-            Log.instance.WriteEvent(l);
-
-            return new LinkedList<>();
-        }
-
-        return list;
-    }
-
-    // TODO Функции обновления данных при изменении их в таблице админки
-
 
     // Функции для записи в лог - вынес, тк надоела подсветка в IDEA о дублировании кода
 

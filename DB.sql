@@ -5,14 +5,16 @@
 
 
 -- Создали БД
-CREATE DATABASE "LSH" WITH ENCODING='UTF8' CONNECTION LIMIT=1;
+CREATE DATABASE "LSH" WITH ENCODING='UTF8' CONNECTION LIMIT=2; 
+-- Одно подключение для сервера Администрирования
+-- Дургое для самого приложения
 
 
 -- Таблица пользователей
 CREATE TABLE users (
 	id SERIAL CONSTRAINT uses_pk PRIMARY KEY, -- id
 	login VARCHAR(128), -- Логин пользователя
-	password VARCHAR(32); -- Пароль на ссылку - хэш
+	password VARCHAR(32) -- Пароль на ссылку - хэш
 );
 
 
@@ -153,8 +155,8 @@ $$
 LANGUAGE plpgsql;
 
 
--- Создание пользователя для приложения
-CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf' VALID UNTIL 'infinity' CONNECTION LIMIT 1;
+-- Создание пользователя для приложения и администрирования
+CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf' VALID UNTIL 'infinity' CONNECTION LIMIT 2;
 
 
 -- Разрешения. Владелец - POSTGRES, но LSH может SELECT, INSERT, EXECUTE

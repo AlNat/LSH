@@ -2,10 +2,10 @@ package com.Administration.server;
 
 import com.Administration.client.AdministrationServiceInterface;
 import com.Administration.client.LinkData;
-import com.LSH.server.DBConnect;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import java.util.Date;
 import java.util.LinkedList;
 
 /**
@@ -36,4 +36,53 @@ public class AdministrationService extends RemoteServiceServlet implements Admin
     public Boolean isUser (String login, String password) {
         return DBConnect.instance.isUser(login, password);
     }
+
+
+    // Функции, изменяющие данные
+
+    /**
+     * Функция, устанавливающая оригинальный линк
+     * @param id записи
+     * @param link новый линк
+     * @return true если запись успешна, иначе false
+     */
+    @Override
+    public Boolean setOriginalLink (int id, String link) {
+        return DBConnect.instance.setOriginalLink(id, link);
+    }
+
+    /**
+     * Функция, устанавливающая срок действия
+     * @param id записи
+     * @param date новая дата
+     * @return true если запись успешна, иначе false
+     */
+    @Override
+    public Boolean setExpiredDate (int id, Date date) {
+        return DBConnect.instance.setExpiredDate(id, date);
+    }
+
+
+    /**
+     * Функция, устанавливающая максимальное кол-во переходов
+     * @param id записи
+     * @param count новое кол-во
+     * @return true если запись успешна, иначе false
+     */
+    @Override
+    public Boolean setMaxCount (int id, int count) {
+        return DBConnect.instance.setMaxCount(id, count);
+    }
+
+    /**
+     * Функция, устанавливающая пароль на ссылку
+     * @param id записи
+     * @param password новый пароль
+     * @return true если запись успешна, иначе false
+     */
+    @Override
+    public Boolean setPassword (int id, String password) {
+        return DBConnect.instance.setPassword(id, password);
+    }
+
 }
