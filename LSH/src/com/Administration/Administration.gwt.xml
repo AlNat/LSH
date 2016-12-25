@@ -1,11 +1,9 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.7.0//EN"
         "http://gwtproject.org/doctype/2.7.0/gwt-module.dtd">
-<module>
+<module rename-to="Administration">
 
     <inherits name='com.google.gwt.user.User'/>
-
     <entry-point class='com.Administration.client.Administration'/>
-
     <servlet path='/AdministrationService' class='com.Administration.server.AdministrationService'/>
 
 </module>

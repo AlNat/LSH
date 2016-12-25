@@ -6,9 +6,9 @@
 
     <welcome-file-list>
         <welcome-file>LSH.html</welcome-file>
+        <welcome-file>Administration.html</welcome-file>
         <welcome-file>404.html</welcome-file>
         <welcome-file>about.html</welcome-file>
-        <welcome-file>Administration.html</welcome-file>
     </welcome-file-list>
 
 
@@ -32,7 +32,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>com.Administration.Administration Administration</servlet-name>
-        <url-pattern>/com.Administration.Administration/AdministrationService</url-pattern>
+        <url-pattern>/Administration/AdministrationService</url-pattern>
     </servlet-mapping>
 
 
