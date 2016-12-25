@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.LinkedList;
 
 // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
-// TODO Комментарии!!!
 
 /**
  * Класс, отвечающий за страницу администрированич
@@ -35,19 +34,22 @@ import java.util.LinkedList;
 @SuppressWarnings("Convert2Lambda")
 public class Administration implements EntryPoint {
 
-    
-    private String login;
-    private String password;
+    // Данные для логина
+    private String login; // Данные логина
+    private String password; // Данные пароля
+    private PasswordDialog dialog; // Далоговое окно с вводом логина и пароля
 
-    private HTML label;
-    private PasswordDialog dialog;
+    private HTML label; // Лебл с ошибками
 
-    private LinkedList<LinkData> list;
-    private CellTable <LinkData> cellTable;
+    // Данные таблицы
+    private LinkedList<LinkData> list; // Лист с данными с сервера
+    private CellTable <LinkData> cellTable; // Таблица
+
+    // TODO Пристроить это уже куда-нибудь
     private ListDataProvider<LinkData> dataProvider;
     private ProvidesKey<LinkData> KEY_PROVIDER;
     private ListHandler<LinkData> sortHandler;
-    private SimplePager pager; // TODO добавить к таблице
+    private SimplePager pager;
 
     /**
      * Основной метод в UI
@@ -57,27 +59,24 @@ public class Administration implements EntryPoint {
         label = new HTML();
         label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         dialog = new PasswordDialog();
-        cellTable = new CellTable<>();
 
+
+        cellTable = new CellTable<>();
         KEY_PROVIDER = new ProvidesKey<LinkData>() {
             @Override
             public Object getKey(LinkData item) {
                 return item == null ? null : item.getId();
             }
         };
-
         dataProvider = new ListDataProvider<>();
+
         sortHandler = new ListHandler<>(dataProvider.getList());
         cellTable.addColumnSortHandler(sortHandler);
 
-        //initTable();
-
         RootPanel.get().add(label);
-        RootPanel.get("Data").add(cellTable);
-        // Придется делать отдельное приложение от слова совсем
-        // И писать взаимодействие сервлетов
-        // TODO Придумать способ поставить это на другую страницу - Administration.html
+        RootPanel.get("Data").add(cellTable); // TODO Придумать способ поставить это на другую страницу - Administration.html
 
+        // Показали диалог и скрыли таблицу
         dialog.show();
         cellTable.setVisible(false);
 
@@ -89,7 +88,7 @@ public class Administration implements EntryPoint {
     @SuppressWarnings("Convert2Lambda")
     private class PasswordDialog extends DialogBox {
 
-        PasswordDialog() {
+        PasswordDialog() { // Конструктор
             setHTML("<h3>Please, input login and password</h3>");
             setAnimationEnabled(true);
             setGlassEnabled(true);
@@ -123,25 +122,26 @@ public class Administration implements EntryPoint {
             panel.add(passwordTextBox);
             panel.add(button);
 
-            button.addClickHandler(new ClickHandler() { // Повесли обработчик наатия на кнопку
+            button.addClickHandler(new ClickHandler() { // Повесли обработчик нажатия на кнопку
                 public void onClick(ClickEvent event) {
 
                     login = loginTextBox.getText();
                     password = getMD5(passwordTextBox.getText()); // Получили хэш текст пароля
 
+                    // Пошли на сервер
                     AdministrationServiceInterface.App.getInstance().isUser(login, password, new AsyncCallback<Boolean>() {
                         @Override
-                        public void onFailure(Throwable caught) {
+                        public void onFailure(Throwable caught) { // При ошибке говорим
                             label.setHTML("<h3>Server error!</h3><br>");
                         }
 
                         @Override
-                        public void onSuccess(Boolean result) {
-                            if (result) {
+                        public void onSuccess(Boolean result) { // Если есть ответ
+                            if (result) { // Если зашли под этим логином и паролем, то скрыли диалог и пошли за данными
                                 dialog.hide();
                                 GetData();
-                            } else {
-                                label.setHTML("<h3>User not found!</h3><br>");
+                            } else { // Иначе сказали про ошибку
+                                label.setHTML("<h3>Incorrect username or password!</h3><br>");
                             }
                         }
                     });
@@ -152,35 +152,38 @@ public class Administration implements EntryPoint {
             setWidget(panel);
 
         }
+
+
     }
 
     /**
-     *
+     * Функция получения данных с сервера
      */
     private void GetData () {
-
+        // Пошли на сервер за кучей данных
         AdministrationServiceInterface.App.getInstance().getData(login, new AsyncCallback<LinkedList<LinkData>>() {
             @Override
-            public void onFailure(Throwable caught) {
+            public void onFailure(Throwable caught) { // Если не смогли соедениться
                 label.setHTML("<h3>Server error!</h3><br>");
             }
 
             @Override
-            public void onSuccess(LinkedList<LinkData> result) {
+            public void onSuccess(LinkedList<LinkData> result) { // Получили данные
                 list = result;
             }
         });
 
-        cellTable.setRowData(list); // Оно так?
+        initTable(); // Создаем таблицу
+        dataProvider.setList(list);
+        cellTable.setRowData(list); // Засовываем данные в таблицу
+        // Оно так????
 
-        initTable();
-        cellTable.setVisible(true);
-
+        cellTable.setVisible(true); // И показываем ее
     }
 
 
     /**
-     *
+     * Инициализация столбцов таблицы
      */
     private void initTable() {
 
@@ -272,6 +275,7 @@ public class Administration implements EntryPoint {
             }
         };
         cellTable.addColumn(expiredDateColumn, "Expired Date");
+
         expiredDateColumn.setFieldUpdater(new FieldUpdater<LinkData, Date>() {
             @Override
             public void update(int index, LinkData object, Date value) {
@@ -303,9 +307,12 @@ public class Administration implements EntryPoint {
             }
         };
         cellTable.addColumn(currentCountColumn, "Current visits");
+        cellTable.setColumnWidth(currentCountColumn, 5, Style.Unit.PCT);
 
 
-        // TODO Поорать на GWT
+        // К сожалению, в GWT нет типа EditNumberCell. Вообще.
+        // Только строковый тип изменяемой ячейки. Поэтому приходиться городить костыли.
+
         // Максимальное кол-во переходов
         Column<LinkData, String> maxCountColumn = new Column<LinkData, String>(
                 new EditTextCell()) {
@@ -360,7 +367,7 @@ public class Administration implements EntryPoint {
 
             }
         });
-        cellTable.setColumnWidth(maxCountColumn, 20, Style.Unit.PCT);
+        cellTable.setColumnWidth(maxCountColumn, 5, Style.Unit.PCT);
 
 
         // Пароль
@@ -395,7 +402,7 @@ public class Administration implements EntryPoint {
                 });
             }
         });
-        cellTable.setColumnWidth(passwordColumn, 20, Style.Unit.PCT);
+        cellTable.setColumnWidth(passwordColumn, 15, Style.Unit.PCT);
 
         // TODO Кнопку с красным крестиком и алертом на него
         // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellSampler

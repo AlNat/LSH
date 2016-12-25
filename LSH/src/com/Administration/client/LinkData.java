@@ -1,7 +1,5 @@
 package com.Administration.client;
 
-import com.google.gwt.view.client.ProvidesKey;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -74,6 +72,7 @@ public class LinkData implements Serializable, Comparable<LinkData> {
     public void setPassword(String password) {
         this.password = password;
     }
+
 
     // Данные об создании ссылки
     private Integer id;

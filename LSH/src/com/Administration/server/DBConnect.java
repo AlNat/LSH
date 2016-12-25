@@ -18,7 +18,6 @@ import java.util.*;
  * Класс соединения приложения с БД
  */
 class DBConnect {
-    // TODO Комментарии
 
     static final DBConnect instance = new DBConnect(); // Реализация паттерна Singleton
 
@@ -73,7 +72,6 @@ class DBConnect {
      */
     Boolean isUser (String login, String password) {
 
-
         try {
             // Создаем запрос и выполняем его
             PreparedStatement st = connection.prepareStatement("SELECT password FROM users WHERE login = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
@@ -123,8 +121,10 @@ class DBConnect {
      */
     LinkedList<LinkData> getData (String login) {
 
-        LinkedList<LinkData> list = new LinkedList<>();
+        LinkedList<LinkData> list = new LinkedList<>(); // Лист с данными
         Integer id;
+
+        // Получаем id пользователя с таким логином
 
         try {
             // Создаем запрос и выполняем его
@@ -132,9 +132,8 @@ class DBConnect {
             st.setString(1, login);
             ResultSet rs = st.executeQuery();
 
-            // Получаем id
             rs.next();
-            id = rs.getInt("id");
+            id = rs.getInt("id"); // Получаем id
 
             // Закрываем
             rs.close();
@@ -154,7 +153,7 @@ class DBConnect {
             return list; // И говорим про ошибку
         }
 
-
+        // Получаем данные ссылок, где владелец с таким id
 
         try {
             // Создаем запрос и выполняем его
@@ -163,7 +162,7 @@ class DBConnect {
             ResultSet rs = st.executeQuery();
 
             // Получаем данные
-            while (rs.next()) {
+            while (rs.next()) { // Заполняем лист данными
                 LinkData t = new LinkData();
                 t.setId(rs.getInt("user_id"));
                 t.setCode( Shortner.GetShort(rs.getInt("user_id")) ); // На лету преобразовали id в код
@@ -195,7 +194,7 @@ class DBConnect {
             return new LinkedList<>();
         }
 
-        return list;
+        return list; // Вернули данные
     }
 
 
@@ -216,8 +215,7 @@ class DBConnect {
             st.setInt(2, id);
             ResultSet rs = st.executeQuery();
 
-            // Получаем ответ
-            rs.next();
+            rs.next(); // Получаем ответ
 
             // Закрываем
             rs.close();
