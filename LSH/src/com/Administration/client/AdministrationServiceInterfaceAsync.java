@@ -16,4 +16,5 @@ public interface AdministrationServiceInterfaceAsync {
     void setExpiredDate (int id, Date date, AsyncCallback<Boolean> async);
     void setMaxCount (int id, int count, AsyncCallback<Boolean> async);
     void setPassword (int id, String password, AsyncCallback<Boolean> async);
+    void deleteLink (int id, AsyncCallback<Boolean> async);
 }

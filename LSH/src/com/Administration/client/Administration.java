@@ -29,7 +29,7 @@ import java.util.LinkedList;
 // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
 
 /**
- * Класс, отвечающий за страницу администрированич
+ * Класс, отвечающий за страницу администрирования
  */
 @SuppressWarnings("Convert2Lambda")
 public class Administration implements EntryPoint {
@@ -74,7 +74,8 @@ public class Administration implements EntryPoint {
         cellTable.addColumnSortHandler(sortHandler);
 
         RootPanel.get().add(label);
-        RootPanel.get("Data").add(cellTable); // TODO Придумать способ поставить это на другую страницу - Administration.html
+        RootPanel.get("Data").add(cellTable);
+        // TODO Придумать способ поставить это на другую страницу - Administration.html
 
         // Показали диалог и скрыли таблицу
         dialog.show();
@@ -85,7 +86,6 @@ public class Administration implements EntryPoint {
     /**
      * Диалоговое окно для ввода логина и пароля
      */
-    @SuppressWarnings("Convert2Lambda")
     private class PasswordDialog extends DialogBox {
 
         PasswordDialog() { // Конструктор
@@ -187,9 +187,6 @@ public class Administration implements EntryPoint {
      */
     private void initTable() {
 
-        // TODO Выделение мышкой
-        // TODO Добавить сортировки
-
         // Колонка с коротким кодом
         Column<LinkData, String> codeColumn = new Column<LinkData, String>(
                 new TextCell()) { // C видом ячеек - просто текст
@@ -263,6 +260,13 @@ public class Administration implements EntryPoint {
                 return object.getCreateDate();
             }
         };
+        createTimeColumn.setSortable(true);
+        sortHandler.setComparator(createTimeColumn, new Comparator<LinkData>() {
+            @Override
+            public int compare(LinkData o1, LinkData o2) {
+                return o1.getCreateDate().compareTo(o2.getCreateDate());
+            }
+        });
         cellTable.addColumn(createTimeColumn, "Create time");
 
 
@@ -274,6 +278,14 @@ public class Administration implements EntryPoint {
                 return object.getCreateDate();
             }
         };
+
+        expiredDateColumn.setSortable(true);
+        sortHandler.setComparator(expiredDateColumn, new Comparator<LinkData>() {
+            @Override
+            public int compare(LinkData o1, LinkData o2) {
+                return o1.getExpiredDate().compareTo(o2.getExpiredDate());
+            }
+        });
         cellTable.addColumn(expiredDateColumn, "Expired Date");
 
         expiredDateColumn.setFieldUpdater(new FieldUpdater<LinkData, Date>() {
@@ -306,6 +318,13 @@ public class Administration implements EntryPoint {
                 return object.getCurrentCount();
             }
         };
+        currentCountColumn.setSortable(true);
+        sortHandler.setComparator(currentCountColumn, new Comparator<LinkData>() {
+            @Override
+            public int compare(LinkData o1, LinkData o2) {
+                return o1.getCurrentCount().compareTo(o2.getCurrentCount());
+            }
+        });
         cellTable.addColumn(currentCountColumn, "Current visits");
         cellTable.setColumnWidth(currentCountColumn, 5, Style.Unit.PCT);
 
@@ -329,7 +348,13 @@ public class Administration implements EntryPoint {
 
             }
         };
-
+        maxCountColumn.setSortable(true);
+        sortHandler.setComparator(maxCountColumn, new Comparator<LinkData>() {
+            @Override
+            public int compare(LinkData o1, LinkData o2) {
+                return o1.getMaxCount().compareTo(o2.getMaxCount());
+            }
+        });
         cellTable.addColumn(maxCountColumn, "Max Visits");
 
         maxCountColumn.setFieldUpdater(new FieldUpdater<LinkData, String>() {
@@ -404,8 +429,9 @@ public class Administration implements EntryPoint {
         });
         cellTable.setColumnWidth(passwordColumn, 15, Style.Unit.PCT);
 
-        // TODO Кнопку с красным крестиком и алертом на него
+        // TODO Кнопку с красным крестиком и подтвердением на него - удаление ссылки
         // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellSampler
+
 
     }
 

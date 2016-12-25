@@ -389,4 +389,50 @@ class DBConnect {
         }
     }
 
+
+    /**
+     * Функция, удаляющая запись
+     * @param id записи
+     * @return true если удаление успешна, иначе false
+     */
+    Boolean deleteLink (int id) {
+
+        try {
+            // Создаем запрос и выполняем его
+            PreparedStatement st = connection.prepareStatement("DELETE FROM short WHERE id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+
+            // Получаем ответ
+            rs.next();
+
+            // Закрываем
+            rs.close();
+            st.close();
+
+            // Пишем лог
+            LogEvent l = new LogEvent();
+            l.setClassName("DBConnect.deleteLink");
+            l.setType("Update data");
+            l.setMessage("id = " + id);
+            Log.instance.WriteEvent(l);
+
+            return true;
+
+        } catch (SQLException e) { // Ловим ошибки
+
+            System.out.println("Connection Failed! Check output console");
+            e.printStackTrace();
+
+            // Пишем лог
+            LogEvent l = new LogEvent();
+            l.setClassName("DBConnect.deleteLink");
+            l.setType("SQLException");
+            l.setMessage(e.getMessage());
+            Log.instance.WriteEvent(l);
+
+            return false; // И говорим про ошибку
+        }
+
+    }
 }

@@ -20,6 +20,7 @@ public interface AdministrationServiceInterface extends RemoteService {
     Boolean setExpiredDate (int id, Date date);
     Boolean setMaxCount (int id, int count);
     Boolean setPassword (int id, String password);
+    Boolean deleteLink (int id);
 
     class App {
         private static AdministrationServiceInterfaceAsync ourInstance = GWT.create(AdministrationServiceInterface.class);

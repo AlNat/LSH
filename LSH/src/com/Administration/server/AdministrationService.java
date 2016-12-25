@@ -85,4 +85,14 @@ public class AdministrationService extends RemoteServiceServlet implements Admin
         return DBConnect.instance.setPassword(id, password);
     }
 
+    /**
+     * Функция, удаляющая запись
+     * @param id записи
+     * @return true если удаление успешна, иначе false
+     */
+    @Override
+    public Boolean deleteLink (int id) {
+        return DBConnect.instance.deleteLink(id);
+    }
+
 }
