@@ -3,6 +3,7 @@ package com.Administration.server;
 import com.Administration.client.AdministrationServiceInterface;
 import com.Administration.client.LinkData;
 import com.LSH.server.DBConnect;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import java.util.LinkedList;
@@ -18,7 +19,7 @@ public class AdministrationService extends RemoteServiceServlet implements Admin
     /**
      * Функция, возращающая набор данных об ссылках пользователя
      * @param login логин пользователя
-     * @return данные
+     * @return лист с данными
      */
     @Override
     public LinkedList<LinkData> getData(String login) {

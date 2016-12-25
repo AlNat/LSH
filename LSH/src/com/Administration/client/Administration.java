@@ -1,50 +1,78 @@
 package com.Administration.client;
 
+import com.google.gwt.cell.client.EditTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.ProvidesKey;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 /**
  * Класс, отвечающий за страницу администрированич
  */
 public class Administration implements EntryPoint {
+
+    // TODO Комментарии!!!
+    // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
     
     private String login;
     private String password;
-    private LinkedList<LinkData> list;
+
     private HTML label;
     private PasswordDialog dialog;
-    private CellTable <LinkData> dataPanel;
+
+    private LinkedList<LinkData> list;
+    private CellTable <LinkData> cellTable;
+    private ListDataProvider<LinkData> dataProvider;
+    private ProvidesKey<LinkData> KEY_PROVIDER;
+    private ListHandler<LinkData> sortHandler;
+    private SimplePager pager;
 
     /**
      * Основной метод в UI
      */
     public void onModuleLoad() {
 
-        // TODO login popup для логина.
-        // TODO Таблица с данными ссылками пользователя
-        // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
-        // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellSampler
-
         label = new HTML();
         label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         dialog = new PasswordDialog();
-        dataPanel = new CellTable<>();
+        cellTable = new CellTable<>();
+
+        KEY_PROVIDER = new ProvidesKey<LinkData>() {
+            @Override
+            public Object getKey(LinkData item) {
+                return item == null ? null : item.getId();
+            }
+        };
+
+        dataProvider = new ListDataProvider<>();
+        sortHandler = new ListHandler<>(dataProvider.getList());
+        cellTable.addColumnSortHandler(sortHandler);
+
+        //initTable();
 
         RootPanel.get().add(label);
-        RootPanel.get("Data").add(dataPanel);
+        RootPanel.get("Data").add(cellTable);
         // Придется делать отдельное приложение от слова совсем
         // И писать взаимодействие сервлетов
         // TODO Придумать способ поставить это на другую страницу - Administration.html
 
+
         dialog.show();
-        dataPanel.setVisible(false);
+        cellTable.setVisible(false);
 
     }
 
@@ -58,11 +86,12 @@ public class Administration implements EntryPoint {
             @Override
             public void onSuccess(LinkedList<LinkData> result) {
                 list = result;
-                dataPanel.setVisible(true);
             }
         });
 
-        // TODO Нарисовать таблицу с данными
+        // TODO засовывать данные в таблицу
+        initTable();
+        cellTable.setVisible(true);
 
     }
 
@@ -166,6 +195,110 @@ public class Administration implements EntryPoint {
             setWidget(panel);
 
         }
+    }
+
+    /**
+     *
+     */
+    private void initTable() {
+
+        // TODO Выделение мышкой
+
+        /// Колонка с коротким кодом
+
+
+        Column<LinkData, String> codeColumn = new Column<LinkData, String>(
+                new TextCell()) {
+            @Override
+            public String getValue(LinkData object) {
+                return object.getCode();
+            }
+        };
+
+        codeColumn.setSortable(true);
+        sortHandler.setComparator(codeColumn, new Comparator<LinkData>() {
+            @Override
+            public int compare(LinkData o1, LinkData o2) {
+                return o1.getCode().compareTo(o2.getCode());
+            }
+        });
+        cellTable.addColumn(codeColumn, "Short Code");
+        cellTable.setColumnWidth(codeColumn, 20, Style.Unit.PCT);
+
+
+        // Оригинальная ссылка
+        Column<LinkData, String> originalLinkColumn = new Column<LinkData, String>(
+                new EditTextCell()) {
+            @Override
+            public String getValue(LinkData object) {
+                return object.getLink();
+            }
+        };
+
+        originalLinkColumn.setSortable(true);
+        sortHandler.setComparator(originalLinkColumn, new Comparator<LinkData>() {
+            @Override
+            public int compare(LinkData o1, LinkData o2) {
+                return o1.getLink().compareTo(o2.getLink());
+            }
+        });
+        cellTable.addColumn(originalLinkColumn, "Original Link");
+
+        originalLinkColumn.setFieldUpdater(new FieldUpdater<LinkData, String>() {
+            @Override
+            public void update(int index, LinkData object, String value) {
+                // Called when the user changes the value.
+                String t = value;
+                if ( UpdateData(object, "OriginalLink", value) ) {
+                    object.setLink(value);
+                    dataProvider.refresh();
+                } else {
+                    // TODO label ошибка
+                }
+            }
+        });
+        cellTable.setColumnWidth(originalLinkColumn, 20, Style.Unit.PCT);
+
+        // TODO Доделать таблицу - createTime, ExpiredData, maxСount, currentCount, password - с кучей звездочек
+
+        /*
+        // DateCell.
+        DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_MEDIUM);
+        addColumn(new DateCell(dateFormat), "Date", new GetValue<Date>() {
+            @Override
+            public Date getValue(ContactInfo contact) {
+                return contact.getBirthday();
+            }
+        }, null);
+
+         // DatePickerCell.
+         addColumn(new DatePickerCell(dateFormat), "DatePicker", new GetValue<Date>() {
+            @Override
+            public Date getValue(ContactInfo contact) {
+                return contact.getBirthday();
+            }
+            }, new FieldUpdater<ContactInfo, Date>() {
+                @Override
+                public void update(int index, ContactInfo object, Date value) {
+                    pendingChanges.add(new BirthdayChange(object, value));
+                }
+            });
+
+        // NumberCell.
+        Column<ContactInfo, Number> numberColumn =
+            addColumn(new NumberCell(), "Number", new GetValue<Number>() {
+                @Override
+                public Number getValue(ContactInfo contact) {
+                    return contact.getAge();
+                }
+            }, null);
+        numberColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LOCALE_END);
+        */
+    }
+
+    private boolean UpdateData (LinkData object, String type, String value) {
+        // TODO обновлять на сервере
+        return false;
     }
 
     
