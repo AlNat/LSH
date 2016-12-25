@@ -21,18 +21,20 @@ import com.google.gwt.view.client.ProvidesKey;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 
+// http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
+// TODO Комментарии!!!
 
 /**
  * Класс, отвечающий за страницу администрированич
  */
+@SuppressWarnings("Convert2Lambda")
 public class Administration implements EntryPoint {
 
-    // TODO Комментарии!!!
-    // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
     
     private String login;
     private String password;
@@ -45,7 +47,7 @@ public class Administration implements EntryPoint {
     private ListDataProvider<LinkData> dataProvider;
     private ProvidesKey<LinkData> KEY_PROVIDER;
     private ListHandler<LinkData> sortHandler;
-    private SimplePager pager; // TODO добавить  таблице
+    private SimplePager pager; // TODO добавить к таблице
 
     /**
      * Основной метод в UI
@@ -84,6 +86,7 @@ public class Administration implements EntryPoint {
     /**
      * Диалоговое окно для ввода логина и пароля
      */
+    @SuppressWarnings("Convert2Lambda")
     private class PasswordDialog extends DialogBox {
 
         PasswordDialog() {
@@ -155,6 +158,7 @@ public class Administration implements EntryPoint {
      *
      */
     private void GetData () {
+
         AdministrationServiceInterface.App.getInstance().getData(login, new AsyncCallback<LinkedList<LinkData>>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -167,7 +171,8 @@ public class Administration implements EntryPoint {
             }
         });
 
-        // TODO засовывать данные в таблицу
+        cellTable.setRowData(list); // Оно так?
+
         initTable();
         cellTable.setVisible(true);
 
@@ -182,26 +187,25 @@ public class Administration implements EntryPoint {
         // TODO Выделение мышкой
         // TODO Добавить сортировки
 
-        /// Колонка с коротким кодом
-
-
+        // Колонка с коротким кодом
         Column<LinkData, String> codeColumn = new Column<LinkData, String>(
-                new TextCell()) {
+                new TextCell()) { // C видом ячеек - просто текст
             @Override
-            public String getValue(LinkData object) {
+            public String getValue(LinkData object) { // Функция получения значения в ячейку
                 return object.getCode();
             }
         };
 
-        codeColumn.setSortable(true);
-        sortHandler.setComparator(codeColumn, new Comparator<LinkData>() {
+        codeColumn.setSortable(true); // Разрешили сортировку
+        sortHandler.setComparator(codeColumn, new Comparator<LinkData>() { // Установили компоратор
+            // Это то, что будет сортировать объекты
             @Override
-            public int compare(LinkData o1, LinkData o2) {
+            public int compare(LinkData o1, LinkData o2) { // Функция сравнения
                 return o1.getCode().compareTo(o2.getCode());
             }
         });
-        cellTable.addColumn(codeColumn, "Short Code");
-        cellTable.setColumnWidth(codeColumn, 20, Style.Unit.PCT);
+        cellTable.addColumn(codeColumn, "Short Code"); // Добавили колонку с названием к таблице
+        cellTable.setColumnWidth(codeColumn, 20, Style.Unit.PCT); // Настроили ее ширину
 
 
         // Оригинальная ссылка
@@ -222,22 +226,34 @@ public class Administration implements EntryPoint {
         });
         cellTable.addColumn(originalLinkColumn, "Original Link");
 
-        originalLinkColumn.setFieldUpdater(new FieldUpdater<LinkData, String>() {
+        originalLinkColumn.setFieldUpdater(new FieldUpdater<LinkData, String>() { // Создали хэндлер обновления
             @Override
-            public void update(int index, LinkData object, String value) { // Called when the user changes the value.
-                if ( UpdateLink(object, value) ) {
-                    // TODO обновлять на сервере
-                    object.setLink(value);
-                    dataProvider.refresh();
-                } else {
-                    label.setHTML("Connection error!<br>Can't update data!");
-                }
+            public void update(int index, LinkData object, String value) { // Вызывается при обновлении ячейки
+
+                // Обновляем на сервере
+                AdministrationServiceInterface.App.getInstance().setOriginalLink(object.getId(), value, new AsyncCallback<Boolean>() {
+                    @Override
+                    public void onFailure(Throwable caught) { // Если не смогли соедениться
+                        label.setHTML("Connection error!<br>Can't update data!"); // Пишем об этом
+                    }
+
+                    @Override
+                    public void onSuccess(Boolean result) { // Если сервер вернул ответ
+                        if (!result) { // Если сервер не смог записать в базу
+                            label.setHTML("Server error!"); // Пишем ошибку
+                        } else { // Иначе устанавливаем значение и обновляем таблицу
+                            object.setLink(value);
+                            dataProvider.refresh();
+                        }
+                    }
+                });
+
             }
         });
         cellTable.setColumnWidth(originalLinkColumn, 20, Style.Unit.PCT);
 
 
-
+        // Время создания
         Column<LinkData, Date> createTimeColumn = new Column<LinkData, Date>(new DateCell()) {
             @Override
             public Date getValue(LinkData object) {
@@ -247,6 +263,7 @@ public class Administration implements EntryPoint {
         cellTable.addColumn(createTimeColumn, "Create time");
 
 
+        // Срок окончания
         DateTimeFormat dateFormat = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_MEDIUM);
         Column<LinkData, Date> expiredDateColumn = new Column<LinkData, Date>(new DatePickerCell(dateFormat)) {
             @Override
@@ -258,17 +275,27 @@ public class Administration implements EntryPoint {
         expiredDateColumn.setFieldUpdater(new FieldUpdater<LinkData, Date>() {
             @Override
             public void update(int index, LinkData object, Date value) {
-                if ( UpdateDate(object, value) ) {
-                    // TODO обновлять на сервере
-                    object.setExpiredDate(value);
-                    dataProvider.refresh();
-                } else {
-                    label.setHTML("Connection error!<br>Can't update data!");
-                }
+                AdministrationServiceInterface.App.getInstance().setExpiredDate(object.getId(), value, new AsyncCallback<Boolean>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        label.setHTML("Connection error!<br>Can't update data!");
+                    }
+
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        if (!result) {
+                            label.setHTML("Server error!");
+                        } else {
+                            object.setExpiredDate(value);
+                            dataProvider.refresh();
+                        }
+                    }
+                });
             }
         });
 
 
+        // Кол-во переходов
         Column<LinkData, Number> currentCountColumn = new Column<LinkData, Number>(new NumberCell()) {
             @Override
             public Number getValue(LinkData object) {
@@ -277,38 +304,66 @@ public class Administration implements EntryPoint {
         };
         cellTable.addColumn(currentCountColumn, "Current visits");
 
+
         // TODO Поорать на GWT
+        // Максимальное кол-во переходов
         Column<LinkData, String> maxCountColumn = new Column<LinkData, String>(
                 new EditTextCell()) {
             @Override
             public String getValue(LinkData object) {
-                return object.getMaxCount().toString(); // Потому что GWT!!!
+
+                Integer t = object.getMaxCount();
+
+                if (t == 0) {
+                    return "Infinity";
+                } else {
+                    return t.toString(); // Потому что GWT!!!
+                }
+
             }
         };
 
-        cellTable.addColumn(originalLinkColumn, "Max Visits");
+        cellTable.addColumn(maxCountColumn, "Max Visits");
 
-        originalLinkColumn.setFieldUpdater(new FieldUpdater<LinkData, String>() {
+        maxCountColumn.setFieldUpdater(new FieldUpdater<LinkData, String>() {
             @Override
             public void update(int index, LinkData object, String value) {
-                Integer t = Integer.parseInt(value);
-                if (t == null || t < 0 ) {
+
+                Integer t;
+                if (value.equals("Infinity")) {
+                    t = 0;
+                } else {
+                    t = Integer.parseInt(value);
+                }
+
+                if (t < 0) {
                     label.setHTML("Wrong maximum count!");
                 }
 
-                if ( UpdateLink(object, t) ) {
-                    // TODO обновлять на сервере
-                    object.setMaxCount(t);
-                    dataProvider.refresh();
-                } else {
-                    label.setHTML("Connection error!<br>Can't update data!");
-                }
+                AdministrationServiceInterface.App.getInstance().setMaxCount(object.getId(), t, new AsyncCallback<Boolean>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        label.setHTML("Connection error!<br>Can't update data!");
+                    }
+
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        if (!result) {
+                            label.setHTML("Server error!");
+                        } else {
+                            object.setMaxCount(t);
+                            dataProvider.refresh();
+                        }
+                    }
+                });
+
+
             }
         });
-        cellTable.setColumnWidth(originalLinkColumn, 20, Style.Unit.PCT);
+        cellTable.setColumnWidth(maxCountColumn, 20, Style.Unit.PCT);
 
 
-
+        // Пароль
         Column<LinkData, String> passwordColumn = new Column<LinkData, String>(new EditTextCell()) {
             @Override
             public String getValue(LinkData object) {
@@ -320,16 +375,30 @@ public class Administration implements EntryPoint {
             @Override
             public void update(int index, LinkData object, String value) {
 
-                // TODO обновлять на сервере
-                if ( UpdatePassword(object, value) ) {
-                    object.setPassword(getMD5(value));
-                    dataProvider.refresh();
-                } else {
-                    label.setHTML("Connection error!<br>Can't update data!");
-                }
+                String t = getMD5(value);
+
+                AdministrationServiceInterface.App.getInstance().setPassword(object.getId(), t, new AsyncCallback<Boolean>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        label.setHTML("Connection error!<br>Can't update data!");
+                    }
+
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        if (!result) {
+                            label.setHTML("Server error!");
+                        } else {
+                            object.setPassword(t);
+                            dataProvider.refresh();
+                        }
+                    }
+                });
             }
         });
         cellTable.setColumnWidth(passwordColumn, 20, Style.Unit.PCT);
+
+        // TODO Кнопку с красным крестиком и алертом на него
+        // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellSampler
 
     }
 
@@ -357,7 +426,7 @@ public class Administration implements EntryPoint {
                 hashText = "0" + hashText;
             }
             return hashText;
-        } catch (Exception e) {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
         }
