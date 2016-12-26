@@ -240,6 +240,8 @@ class DBConnect {
             return errorCode + "<br>SQL Error!";
         }
 
+        // TODO Добавить пользователей
+
         // Пишем лог
         LogEvent l = new LogEvent(in);
         l.setClassName("DBConnect.Put");

@@ -32,7 +32,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>com.Administration.Administration Administration</servlet-name>
-        <url-pattern>/Administration/AdministrationService</url-pattern>
+        <url-pattern>/com.Administration.Administration/AdministrationService</url-pattern>
     </servlet-mapping>
 
 

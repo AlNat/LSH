@@ -1,6 +1,5 @@
 package com.Administration.client;
 
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
@@ -45,7 +44,6 @@ public class Administration implements EntryPoint {
     private CellTable <LinkData> cellTable; // Таблица
 
     private ListDataProvider<LinkData> dataProvider; // Провайдер данных
-    private ProvidesKey<LinkData> KEY_PROVIDER; // Провайдер ключей
     private ListHandler<LinkData> sortHandler; // Сортировщик
     private SimplePager pager; // Pager - управление страницами данных
 
@@ -59,7 +57,7 @@ public class Administration implements EntryPoint {
         dialog = new PasswordDialog();
 
         pager = new SimplePager(); // Создали pager
-        KEY_PROVIDER = new ProvidesKey<LinkData>() { // Создали провайдер ключей - как будут браться ключи у объекта
+        ProvidesKey<LinkData> KEY_PROVIDER = new ProvidesKey<LinkData>() { // Создали провайдер ключей - как будут браться ключи у объекта
             @Override
             public Object getKey(LinkData item) {
                 return item == null ? null : item.getId();
@@ -77,14 +75,15 @@ public class Administration implements EntryPoint {
 
         cellTable.setWidth("80%");
 
-        RootPanel.get().add(label);
+        RootPanel.get("Label").add(label);
         RootPanel.get("Data").add(cellTable);
         RootPanel.get("Data").add(pager);
-        // TODO Придумать способ поставить это на другую страницу - Administration.html
 
         // Показали диалог и скрыли таблицу
         dialog.show();
+        dialog.center();
         cellTable.setVisible(false);
+        pager.setVisible(false);
 
     }
 
@@ -126,6 +125,7 @@ public class Administration implements EntryPoint {
             panel.add(loginTextBox);
             panel.add(passwordTextBox);
             panel.add(button);
+            panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
             button.addClickHandler(new ClickHandler() { // Повесли обработчик нажатия на кнопку
                 public void onClick(ClickEvent event) {
@@ -182,6 +182,7 @@ public class Administration implements EntryPoint {
         dataProvider.setList(list); // Засовываем данные в таблицу
         //cellTable.setRowData(list);
         cellTable.setVisible(true); // И показываем ее
+        pager.setVisible(true);
     }
 
 
@@ -245,7 +246,7 @@ public class Administration implements EntryPoint {
                         if (!result) { // Если сервер не смог записать в базу
                             label.setHTML("Server error!"); // Пишем ошибку
                         } else { // Иначе устанавливаем значение и обновляем таблицу
-                            object.setLink(value); // TODO fix final
+                            object.setLink(value);
                             dataProvider.refresh();
                         }
                     }
@@ -307,7 +308,7 @@ public class Administration implements EntryPoint {
                         if (!result) {
                             label.setHTML("Server error!");
                         } else {
-                            object.setExpiredDate(value); // TODO fix final
+                            object.setExpiredDate(value);
                             dataProvider.refresh();
                         }
                     }
@@ -391,7 +392,7 @@ public class Administration implements EntryPoint {
                         if (!result) {
                             label.setHTML("Server error!");
                         } else {
-                            object.setMaxCount(t); // TODO fix final
+                            object.setMaxCount(t);
                             dataProvider.refresh();
                         }
                     }
@@ -427,7 +428,7 @@ public class Administration implements EntryPoint {
                         if (!result) {
                             label.setHTML("Server error!");
                         } else {
-                            object.setPassword(getMD5(value)); // TODO fix final
+                            object.setPassword(getMD5(value));
                             dataProvider.refresh();
                         }
                     }
@@ -462,7 +463,7 @@ public class Administration implements EntryPoint {
                             if (!result) {
                                 label.setHTML("Server error!");
                             } else { // Удаляем данный объект из списка
-                                dataProvider.getList().remove(object); // TODO fix final
+                                dataProvider.getList().remove(object);
                                 dataProvider.refresh();
                             }
                         }

@@ -16,8 +16,6 @@ import java.security.MessageDigest;
  */
 public class LSH implements EntryPoint {
 
-    // TODO Добавить поля для пользователя и пароля
-
     private static final String errorCode = "Error!"; // Код ошибки
 
     /* Набор полей для простом сокращении */
@@ -45,7 +43,12 @@ public class LSH implements EntryPoint {
     private final HTML complexNameText = new HTML("Customize link:<br>(i, l, o, 1, 0 - illegal)"); // Текст перед полем для кастомизации ссыли
     private final TextBox complexName = new TextBox(); // Само поле кастомизации ссылки
     private final HTML complexPasswordText = new HTML("Set password:"); // Текст перед полем для пароля ссыли
-    private final TextBox complexPassword = new TextBox(); // Само поле пароля ссылки
+    private final TextBox complexPassword = new PasswordTextBox(); // Само поле пароля ссылки
+
+    private final HTML complexUsernameText = new HTML("Login"); // Текст перед полем для логина пользователя
+    private final TextBox complexUsername = new TextBox(); // Само поле логина пользователя
+    private final HTML complexUserPasswordText = new HTML("Password:"); // Текст перед полем для пароля пользователя
+    private final TextBox complexUserPassword = new PasswordTextBox(); // Само поле пароля пользователя
 
     /**
      * Основной метод в UI
@@ -97,6 +100,7 @@ public class LSH implements EntryPoint {
         final HorizontalPanel complexLinkHP = new HorizontalPanel(); // Строка с оригинальной ссылокой
         final HorizontalPanel complexDataHP = new HorizontalPanel(); // Данные
         final HorizontalPanel complexOptionalData = new HorizontalPanel(); // Опциональные данные
+        final HorizontalPanel complexUserData = new HorizontalPanel(); // Данные об пользователе
         final HorizontalPanel complexAnswerHP = new HorizontalPanel(); // Ответ
 
         final VerticalPanel complexVP = new VerticalPanel(); // Хранение того, что выше
@@ -148,11 +152,19 @@ public class LSH implements EntryPoint {
         complexOptionalData.add(complexPasswordText);
         complexOptionalData.add(complexPassword);
 
+        complexUserData.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        complexUserData.setSpacing(5);
+        complexUserData.add(complexUsernameText);
+        complexUserData.add(complexUsername);
+        complexUserData.add(complexUserPasswordText);
+        complexUserData.add(complexUserPassword);
+
         complexAnswerHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexAnswerHP.setSpacing(5);
         complexAnswerHP.add(complexShortText);
         complexAnswerHP.add(complexShortLink);
         complexAnswerHP.add(complexCopyButton);
+
 
         complexVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexVP.setSpacing(5);
@@ -162,6 +174,7 @@ public class LSH implements EntryPoint {
         complexOptionalVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexOptionalVP.setSpacing(5);
         complexOptionalVP.add(complexOptionalData);
+        complexOptionalVP.add(complexUserData);
         complexOptionalVP.add(complexShortButton);
         complexOptionalVP.add(complexAnswerHP);
 
@@ -221,11 +234,15 @@ public class LSH implements EntryPoint {
             }
             putLinkData.setBrowser(Window.Navigator.getUserAgent()); // user-agent пользователя
             putLinkData.setIp(getIP()); // IP адрес пользователя
-            String t = complexPassword.getText();
 
+            String t = complexPassword.getText();
             if (!t.isEmpty()) {
                 putLinkData.setPassword(getMD5(t));
             }
+
+            putLinkData.setUserLogin(complexUsername.getText());
+            putLinkData.setUserPassword( getMD5(complexUserPassword.getText()) );
+
             // И отправляем его
             LSHServiceInterface.App.getInstance().getShort(putLinkData, new AsyncCallback<String>() {
                 @Override
