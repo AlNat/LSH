@@ -12,6 +12,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.SimplePager;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
@@ -25,8 +26,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
-
-// http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellTable
 
 /**
  * Класс, отвечающий за страницу администрирования
@@ -45,11 +44,10 @@ public class Administration implements EntryPoint {
     private LinkedList<LinkData> list; // Лист с данными с сервера
     private CellTable <LinkData> cellTable; // Таблица
 
-    // TODO Пристроить это уже куда-нибудь
-    private ListDataProvider<LinkData> dataProvider;
-    private ProvidesKey<LinkData> KEY_PROVIDER;
-    private ListHandler<LinkData> sortHandler;
-    private SimplePager pager;
+    private ListDataProvider<LinkData> dataProvider; // Провайдер данных
+    private ProvidesKey<LinkData> KEY_PROVIDER; // Провайдер ключей
+    private ListHandler<LinkData> sortHandler; // Сортировщик
+    private SimplePager pager; // Pager - управление страницами данных
 
     /**
      * Основной метод в UI
@@ -60,21 +58,28 @@ public class Administration implements EntryPoint {
         label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         dialog = new PasswordDialog();
 
-
-        cellTable = new CellTable<>();
-        KEY_PROVIDER = new ProvidesKey<LinkData>() {
+        pager = new SimplePager(); // Создали pager
+        KEY_PROVIDER = new ProvidesKey<LinkData>() { // Создали провайдер ключей - как будут браться ключи у объекта
             @Override
             public Object getKey(LinkData item) {
                 return item == null ? null : item.getId();
             }
         };
-        dataProvider = new ListDataProvider<>();
+        cellTable = new CellTable<>(KEY_PROVIDER); // Создали саму таблицу
 
-        sortHandler = new ListHandler<>(dataProvider.getList());
-        cellTable.addColumnSortHandler(sortHandler);
+        pager.setDisplay(cellTable); // Установили, что pager правляет имеенно этой таблицей
+
+        dataProvider = new ListDataProvider<>(); // Провайдер данных в таблице
+        dataProvider.addDataDisplay(cellTable); // Установили, что данные относяться именно к этой таблице
+
+        sortHandler = new ListHandler<>(dataProvider.getList()); // Сортировщик
+        cellTable.addColumnSortHandler(sortHandler); // И установили его в таблицу
+
+        cellTable.setWidth("80%");
 
         RootPanel.get().add(label);
         RootPanel.get("Data").add(cellTable);
+        RootPanel.get("Data").add(pager);
         // TODO Придумать способ поставить это на другую страницу - Administration.html
 
         // Показали диалог и скрыли таблицу
@@ -174,10 +179,8 @@ public class Administration implements EntryPoint {
         });
 
         initTable(); // Создаем таблицу
-        dataProvider.setList(list);
-        cellTable.setRowData(list); // Засовываем данные в таблицу
-        // Оно так????
-
+        dataProvider.setList(list); // Засовываем данные в таблицу
+        //cellTable.setRowData(list);
         cellTable.setVisible(true); // И показываем ее
     }
 
@@ -187,9 +190,9 @@ public class Administration implements EntryPoint {
      */
     private void initTable() {
 
+
         // Колонка с коротким кодом
-        Column<LinkData, String> codeColumn = new Column<LinkData, String>(
-                new TextCell()) { // C видом ячеек - просто текст
+        Column<LinkData, String> codeColumn = new Column<LinkData, String>(new TextCell()) { // C видом ячеек - просто текст
             @Override
             public String getValue(LinkData object) { // Функция получения значения в ячейку
                 return object.getCode();
@@ -204,13 +207,12 @@ public class Administration implements EntryPoint {
                 return o1.getCode().compareTo(o2.getCode());
             }
         });
-        cellTable.addColumn(codeColumn, "Short Code"); // Добавили колонку с названием к таблице
-        cellTable.setColumnWidth(codeColumn, 20, Style.Unit.PCT); // Настроили ее ширину
+
+        cellTable.addColumn(codeColumn, "Short Link"); // Добавили колонку с названием к таблице
 
 
         // Оригинальная ссылка
-        Column<LinkData, String> originalLinkColumn = new Column<LinkData, String>(
-                new EditTextCell()) {
+        Column<LinkData, String> originalLinkColumn = new Column<LinkData, String>(new EditTextCell()) {
             @Override
             public String getValue(LinkData object) {
                 return object.getLink();
@@ -224,11 +226,12 @@ public class Administration implements EntryPoint {
                 return o1.getLink().compareTo(o2.getLink());
             }
         });
+
         cellTable.addColumn(originalLinkColumn, "Original Link");
 
         originalLinkColumn.setFieldUpdater(new FieldUpdater<LinkData, String>() { // Создали хэндлер обновления
             @Override
-            public void update(int index, LinkData object, String value) { // Вызывается при обновлении ячейки
+            public void update(int index, final LinkData object, final String value) { // Вызывается при обновлении ячейки
 
                 // Обновляем на сервере
                 AdministrationServiceInterface.App.getInstance().setOriginalLink(object.getId(), value, new AsyncCallback<Boolean>() {
@@ -242,7 +245,7 @@ public class Administration implements EntryPoint {
                         if (!result) { // Если сервер не смог записать в базу
                             label.setHTML("Server error!"); // Пишем ошибку
                         } else { // Иначе устанавливаем значение и обновляем таблицу
-                            object.setLink(value);
+                            object.setLink(value); // TODO fix final
                             dataProvider.refresh();
                         }
                     }
@@ -250,7 +253,6 @@ public class Administration implements EntryPoint {
 
             }
         });
-        cellTable.setColumnWidth(originalLinkColumn, 20, Style.Unit.PCT);
 
 
         // Время создания
@@ -260,6 +262,7 @@ public class Administration implements EntryPoint {
                 return object.getCreateDate();
             }
         };
+
         createTimeColumn.setSortable(true);
         sortHandler.setComparator(createTimeColumn, new Comparator<LinkData>() {
             @Override
@@ -267,6 +270,7 @@ public class Administration implements EntryPoint {
                 return o1.getCreateDate().compareTo(o2.getCreateDate());
             }
         });
+
         cellTable.addColumn(createTimeColumn, "Create time");
 
 
@@ -286,11 +290,12 @@ public class Administration implements EntryPoint {
                 return o1.getExpiredDate().compareTo(o2.getExpiredDate());
             }
         });
+
         cellTable.addColumn(expiredDateColumn, "Expired Date");
 
         expiredDateColumn.setFieldUpdater(new FieldUpdater<LinkData, Date>() {
             @Override
-            public void update(int index, LinkData object, Date value) {
+            public void update(int index, final LinkData object, final Date value) {
                 AdministrationServiceInterface.App.getInstance().setExpiredDate(object.getId(), value, new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
@@ -302,7 +307,7 @@ public class Administration implements EntryPoint {
                         if (!result) {
                             label.setHTML("Server error!");
                         } else {
-                            object.setExpiredDate(value);
+                            object.setExpiredDate(value); // TODO fix final
                             dataProvider.refresh();
                         }
                     }
@@ -318,6 +323,7 @@ public class Administration implements EntryPoint {
                 return object.getCurrentCount();
             }
         };
+
         currentCountColumn.setSortable(true);
         sortHandler.setComparator(currentCountColumn, new Comparator<LinkData>() {
             @Override
@@ -325,16 +331,16 @@ public class Administration implements EntryPoint {
                 return o1.getCurrentCount().compareTo(o2.getCurrentCount());
             }
         });
+
         cellTable.addColumn(currentCountColumn, "Current visits");
-        cellTable.setColumnWidth(currentCountColumn, 5, Style.Unit.PCT);
+
 
 
         // К сожалению, в GWT нет типа EditNumberCell. Вообще.
         // Только строковый тип изменяемой ячейки. Поэтому приходиться городить костыли.
 
         // Максимальное кол-во переходов
-        Column<LinkData, String> maxCountColumn = new Column<LinkData, String>(
-                new EditTextCell()) {
+        Column<LinkData, String> maxCountColumn = new Column<LinkData, String>(new EditTextCell()) {
             @Override
             public String getValue(LinkData object) {
 
@@ -348,6 +354,7 @@ public class Administration implements EntryPoint {
 
             }
         };
+
         maxCountColumn.setSortable(true);
         sortHandler.setComparator(maxCountColumn, new Comparator<LinkData>() {
             @Override
@@ -355,13 +362,14 @@ public class Administration implements EntryPoint {
                 return o1.getMaxCount().compareTo(o2.getMaxCount());
             }
         });
+
         cellTable.addColumn(maxCountColumn, "Max Visits");
 
         maxCountColumn.setFieldUpdater(new FieldUpdater<LinkData, String>() {
             @Override
-            public void update(int index, LinkData object, String value) {
+            public void update(int index, final LinkData object, final String value) {
 
-                Integer t;
+                final Integer t;
                 if (value.equals("Infinity")) {
                     t = 0;
                 } else {
@@ -383,7 +391,7 @@ public class Administration implements EntryPoint {
                         if (!result) {
                             label.setHTML("Server error!");
                         } else {
-                            object.setMaxCount(t);
+                            object.setMaxCount(t); // TODO fix final
                             dataProvider.refresh();
                         }
                     }
@@ -392,7 +400,6 @@ public class Administration implements EntryPoint {
 
             }
         });
-        cellTable.setColumnWidth(maxCountColumn, 5, Style.Unit.PCT);
 
 
         // Пароль
@@ -403,13 +410,13 @@ public class Administration implements EntryPoint {
             }
         };
 
+        cellTable.addColumn(passwordColumn, "Password");
+
         passwordColumn.setFieldUpdater(new FieldUpdater<LinkData, String>() {
             @Override
-            public void update(int index, LinkData object, String value) {
+            public void update(int index, final LinkData object, final String value) {
 
-                String t = getMD5(value);
-
-                AdministrationServiceInterface.App.getInstance().setPassword(object.getId(), t, new AsyncCallback<Boolean>() {
+                AdministrationServiceInterface.App.getInstance().setPassword(object.getId(), getMD5(value), new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         label.setHTML("Connection error!<br>Can't update data!");
@@ -420,18 +427,61 @@ public class Administration implements EntryPoint {
                         if (!result) {
                             label.setHTML("Server error!");
                         } else {
-                            object.setPassword(t);
+                            object.setPassword(getMD5(value)); // TODO fix final
                             dataProvider.refresh();
                         }
                     }
                 });
             }
         });
-        cellTable.setColumnWidth(passwordColumn, 15, Style.Unit.PCT);
 
-        // TODO Кнопку с красным крестиком и подтвердением на него - удаление ссылки
-        // http://samples.gwtproject.org/samples/Showcase/Showcase.html#!CwCellSampler
 
+        Column<LinkData, String> deleteColumn = new Column<LinkData, String>(new ButtonCell()) {
+            @Override
+            public String getValue(LinkData object) {
+                return "Delete '" + object.getCode() + "' link";
+            }
+        };
+
+        cellTable.addColumn(deleteColumn, "");
+
+        deleteColumn.setFieldUpdater(new FieldUpdater<LinkData, String>() {
+            @Override
+            public void update(int index, final LinkData object, String value) {
+
+                if (Window.confirm("Shortlink " + object.getCode() + " will be delete!") ) {
+
+                    AdministrationServiceInterface.App.getInstance().deleteLink(object.getId(), new AsyncCallback<Boolean>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            label.setHTML("Connection error!<br>Can't delete data!");
+                        }
+
+                        @Override
+                        public void onSuccess(Boolean result) {
+                            if (!result) {
+                                label.setHTML("Server error!");
+                            } else { // Удаляем данный объект из списка
+                                dataProvider.getList().remove(object); // TODO fix final
+                                dataProvider.refresh();
+                            }
+                        }
+                    });
+                }
+
+            }
+        });
+
+
+        // Настроили ширину столбцов
+        cellTable.setColumnWidth(codeColumn, 10, Style.Unit.PCT);
+        cellTable.setColumnWidth(originalLinkColumn, 20, Style.Unit.PCT);
+        cellTable.setColumnWidth(createTimeColumn, 10, Style.Unit.PCT);
+        cellTable.setColumnWidth(expiredDateColumn, 10, Style.Unit.PCT);
+        cellTable.setColumnWidth(currentCountColumn, 5, Style.Unit.PCT);
+        cellTable.setColumnWidth(maxCountColumn, 5, Style.Unit.PCT);
+        cellTable.setColumnWidth(passwordColumn, 10, Style.Unit.PCT);
+        cellTable.setColumnWidth(deleteColumn, 10, Style.Unit.PCT);
 
     }
 
@@ -465,6 +515,7 @@ public class Administration implements EntryPoint {
         }
 
     }
+
 
 
 }

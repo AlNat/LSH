@@ -16,6 +16,8 @@ import java.security.MessageDigest;
  */
 public class LSH implements EntryPoint {
 
+    // TODO Добавить поля для пользователя и пароля
+
     private static final String errorCode = "Error!"; // Код ошибки
 
     /* Набор полей для простом сокращении */
@@ -273,6 +275,7 @@ public class LSH implements EntryPoint {
 
         @Override
         public void onKeyDown(KeyDownEvent event) {
+
             if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
                 button.click(); // Нажимаем на кнопку по нажатию клавиши Enter
             }
