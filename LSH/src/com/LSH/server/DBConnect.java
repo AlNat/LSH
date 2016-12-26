@@ -230,18 +230,17 @@ class DBConnect {
                         PreparedStatement st = connection.prepareStatement("INSERT INTO users(login, password) VALUES (?, ?)", ResultSet.TYPE_SCROLL_INSENSITIVE);
                         st.setString(1, username);
                         st.setString(2, userpassword);
-                        ResultSet rs = st.executeQuery();
-                        rs.next();
-                        rs.close();
+                        st.execute();
 
                         // И получли его id
                         st = connection.prepareStatement("SELECT id FROM users WHERE login = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
                         st.setString(1, username);
-                        rs = st.executeQuery();
+                        ResultSet rs = st.executeQuery();
 
                         rs.next();
                         userid = rs.getInt("id");
                         rs.close();
+                        st.close();
 
                     } catch (SQLException ee) { // Ловим ошибки
 
