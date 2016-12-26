@@ -126,6 +126,17 @@ class DBConnect {
 
         // Получаем id пользователя с таким логином
 
+        /*
+        SELECT user_id FROM short WHERE id in (
+			SELECT id FROM (
+				SELECT row_number() over(PARTITION BY user_id ORDER BY id DESC) AS c, id, user_id FROM short
+				WHERE user_id IN (
+					SELECT user_id FROM status WHERE valid = true
+				)
+			) t WHERE c = 1
+		) AND WHERE owner = ?
+         */
+
         try {
             // Создаем запрос и выполняем его
             PreparedStatement st = connection.prepareStatement("SELECT id FROM users WHERE login = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
@@ -157,7 +168,13 @@ class DBConnect {
 
         try {
             // Создаем запрос и выполняем его
-            PreparedStatement st = connection.prepareStatement("SELECT * FROM short WHERE owner = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
+            PreparedStatement st = connection.prepareStatement(
+                    // Этим запросом мы выбираем все валдиные ссылки у некоторого пользователя - см функцию invalidate,
+                    // там подробнее про этот запрос
+                    "SELECT * FROM short WHERE id IN (SELECT id FROM (" +
+                    "SELECT row_number() OVER (PARTITION BY user_id ORDER BY id DESC) AS c, id, user_id FROM short " +
+                    "WHERE owner = ? AND user_id IN (SELECT user_id FROM status WHERE valid = TRUE) ) t WHERE c = 1)",
+                    ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
 
@@ -401,10 +418,24 @@ class DBConnect {
      */
     Boolean deleteLink (int id) {
 
+
         try {
-            // Создаем запрос и выполняем его
-            PreparedStatement st = connection.prepareStatement("DELETE FROM short WHERE id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
+
+            // Получили код по id
+            PreparedStatement st = connection.prepareStatement("SELECT user_id FROM short WHERE id = ? ORDER BY id DESC LIMIT 1", ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+
+            rs.next();
+            Integer t = rs.getInt("user_id");
+
+            rs.close();
+            st.close();
+
+
+            // Сделали код инвалидным
+            st = connection.prepareStatement("UPDATE status SET valid = FALSE WHERE user_id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
+            st.setInt(1, t);
             st.execute();
             st.close();
 

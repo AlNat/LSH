@@ -34,7 +34,6 @@ import java.util.LinkedList;
 public class Administration implements EntryPoint {
 
     // TODO Таблицу доделать с красотой - датапикер И сортировки
-    // TODO DB trigger when delete link set status = false
 
     // Данные для логина
     private String login; // Данные логина
