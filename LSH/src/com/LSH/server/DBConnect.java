@@ -184,6 +184,100 @@ class DBConnect {
 
         }
 
+
+        String username = in.getUserLogin();
+        String userpassword = in.getUserPassword();
+        Integer userid = 0;
+
+        if (username != null) { // Если пользователь ввел логин и пароль
+
+            // Идем в БД и проверяем на соответствие пользователя
+            try {
+                // Создаем запрос и выполняем его
+                PreparedStatement st = connection.prepareStatement("SELECT id, password FROM users WHERE login = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
+                st.setString(1, username);
+                ResultSet rs = st.executeQuery();
+
+                // Получаем ответ
+                rs.next();
+                String pass = rs.getString("password");
+                Integer t = rs.getInt("id");
+
+                // Закрываем
+                rs.close();
+                st.close();
+
+                if (pass.equals(userpassword)) { // Если пользователь ввел верный логин и пароль, то запоминаем его id
+                    userid = t; // То пишем его id
+                } else { // Если пароль не подошел, то возращаем ошибку
+                    // Пишем лог
+                    LogEvent l = new LogEvent(in);
+                    l.setClassName("DBConnect.Put");
+                    l.setType("Login");
+                    l.setMessage("Login = " + username + "; Password = " + userpassword);
+                    Log.instance.WriteEvent(l);
+
+                    return errorCode + "<br>Incorrect user or password!";
+                }
+
+
+            } catch (SQLException e) { // Ловим ошибки
+
+                if (e.getSQLState().equals("24000")) { // Пустой ответ - нет такого логина - создаем нового пользователя
+
+                    try {
+                        // Создаем пользователя
+                        PreparedStatement st = connection.prepareStatement("INSERT INTO users(login, password) VALUES (?, ?)", ResultSet.TYPE_SCROLL_INSENSITIVE);
+                        st.setString(1, username);
+                        st.setString(2, userpassword);
+                        ResultSet rs = st.executeQuery();
+                        rs.next();
+                        rs.close();
+
+                        // И получли его id
+                        st = connection.prepareStatement("SELECT id FROM users WHERE login = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
+                        st.setString(1, username);
+                        rs = st.executeQuery();
+
+                        rs.next();
+                        userid = rs.getInt("id");
+                        rs.close();
+
+                    } catch (SQLException ee) { // Ловим ошибки
+
+                        System.out.println("Connection Failed! Check output console");
+                        ee.printStackTrace();
+
+                        // Пишем лог
+                        LogEvent l = new LogEvent(in);
+                        l.setClassName("DBConnect.Put.User");
+                        l.setType("SQLException");
+                        l.setMessage(ee.getMessage());
+                        Log.instance.WriteEvent(l);
+
+                        return errorCode + "<br>SQL Error!";
+                    }
+
+
+                } else { // Иначе это обычная ошибка
+
+                    System.out.println("Connection Failed! Check output console");
+                    e.printStackTrace();
+
+                    // Пишем лог
+                    LogEvent l = new LogEvent(in);
+                    l.setClassName("DBConnect.Put");
+                    l.setType("SQLException");
+                    l.setMessage(e.getMessage());
+                    Log.instance.WriteEvent(l);
+
+                    return errorCode + "<br>SQL Error!";
+                }
+            }
+
+        }
+
+
         code = Shortner.GetShort(id); // Сокращаем id в код
 
         // Приводим дату к виду Timestamp
@@ -218,7 +312,7 @@ class DBConnect {
         try { // Пишем в базу
             // Создали соединение
             preparedStatement = connection.prepareStatement(
-                    "INSERT INTO short(user_id, link, expired_date, max_count, current_count, ip, user_agent, password) VALUES (?, ?, ?, ?, ?, ?::cidr, ?, ?)"
+                    "INSERT INTO short(user_id, link, expired_date, max_count, current_count, ip, user_agent, password, owner) VALUES (?, ?, ?, ?, ?, ?::cidr, ?, ?, ?)"
             );
             preparedStatement.setInt(1, id);
             preparedStatement.setString(2, in.getOriginalLink());
@@ -228,6 +322,7 @@ class DBConnect {
             preparedStatement.setString(6, in.getIp());
             preparedStatement.setString(7, in.getBrowser());
             preparedStatement.setString(8, in.getPassword());
+            preparedStatement.setInt(9, userid);
 
             // Выолнили вставку и закрыли соединение
             preparedStatement.execute();
@@ -240,7 +335,7 @@ class DBConnect {
             return errorCode + "<br>SQL Error!";
         }
 
-        // TODO Добавить пользователей
+
 
         // Пишем лог
         LogEvent l = new LogEvent(in);
@@ -387,6 +482,7 @@ class DBConnect {
 
         return new ReturnLinkData(link, password); // Вернули оригинальную ссылку для редиректа
     }
+
 
     // Функции для записи в лог - вынес, тк надоела подсветка в IDEA о дублировании кода
 

@@ -10,7 +10,6 @@ import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 
-
 /**
  * Created by @author AlNat on 16.09.2016.
  * Licensed by Apache License, Version 2.0
