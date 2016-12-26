@@ -13,7 +13,7 @@ import java.util.LinkedList;
 @RemoteServiceRelativePath("AdministrationService")
 public interface AdministrationServiceInterface extends RemoteService {
 
-    LinkedList<LinkData> getData(String login);
+    LinkData[] getData(String login);
     Boolean isUser (String login, String password);
 
     Boolean setOriginalLink (int id, String link);

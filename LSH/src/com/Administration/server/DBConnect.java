@@ -4,6 +4,7 @@ import com.Administration.client.LinkData;
 import com.LSH.server.Config.Config;
 import com.LSH.server.Log.Log;
 import com.LSH.server.Log.LogEvent;
+import com.LSH.server.Normalizer;
 import com.LSH.server.Shortner;
 
 import java.sql.*;
@@ -118,7 +119,7 @@ class DBConnect {
      * @param login логин пользователя
      * @return данные
      */
-    LinkedList<LinkData> getData (String login) {
+    LinkData[] getData (String login) {
 
         LinkedList<LinkData> list = new LinkedList<>(); // Лист с данными
         Integer id;
@@ -149,7 +150,7 @@ class DBConnect {
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
 
-            return list; // И говорим про ошибку
+            return new LinkData[0]; // И говорим про ошибку
         }
 
         // Получаем данные ссылок, где владелец с таким id
@@ -163,14 +164,20 @@ class DBConnect {
             // Получаем данные
             while (rs.next()) { // Заполняем лист данными
                 LinkData t = new LinkData();
-                t.setId(rs.getInt("user_id"));
+                t.setId(rs.getInt("id"));
                 t.setCode( Shortner.GetShort(rs.getInt("user_id")) ); // На лету преобразовали id в код
                 t.setExpiredDate(rs.getDate("expired_date"));
                 t.setCreateDate(rs.getDate("create_time"));
                 t.setLink(rs.getString("link"));
                 t.setCurrentCount(rs.getInt("current_count"));
                 t.setMaxCount(rs.getInt("max_count"));
-                t.setPassword(""); // Пустое поле - тк пароль зашифрован
+
+                String a = rs.getString("password");
+                if (a == null) {
+                    t.setPassword("");
+                } else {
+                    t.setPassword(a);
+                }
 
                 list.add(t);
             }
@@ -190,10 +197,16 @@ class DBConnect {
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
 
-            return new LinkedList<>();
+            return new LinkData[1];
         }
 
-        return list; // Вернули данные
+
+        LinkData[] a = new LinkData[list.size()];
+        for (int t = 0; t < list.size(); t++) {
+            a[t] = list.get(t);
+        }
+
+        return a; // Вернули данные
     }
 
 
@@ -207,17 +220,26 @@ class DBConnect {
      */
     Boolean setOriginalLink (int id, String link) {
 
+        String norm = Normalizer.Normalize(link); // Нормализауем линк
+
+        if ( norm.equals("Error!") ) { // Если нормализация не удалась, то возращаем ошибку
+
+            // Пишем в лог
+            LogEvent l = new LogEvent();
+            l.setClassName("DBConnect.setOriginalLink");
+            l.setType("DataError");
+            l.setMessage("Illegal link");
+            Log.instance.WriteEvent(l);
+
+            return false;
+        }
+
         try {
             // Создаем запрос и выполняем его
             PreparedStatement st = connection.prepareStatement("UPDATE short SET link = ? WHERE id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setString(1, link);
             st.setInt(2, id);
-            ResultSet rs = st.executeQuery();
-
-            rs.next(); // Получаем ответ
-
-            // Закрываем
-            rs.close();
+            st.execute();
             st.close();
 
             // Пишем лог
@@ -259,13 +281,7 @@ class DBConnect {
             Date t = new Date(date.getTime());
             st.setDate(1, t);
             st.setInt(2, id);
-            ResultSet rs = st.executeQuery();
-
-            // Получаем ответ
-            rs.next();
-
-            // Закрываем
-            rs.close();
+            st.execute();
             st.close();
 
             // Пишем лог
@@ -307,13 +323,7 @@ class DBConnect {
             PreparedStatement st = connection.prepareStatement("UPDATE short SET max_count = ? WHERE id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setInt(1, count);
             st.setInt(2, id);
-            ResultSet rs = st.executeQuery();
-
-            // Получаем ответ
-            rs.next();
-
-            // Закрываем
-            rs.close();
+            st.execute();
             st.close();
 
             // Пишем лог
@@ -354,13 +364,8 @@ class DBConnect {
             PreparedStatement st = connection.prepareStatement("UPDATE short SET password = ? WHERE id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setString(1, password);
             st.setInt(2, id);
-            ResultSet rs = st.executeQuery();
+            st.execute();
 
-            // Получаем ответ
-            rs.next();
-
-            // Закрываем
-            rs.close();
             st.close();
 
             // Пишем лог
@@ -400,13 +405,7 @@ class DBConnect {
             // Создаем запрос и выполняем его
             PreparedStatement st = connection.prepareStatement("DELETE FROM short WHERE id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
-
-            // Получаем ответ
-            rs.next();
-
-            // Закрываем
-            rs.close();
+            st.execute();
             st.close();
 
             // Пишем лог

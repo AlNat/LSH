@@ -9,7 +9,7 @@ import java.util.LinkedList;
  * Интерфейс, оописывающий поведения сервера
  */
 public interface AdministrationServiceInterfaceAsync {
-    void getData(String login, AsyncCallback<LinkedList<LinkData>> async);
+    void getData(String login, AsyncCallback<LinkData[]> async);
     void isUser(String login, String password, AsyncCallback<Boolean> async);
 
     void setOriginalLink (int id, String link, AsyncCallback<Boolean> async);

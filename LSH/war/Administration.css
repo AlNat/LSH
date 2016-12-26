@@ -3,6 +3,7 @@ h3 {
     font-weight: bold;
     text-align: center;
     vertical-align: center;
+    horiz-align: center;
     font-family: "Segoe UI Symbol", monospace;
     margin: 0;
     padding: 2%;
@@ -35,7 +36,7 @@ body {
     height: 80%;
     border: none;
     position: relative;
-    margin: 0 20% 0 20%;
+    margin: 0 20% 0 10%;
     text-align: center;
 }
 

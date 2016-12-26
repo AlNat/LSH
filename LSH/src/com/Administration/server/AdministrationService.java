@@ -6,7 +6,6 @@ import com.Administration.client.LinkData;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import java.util.Date;
-import java.util.LinkedList;
 
 /**
  * Created by @author AlNat on 21.12.2016.
@@ -22,7 +21,7 @@ public class AdministrationService extends RemoteServiceServlet implements Admin
      * @return лист с данными
      */
     @Override
-    public LinkedList<LinkData> getData(String login) {
+    public LinkData[] getData(String login) {
         return DBConnect.instance.getData (login);
     }
 

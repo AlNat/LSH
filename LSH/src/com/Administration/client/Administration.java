@@ -22,6 +22,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
@@ -32,6 +33,9 @@ import java.util.LinkedList;
 @SuppressWarnings("Convert2Lambda")
 public class Administration implements EntryPoint {
 
+    // TODO Таблицу доделать с красотой - датапикер И сортировки
+    // TODO DB trigger when delete link set status = false
+
     // Данные для логина
     private String login; // Данные логина
     private String password; // Данные пароля
@@ -39,8 +43,6 @@ public class Administration implements EntryPoint {
 
     private HTML label; // Лебл с ошибками
 
-    // Данные таблицы
-    private LinkedList<LinkData> list; // Лист с данными с сервера
     private CellTable <LinkData> cellTable; // Таблица
 
     private ListDataProvider<LinkData> dataProvider; // Провайдер данных
@@ -73,18 +75,22 @@ public class Administration implements EntryPoint {
         sortHandler = new ListHandler<>(dataProvider.getList()); // Сортировщик
         cellTable.addColumnSortHandler(sortHandler); // И установили его в таблицу
 
-        cellTable.setWidth("80%");
+        initTable(); // Создаем таблицу
+        cellTable.setWidth("100%");
 
-        RootPanel.get("Label").add(label);
-        RootPanel.get("Data").add(cellTable);
-        RootPanel.get("Data").add(pager);
+        VerticalPanel VP = new VerticalPanel();
+        VP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        VP.add(cellTable);
+        VP.add(pager);
+        VP.add(label);
+        RootPanel.get("Data").add(VP);
 
         // Показали диалог и скрыли таблицу
         dialog.show();
         dialog.center();
+
         cellTable.setVisible(false);
         pager.setVisible(false);
-
     }
 
     /**
@@ -166,21 +172,32 @@ public class Administration implements EntryPoint {
      */
     private void GetData () {
         // Пошли на сервер за кучей данных
-        AdministrationServiceInterface.App.getInstance().getData(login, new AsyncCallback<LinkedList<LinkData>>() {
+        AdministrationServiceInterface.App.getInstance().getData(login, new AsyncCallback<LinkData[]>() {
             @Override
             public void onFailure(Throwable caught) { // Если не смогли соедениться
                 label.setHTML("<h3>Server error!</h3><br>");
             }
 
             @Override
-            public void onSuccess(LinkedList<LinkData> result) { // Получили данные
-                list = result;
+            public void onSuccess(LinkData[] result) { // Получили данные
+                AddData (result);
             }
         });
 
-        initTable(); // Создаем таблицу
+    }
+
+    /**
+     * Функция добавления данных в таблицу
+     * @param linksData данные
+     */
+    private void AddData (LinkData[] linksData) {
+
+        label.setHTML("");
+
+        LinkedList<LinkData> list = new LinkedList<>();
+        Collections.addAll(list, linksData); // Добавили данные
         dataProvider.setList(list); // Засовываем данные в таблицу
-        //cellTable.setRowData(list);
+
         cellTable.setVisible(true); // И показываем ее
         pager.setVisible(true);
     }
@@ -190,7 +207,6 @@ public class Administration implements EntryPoint {
      * Инициализация столбцов таблицы
      */
     private void initTable() {
-
 
         // Колонка с коротким кодом
         Column<LinkData, String> codeColumn = new Column<LinkData, String>(new TextCell()) { // C видом ячеек - просто текст
@@ -256,8 +272,10 @@ public class Administration implements EntryPoint {
         });
 
 
+        DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy MMM dd"); // Формат вывода даты
+
         // Время создания
-        Column<LinkData, Date> createTimeColumn = new Column<LinkData, Date>(new DateCell()) {
+        Column<LinkData, Date> createTimeColumn = new Column<LinkData, Date>(new DateCell(dateFormat)) {
             @Override
             public Date getValue(LinkData object) {
                 return object.getCreateDate();
@@ -274,13 +292,11 @@ public class Administration implements EntryPoint {
 
         cellTable.addColumn(createTimeColumn, "Create time");
 
-
         // Срок окончания
-        DateTimeFormat dateFormat = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_MEDIUM);
         Column<LinkData, Date> expiredDateColumn = new Column<LinkData, Date>(new DatePickerCell(dateFormat)) {
             @Override
             public Date getValue(LinkData object) {
-                return object.getCreateDate();
+                return object.getExpiredDate();
             }
         };
 
@@ -407,7 +423,11 @@ public class Administration implements EntryPoint {
         Column<LinkData, String> passwordColumn = new Column<LinkData, String>(new EditTextCell()) {
             @Override
             public String getValue(LinkData object) {
-                return "*********";
+                if (object.getPassword().equals("")) {
+                    return "";
+                } else { // Тк пароль у нас шифрован, то показывать хэши мы не будем
+                    return "*********";
+                }
             }
         };
 
@@ -440,7 +460,7 @@ public class Administration implements EntryPoint {
         Column<LinkData, String> deleteColumn = new Column<LinkData, String>(new ButtonCell()) {
             @Override
             public String getValue(LinkData object) {
-                return "Delete '" + object.getCode() + "' link";
+                return "Delete link"; // + object.getCode(); // + "' link";
             }
         };
 
@@ -477,12 +497,12 @@ public class Administration implements EntryPoint {
         // Настроили ширину столбцов
         cellTable.setColumnWidth(codeColumn, 10, Style.Unit.PCT);
         cellTable.setColumnWidth(originalLinkColumn, 20, Style.Unit.PCT);
-        cellTable.setColumnWidth(createTimeColumn, 10, Style.Unit.PCT);
-        cellTable.setColumnWidth(expiredDateColumn, 10, Style.Unit.PCT);
+        cellTable.setColumnWidth(createTimeColumn, 20, Style.Unit.PCT);
+        cellTable.setColumnWidth(expiredDateColumn, 20, Style.Unit.PCT);
         cellTable.setColumnWidth(currentCountColumn, 5, Style.Unit.PCT);
         cellTable.setColumnWidth(maxCountColumn, 5, Style.Unit.PCT);
         cellTable.setColumnWidth(passwordColumn, 10, Style.Unit.PCT);
-        cellTable.setColumnWidth(deleteColumn, 10, Style.Unit.PCT);
+        cellTable.setColumnWidth(deleteColumn, 15, Style.Unit.PCT);
 
     }
 
