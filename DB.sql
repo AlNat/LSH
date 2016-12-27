@@ -24,11 +24,11 @@ CREATE TABLE short (
 	user_id INT NOT NULL, -- id записи пользователя - повторяемый. Выдаеться заново, после того как запись становиться не валидной
 	-- когда действие ссылки кончилось, И\ИЛИ колво переходов превышено
 	link VARCHAR(1024), -- Оригинальная ссылка, приведенная к виду www.site.zone
+	create_date TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp, -- Время создания
 	expired_date TIMESTAMP WITH TIME ZONE, -- До какого времени ссылка рабочая
 	max_count INT, -- Максимальное кол-во переходов - если 0, то бесконечно
 	current_count INT, -- Текущее кол-во переходов
 	password VARCHAR(32), -- Пароль на ссылку - хэш
-	create_time TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp, -- Время создания	
 	ip CIDR, -- IP откуда создали
 	user_agent VARCHAR(180), -- Браузер, откуда создали
 	owner INT REFERENCES users(id) ON UPDATE CASCADE DEFAULT 0 -- Владелец ссылки

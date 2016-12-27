@@ -173,7 +173,7 @@ class DBConnect {
                 t.setId(rs.getInt("id"));
                 t.setCode( Shortner.GetShort(rs.getInt("user_id")) ); // На лету преобразовали id в код
                 t.setExpiredDate(rs.getDate("expired_date"));
-                t.setCreateDate(rs.getDate("create_time"));
+                t.setCreateDate(rs.getDate("create_date"));
                 t.setLink(rs.getString("link"));
                 t.setCurrentCount(rs.getInt("current_count"));
                 t.setMaxCount(rs.getInt("max_count"));

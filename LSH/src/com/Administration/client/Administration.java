@@ -29,7 +29,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 
-// TODO Разобраться, почему не сортирует столбцы
 
 /**
  * Created by @author AlNat on 21.12.2016.
@@ -73,6 +72,8 @@ public class Administration implements EntryPoint {
         };
         cellTable = new CellTable<>(KEY_PROVIDER); // Создали саму таблицу
 
+        sortHandler = new ListHandler<>(list);
+        cellTable.addColumnSortHandler(sortHandler);
 
         SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
         pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true); // Создали pager - управление страницами
@@ -81,8 +82,6 @@ public class Administration implements EntryPoint {
         dataProvider = new ListDataProvider<>(); // Провайдер данных в таблице
         dataProvider.addDataDisplay(cellTable); // Установили, что данные относяться именно к этой таблице
 
-        sortHandler = new ListHandler<>(list);
-        cellTable.addColumnSortHandler(sortHandler);
 
         initTable(); // Создаем таблицу
         cellTable.setWidth("100%");
@@ -224,6 +223,8 @@ public class Administration implements EntryPoint {
      */
     private void initTable() {
 
+        // TODO Разобраться, почему не сортирует столбцы
+
         // Колонка с коротким кодом
         Column<LinkData, String> codeColumn = new Column<LinkData, String>(new TextCell()) { // C видом ячеек - просто текст
             @Override
@@ -289,25 +290,25 @@ public class Administration implements EntryPoint {
 
 
 
-        DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy MMM dd"); // Формат вывода даты
+        DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd MMM yyyy"); // Формат вывода даты
 
         // Время создания
-        Column<LinkData, Date> createTimeColumn = new Column<LinkData, Date>(new DateCell(dateFormat)) {
+        Column<LinkData, Date> createDateColumn = new Column<LinkData, Date>(new DateCell(dateFormat)) {
             @Override
             public Date getValue(LinkData object) {
                 return object.getCreateDate();
             }
         };
 
-        createTimeColumn.setSortable(true);
-        sortHandler.setComparator(createTimeColumn, new Comparator<LinkData>() {
+        createDateColumn.setSortable(true);
+        sortHandler.setComparator(createDateColumn, new Comparator<LinkData>() {
             @Override
             public int compare(LinkData o1, LinkData o2) {
                 return o1.getCreateDate().compareTo(o2.getCreateDate());
             }
         });
 
-        cellTable.addColumn(createTimeColumn, "Create time");
+        cellTable.addColumn(createDateColumn, "Create date");
 
 
         // Настроили ячейку выбора
@@ -373,7 +374,6 @@ public class Administration implements EntryPoint {
         });
 
         cellTable.addColumn(currentCountColumn, "Current visits");
-
 
 
         // К сожалению, в GWT нет типа EditNumberCell. Вообще.
@@ -442,7 +442,6 @@ public class Administration implements EntryPoint {
         });
 
 
-
         // Пароль
         Column<LinkData, String> passwordColumn = new Column<LinkData, String>(new EditTextCell()) {
             @Override
@@ -496,7 +495,6 @@ public class Administration implements EntryPoint {
             public void update(int index, final LinkData object, String value) {
 
                 if (Window.confirm("Shortlink " + object.getCode() + " will be delete!") ) {
-
                     AdministrationServiceInterface.App.getInstance().deleteLink(object.getId(), new AsyncCallback<Boolean>() {
                         @Override
                         public void onFailure(Throwable caught) {
@@ -514,7 +512,6 @@ public class Administration implements EntryPoint {
                         }
                     });
                 }
-
             }
         });
 
