@@ -1,6 +1,7 @@
 package com.Administration.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -20,20 +21,20 @@ import com.google.gwt.view.client.ProvidesKey;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
-
 import java.security.NoSuchAlgorithmException;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
+
+// TODO Разобраться, почему не сортирует столбцы
 
 /**
  * Класс, отвечающий за страницу администрирования
  */
 @SuppressWarnings("Convert2Lambda")
 public class Administration implements EntryPoint {
-
-    // TODO сортировки столбцов
 
     // Данные для логина
     private String login; // Данные логина
@@ -48,6 +49,7 @@ public class Administration implements EntryPoint {
     private ListHandler<LinkData> sortHandler; // Сортировщик
     private SimplePager pager; // Pager - управление страницами данных
 
+
     /**
      * Основной метод в UI
      */
@@ -55,7 +57,9 @@ public class Administration implements EntryPoint {
 
         label = new HTML();
         label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
         dialog = new PasswordDialog();
+        list = new LinkedList<>(); // Создали лист с данными
 
         ProvidesKey<LinkData> KEY_PROVIDER = new ProvidesKey<LinkData>() { // Создали провайдер ключей - как будут браться ключи у объекта
             @Override
@@ -65,17 +69,22 @@ public class Administration implements EntryPoint {
         };
         cellTable = new CellTable<>(KEY_PROVIDER); // Создали саму таблицу
 
-        list = new LinkedList<>();
-        sortHandler = new ListHandler<>(list);
 
-        pager = new SimplePager(SimplePager.TextLocation.CENTER);
+        SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
+        pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true); // Создали pager - управление страницами
         pager.setDisplay(cellTable); // Установили, что pager правляет имеенно этой таблицей
 
         dataProvider = new ListDataProvider<>(); // Провайдер данных в таблице
         dataProvider.addDataDisplay(cellTable); // Установили, что данные относяться именно к этой таблице
 
+        sortHandler = new ListHandler<>(list);
+        cellTable.addColumnSortHandler(sortHandler);
+
         initTable(); // Создаем таблицу
         cellTable.setWidth("100%");
+        cellTable.setHeight("80%");
+        cellTable.setAutoHeaderRefreshDisabled(true);
+        cellTable.setAutoFooterRefreshDisabled(true);
 
         VerticalPanel VP = new VerticalPanel();
         VP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -91,6 +100,7 @@ public class Administration implements EntryPoint {
         cellTable.setVisible(false);
         pager.setVisible(false);
     }
+
 
     /**
      * Диалоговое окно для ввода логина и пароля
@@ -166,6 +176,7 @@ public class Administration implements EntryPoint {
 
     }
 
+
     /**
      * Функция получения данных с сервера
      */
@@ -185,6 +196,7 @@ public class Administration implements EntryPoint {
 
     }
 
+
     /**
      * Функция добавления данных в таблицу
      * @param linksData данные
@@ -196,8 +208,7 @@ public class Administration implements EntryPoint {
         Collections.addAll(list, linksData); // Добавили данные
         dataProvider.setList(list); // Засовываем данные в таблицу
 
-        sortHandler = new ListHandler<>(list); // Сортировщик
-        cellTable.addColumnSortHandler(sortHandler); // И установили его в таблицу
+        sortHandler.setList(list); // Обновли сортировщик
 
         cellTable.setVisible(true); // И показываем ее
         pager.setVisible(true);
@@ -208,9 +219,6 @@ public class Administration implements EntryPoint {
      * Инициализация столбцов таблицы
      */
     private void initTable() {
-
-        cellTable.setAutoHeaderRefreshDisabled(true);
-
 
         // Колонка с коротким кодом
         Column<LinkData, String> codeColumn = new Column<LinkData, String>(new TextCell()) { // C видом ячеек - просто текст
@@ -276,6 +284,7 @@ public class Administration implements EntryPoint {
         });
 
 
+
         DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy MMM dd"); // Формат вывода даты
 
         // Время создания
@@ -299,18 +308,6 @@ public class Administration implements EntryPoint {
 
         // Настроили ячейку выбора
         DatePickerCell cell = new DatePickerCell(dateFormat);
-        //DatePicker datePicker = cell.getDatePicker();
-        //datePicker.setStyleName("customDatePicker");
-        //datePicker.setYearArrowsVisible(true);
-        /*
-        .customDatePicker {
-        color: darkblue;
-        background: gray;
-        padding: 2px;
-        border: 1px solid #ccc;
-        border-top:1px solid #999;
-        cursor: default;
-         */
 
         // Срок окончания
         Column<LinkData, Date> expiredDateColumn = new Column<LinkData, Date>(cell) {
@@ -321,6 +318,7 @@ public class Administration implements EntryPoint {
         };
 
         expiredDateColumn.setSortable(true);
+        expiredDateColumn.setDefaultSortAscending(false);
         sortHandler.setComparator(expiredDateColumn, new Comparator<LinkData>() {
             @Override
             public int compare(LinkData o1, LinkData o2) {
@@ -365,7 +363,8 @@ public class Administration implements EntryPoint {
         sortHandler.setComparator(currentCountColumn, new Comparator<LinkData>() {
             @Override
             public int compare(LinkData o1, LinkData o2) {
-                return o1.getCurrentCount().compareTo(o2.getCurrentCount());
+                return o1.getCurrentCount() > o2.getCurrentCount() ? 1 : 0;
+                //return o1.getCurrentCount().compareTo(o2.getCurrentCount());
             }
         });
 
@@ -528,6 +527,7 @@ public class Administration implements EntryPoint {
 
     }
 
+
     /**
      * Функция, получения MD5 хэша от строки + соль
      * @param in входная строка
@@ -545,9 +545,10 @@ public class Administration implements EntryPoint {
 
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(in.getBytes());
-            BigInteger number = new BigInteger(1, messageDigest);
+            byte[] messageDigestBytes = md.digest(in.getBytes());
+            BigInteger number = new BigInteger(1, messageDigestBytes);
             String hashText = number.toString(16);
+
             while (hashText.length() < 32) {
                 hashText = "0" + hashText;
             }
@@ -558,7 +559,5 @@ public class Administration implements EntryPoint {
         }
 
     }
-
-
 
 }

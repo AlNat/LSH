@@ -2,6 +2,7 @@ package com.Administration.client;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by @author AlNat on 21.12.2016.
@@ -95,10 +96,7 @@ public class LinkData implements Serializable, Comparable<LinkData> {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof LinkData) {
-            return id == ((LinkData) o).id;
-        }
-        return false;
+        return o instanceof LinkData && Objects.equals(id, ((LinkData) o).id);
     }
 
     @Override

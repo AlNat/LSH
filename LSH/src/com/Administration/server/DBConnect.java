@@ -126,17 +126,6 @@ class DBConnect {
 
         // Получаем id пользователя с таким логином
 
-        /*
-        SELECT user_id FROM short WHERE id in (
-			SELECT id FROM (
-				SELECT row_number() over(PARTITION BY user_id ORDER BY id DESC) AS c, id, user_id FROM short
-				WHERE user_id IN (
-					SELECT user_id FROM status WHERE valid = true
-				)
-			) t WHERE c = 1
-		) AND WHERE owner = ?
-         */
-
         try {
             // Создаем запрос и выполняем его
             PreparedStatement st = connection.prepareStatement("SELECT id FROM users WHERE login = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
