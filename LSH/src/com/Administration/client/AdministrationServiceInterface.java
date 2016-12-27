@@ -1,11 +1,11 @@
 package com.Administration.client;
 
+import com.Administration.client.DataType.LinkData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import java.util.Date;
-import java.util.LinkedList;
 
 /**
  * Интрефейс для клиента

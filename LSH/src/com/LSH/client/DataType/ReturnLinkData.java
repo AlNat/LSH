@@ -5,6 +5,8 @@ import java.io.Serializable;
 /**
  * Created by @author AlNat on 20.12.2016.
  * Licensed by Apache License, Version 2.0
+ *
+ * Класс обертка для данных на редирект
  */
 public class ReturnLinkData implements Serializable {
 

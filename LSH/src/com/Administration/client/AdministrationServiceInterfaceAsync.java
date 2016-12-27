@@ -1,9 +1,9 @@
 package com.Administration.client;
 
+import com.Administration.client.DataType.LinkData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.Date;
-import java.util.LinkedList;
 
 /**
  * Интерфейс, оописывающий поведения сервера

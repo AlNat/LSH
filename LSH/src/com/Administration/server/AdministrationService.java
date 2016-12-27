@@ -1,7 +1,7 @@
 package com.Administration.server;
 
 import com.Administration.client.AdministrationServiceInterface;
-import com.Administration.client.LinkData;
+import com.Administration.client.DataType.LinkData;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 

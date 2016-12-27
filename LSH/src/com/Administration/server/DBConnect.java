@@ -1,6 +1,6 @@
 package com.Administration.server;
 
-import com.Administration.client.LinkData;
+import com.Administration.client.DataType.LinkData;
 import com.LSH.server.Config.Config;
 import com.LSH.server.Log.Log;
 import com.LSH.server.Log.LogEvent;
@@ -12,7 +12,7 @@ import java.sql.Date;
 import java.util.*;
 
 /**
- * Created by @author AlNat on 16.09.2016.
+ * Created by @author AlNat on 21.12.2016.
  * Licensed by Apache License, Version 2.0
  *
  * Класс соединения приложения с БД

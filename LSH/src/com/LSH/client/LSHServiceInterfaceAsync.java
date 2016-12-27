@@ -6,7 +6,7 @@ import com.LSH.client.DataType.PutLinkData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Интерфейс, оописывающий поведения сервера
+ * Интерфейс, описывающий поведения сервера
  */
 public interface LSHServiceInterfaceAsync {
     void getShort(PutLinkData msg, AsyncCallback<String> async);

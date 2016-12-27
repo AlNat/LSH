@@ -1,5 +1,7 @@
 package com.Administration.client;
 
+import com.Administration.client.DataType.LinkData;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -31,6 +33,9 @@ import java.util.LinkedList;
 // TODO Разобраться, почему не сортирует столбцы
 
 /**
+ * Created by @author AlNat on 21.12.2016.
+ * Licensed by Apache License, Version 2.0
+ *
  * Класс, отвечающий за страницу администрирования
  */
 @SuppressWarnings("Convert2Lambda")

@@ -12,6 +12,9 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 /**
+ * Created by @author AlNat on 26.11.2016.
+ * Licensed by Apache License, Version 2.0
+ *
  * Класс, отвечающий за главную страницу UI
  */
 public class LSH implements EntryPoint {

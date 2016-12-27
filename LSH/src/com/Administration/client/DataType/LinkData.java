@@ -1,4 +1,4 @@
-package com.Administration.client;
+package com.Administration.client.DataType;
 
 import java.io.Serializable;
 import java.util.Date;
