@@ -4,7 +4,6 @@ import com.Administration.client.DataType.LinkData;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
@@ -518,17 +517,6 @@ public class Administration implements EntryPoint {
 
             }
         });
-
-
-        // Настроили ширину столбцов
-        cellTable.setColumnWidth(codeColumn, 10, Style.Unit.PCT);
-        cellTable.setColumnWidth(originalLinkColumn, 20, Style.Unit.PCT);
-        cellTable.setColumnWidth(createTimeColumn, 20, Style.Unit.PCT);
-        cellTable.setColumnWidth(expiredDateColumn, 20, Style.Unit.PCT);
-        cellTable.setColumnWidth(currentCountColumn, 5, Style.Unit.PCT);
-        cellTable.setColumnWidth(maxCountColumn, 5, Style.Unit.PCT);
-        cellTable.setColumnWidth(passwordColumn, 10, Style.Unit.PCT);
-        cellTable.setColumnWidth(deleteColumn, 15, Style.Unit.PCT);
 
     }
 
