@@ -93,7 +93,7 @@ public class Error404 implements EntryPoint {
     private class PasswordDialog extends DialogBox {
 
         PasswordDialog(final ReturnLinkData link) {
-            setHTML("<h3>Please, input password</h3>");
+            setHTML("<h4>Please, input password</h4>");
             setAnimationEnabled(true);
             setGlassEnabled(true);
 

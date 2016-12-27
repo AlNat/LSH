@@ -111,7 +111,7 @@ public class Administration implements EntryPoint {
     private class PasswordDialog extends DialogBox {
 
         PasswordDialog() { // Конструктор
-            setHTML("<h3>Please, input login and password</h3>");
+            setHTML("<h4>Please, input login and password</h4>");
             setAnimationEnabled(true);
             setGlassEnabled(true);
 
@@ -140,10 +140,11 @@ public class Administration implements EntryPoint {
             });
 
             // Добавили поле и кнопку в панель
+            panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+            panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
             panel.add(loginTextBox);
             panel.add(passwordTextBox);
             panel.add(button);
-            panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
             button.addClickHandler(new ClickHandler() { // Повесли обработчик нажатия на кнопку
                 public void onClick(ClickEvent event) {
@@ -211,7 +212,10 @@ public class Administration implements EntryPoint {
         Collections.addAll(list, linksData); // Добавили данные
         dataProvider.setList(list); // Засовываем данные в таблицу
 
+        //sortHandler = new ListHandler<>(list);
+        //cellTable.addColumnSortHandler(sortHandler);
         sortHandler.setList(list); // Обновли сортировщик
+
 
         cellTable.setVisible(true); // И показываем ее
         pager.setVisible(true);
@@ -224,6 +228,8 @@ public class Administration implements EntryPoint {
     private void initTable() {
 
         // TODO Разобраться, почему не сортирует столбцы
+        //  Хм - при cellTable.getColumnSortList().push(codeColumn); он нормально сортирует,
+        // Но не дает нажать для сортировки
 
         // Колонка с коротким кодом
         Column<LinkData, String> codeColumn = new Column<LinkData, String>(new TextCell()) { // C видом ячеек - просто текст
@@ -243,7 +249,6 @@ public class Administration implements EntryPoint {
         });
 
         cellTable.addColumn(codeColumn, "Short Link"); // Добавили колонку с названием к таблице
-
 
         // Оригинальная ссылка
         Column<LinkData, String> originalLinkColumn = new Column<LinkData, String>(new EditTextCell()) {

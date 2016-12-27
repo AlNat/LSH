@@ -69,12 +69,9 @@ public class Config {
             e.printStackTrace();
         }
 
-        System.out.println("Please, sure that config file placed in:");
-        System.out.println(filename);
-
         try {
 
-            filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml"; // TODO del in release version
+            filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml"; // TODO delete in release version
             File file = new File(filename); //tt
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -112,6 +109,8 @@ public class Config {
 
         } catch (Exception e) {
             System.out.println("Config File Error!");
+            System.out.println("Please, sure that config file placed in:");
+            System.out.println(filename);
             e.printStackTrace();
         }
     }
