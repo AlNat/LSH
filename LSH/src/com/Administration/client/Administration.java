@@ -33,7 +33,7 @@ import java.util.LinkedList;
 @SuppressWarnings("Convert2Lambda")
 public class Administration implements EntryPoint {
 
-    // TODO Таблицу доделать с красотой - датапикер И сортировки
+    // TODO сортировки столбцов
 
     // Данные для логина
     private String login; // Данные логина
@@ -43,7 +43,7 @@ public class Administration implements EntryPoint {
     private HTML label; // Лебл с ошибками
 
     private CellTable <LinkData> cellTable; // Таблица
-
+    private LinkedList<LinkData> list; // Данные
     private ListDataProvider<LinkData> dataProvider; // Провайдер данных
     private ListHandler<LinkData> sortHandler; // Сортировщик
     private SimplePager pager; // Pager - управление страницами данных
@@ -57,7 +57,6 @@ public class Administration implements EntryPoint {
         label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         dialog = new PasswordDialog();
 
-        pager = new SimplePager(); // Создали pager
         ProvidesKey<LinkData> KEY_PROVIDER = new ProvidesKey<LinkData>() { // Создали провайдер ключей - как будут браться ключи у объекта
             @Override
             public Object getKey(LinkData item) {
@@ -66,13 +65,14 @@ public class Administration implements EntryPoint {
         };
         cellTable = new CellTable<>(KEY_PROVIDER); // Создали саму таблицу
 
+        list = new LinkedList<>();
+        sortHandler = new ListHandler<>(list);
+
+        pager = new SimplePager(SimplePager.TextLocation.CENTER);
         pager.setDisplay(cellTable); // Установили, что pager правляет имеенно этой таблицей
 
         dataProvider = new ListDataProvider<>(); // Провайдер данных в таблице
         dataProvider.addDataDisplay(cellTable); // Установили, что данные относяться именно к этой таблице
-
-        sortHandler = new ListHandler<>(dataProvider.getList()); // Сортировщик
-        cellTable.addColumnSortHandler(sortHandler); // И установили его в таблицу
 
         initTable(); // Создаем таблицу
         cellTable.setWidth("100%");
@@ -193,9 +193,11 @@ public class Administration implements EntryPoint {
 
         label.setHTML("");
 
-        LinkedList<LinkData> list = new LinkedList<>();
         Collections.addAll(list, linksData); // Добавили данные
         dataProvider.setList(list); // Засовываем данные в таблицу
+
+        sortHandler = new ListHandler<>(list); // Сортировщик
+        cellTable.addColumnSortHandler(sortHandler); // И установили его в таблицу
 
         cellTable.setVisible(true); // И показываем ее
         pager.setVisible(true);
@@ -206,6 +208,9 @@ public class Administration implements EntryPoint {
      * Инициализация столбцов таблицы
      */
     private void initTable() {
+
+        cellTable.setAutoHeaderRefreshDisabled(true);
+
 
         // Колонка с коротким кодом
         Column<LinkData, String> codeColumn = new Column<LinkData, String>(new TextCell()) { // C видом ячеек - просто текст
@@ -253,13 +258,13 @@ public class Administration implements EntryPoint {
                 AdministrationServiceInterface.App.getInstance().setOriginalLink(object.getId(), value, new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) { // Если не смогли соедениться
-                        label.setHTML("Connection error!<br>Can't update data!"); // Пишем об этом
+                        label.setHTML("<h4>Connection error!<br>Can't update data!<h4>"); // Пишем об этом
                     }
 
                     @Override
                     public void onSuccess(Boolean result) { // Если сервер вернул ответ
                         if (!result) { // Если сервер не смог записать в базу
-                            label.setHTML("Server error!"); // Пишем ошибку
+                            label.setHTML("<h4>Server error!<h4>"); // Пишем ошибку
                         } else { // Иначе устанавливаем значение и обновляем таблицу
                             object.setLink(value);
                             dataProvider.refresh();
@@ -291,8 +296,24 @@ public class Administration implements EntryPoint {
 
         cellTable.addColumn(createTimeColumn, "Create time");
 
+
+        // Настроили ячейку выбора
+        DatePickerCell cell = new DatePickerCell(dateFormat);
+        //DatePicker datePicker = cell.getDatePicker();
+        //datePicker.setStyleName("customDatePicker");
+        //datePicker.setYearArrowsVisible(true);
+        /*
+        .customDatePicker {
+        color: darkblue;
+        background: gray;
+        padding: 2px;
+        border: 1px solid #ccc;
+        border-top:1px solid #999;
+        cursor: default;
+         */
+
         // Срок окончания
-        Column<LinkData, Date> expiredDateColumn = new Column<LinkData, Date>(new DatePickerCell(dateFormat)) {
+        Column<LinkData, Date> expiredDateColumn = new Column<LinkData, Date>(cell) {
             @Override
             public Date getValue(LinkData object) {
                 return object.getExpiredDate();
@@ -315,13 +336,13 @@ public class Administration implements EntryPoint {
                 AdministrationServiceInterface.App.getInstance().setExpiredDate(object.getId(), value, new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        label.setHTML("Connection error!<br>Can't update data!");
+                        label.setHTML("<h4>Connection error!<br>Can't update data!<h4>");
                     }
 
                     @Override
                     public void onSuccess(Boolean result) {
                         if (!result) {
-                            label.setHTML("Server error!");
+                            label.setHTML("<h4>Server error!<h4>");
                         } else {
                             object.setExpiredDate(value);
                             dataProvider.refresh();
@@ -399,7 +420,7 @@ public class Administration implements EntryPoint {
                 AdministrationServiceInterface.App.getInstance().setMaxCount(object.getId(), t, new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        label.setHTML("Connection error!<br>Can't update data!");
+                        label.setHTML("<h4>Connection error!<br>Can't update data!<h4>");
                     }
 
                     @Override
@@ -416,6 +437,7 @@ public class Administration implements EntryPoint {
 
             }
         });
+
 
 
         // Пароль
@@ -439,13 +461,13 @@ public class Administration implements EntryPoint {
                 AdministrationServiceInterface.App.getInstance().setPassword(object.getId(), getMD5(value), new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        label.setHTML("Connection error!<br>Can't update data!");
+                        label.setHTML("<h4>Connection error!<br>Can't update data!<h4>");
                     }
 
                     @Override
                     public void onSuccess(Boolean result) {
                         if (!result) {
-                            label.setHTML("Server error!");
+                            label.setHTML("<h4>Server error!<h4>");
                         } else {
                             object.setPassword(getMD5(value));
                             dataProvider.refresh();
@@ -456,6 +478,7 @@ public class Administration implements EntryPoint {
         });
 
 
+        // Удаление ссылки
         Column<LinkData, String> deleteColumn = new Column<LinkData, String>(new ButtonCell()) {
             @Override
             public String getValue(LinkData object) {
@@ -474,13 +497,13 @@ public class Administration implements EntryPoint {
                     AdministrationServiceInterface.App.getInstance().deleteLink(object.getId(), new AsyncCallback<Boolean>() {
                         @Override
                         public void onFailure(Throwable caught) {
-                            label.setHTML("Connection error!<br>Can't delete data!");
+                            label.setHTML("<h4>Connection error!<br>Can't delete data!<h4>");
                         }
 
                         @Override
                         public void onSuccess(Boolean result) {
                             if (!result) {
-                                label.setHTML("Server error!");
+                                label.setHTML("<h4>Server error!<h4>");
                             } else { // Удаляем данный объект из списка
                                 dataProvider.getList().remove(object);
                                 dataProvider.refresh();
