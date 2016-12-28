@@ -90,6 +90,7 @@ public class Error404 implements EntryPoint {
     /**
      * Диалоговое окно для ввода пароля
      */
+    @SuppressWarnings("Convert2Lambda")
     private class PasswordDialog extends DialogBox {
 
         PasswordDialog(final ReturnLinkData link) {

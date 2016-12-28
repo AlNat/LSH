@@ -30,7 +30,7 @@ CREATE TABLE short (
 	current_count INT, -- Текущее кол-во переходов
 	password VARCHAR(32), -- Пароль на ссылку - хэш
 	ip CIDR, -- IP откуда создали
-	user_agent VARCHAR(180), -- Браузер, откуда создали
+	user_agent VARCHAR(255), -- Браузер, откуда создали
 	owner INT REFERENCES users(id) ON UPDATE CASCADE DEFAULT 0 -- Владелец ссылки
 );
 
@@ -41,7 +41,7 @@ CREATE TABLE analitics (
 	short_id INT NOT NULL REFERENCES short(id) ON UPDATE CASCADE, -- Запись перехода 
 	visit_time TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp, -- Время перехода
 	ip CIDR, -- IP откуда пришли
-	user_agent VARCHAR(256) -- Браузер, откуда пришли
+	user_agent VARCHAR(255) -- Браузер, откуда пришли
 );
 
 

@@ -22,10 +22,6 @@ body {
     background: #82B1FF;
 }
 
-div {
-    align: center;
-}
-
 .blockTitle {
     background: #304FFE;
     height: 20%;
@@ -38,12 +34,14 @@ div {
     height: 20%;
     border: none;    
     position: relative;
+    text-align: center;
 }
 
 .blockComplex {
     height: 55%;
     border: none;
     position: relative;
+    text-align: center;
 }
 
 .blockAbout {

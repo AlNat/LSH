@@ -22,7 +22,7 @@ public class Log {
     // Инстанс - паттерн Синглтон
     public static final Log instance = new Log();
 
-    private String filename;
+    private final String filename;
 
     /**
      * Конструктор, создает или открывает файл лога
@@ -32,10 +32,13 @@ public class Log {
 
         File file = new File(filename); // Создаем ссылку на файл
 
-
         if (!file.exists()) { // Если файл не существует
             try {
-                file.createNewFile(); // То создадим его
+                boolean t = file.createNewFile(); // То создадим его
+                if (!t) {
+                    System.out.println("Can't create log file!");
+                    System.out.println("File name - " + filename);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

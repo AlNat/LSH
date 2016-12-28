@@ -1,3 +1,3 @@
 After create WAR artifact need to delete .devmode.js files from war inside folders 404 and LSH
 
-And FIX config.xml when deploy
+And FIX config.xml when deploy + Delete line in Config.java

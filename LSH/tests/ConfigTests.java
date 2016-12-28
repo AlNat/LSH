@@ -11,11 +11,6 @@ import org.testng.annotations.Test;
  */
 public class ConfigTests {
 
-    @BeforeTest
-    public void Test() throws Exception {
-        Config.instance.hashCode(); // Создали экземпляр конфига перед работой
-    }
-
     @Test(timeOut = 100)
     public void TestGetConfig() throws Exception {
         Assert.assertEquals(Config.instance.getLogFile(), "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\log.txt");

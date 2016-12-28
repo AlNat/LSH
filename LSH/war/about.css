@@ -35,7 +35,7 @@ body {
     background: #E8EAF6;
     text-align: center;
     height: 70%;
-    margin: 2% 30% 0% 30%;
+    margin: 2% 30% 0 30%;
     border: none;
     position: relative;
 }
@@ -43,7 +43,7 @@ body {
 .blockInfo {
     text-align: center;
     height: 10%;
-    margin: 2% 20% 0% 20%;
+    margin: 2% 20% 0 20%;
     border: none;
     position: relative;
 }

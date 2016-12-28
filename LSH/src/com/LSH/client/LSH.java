@@ -271,7 +271,7 @@ public class LSH implements EntryPoint {
      * Класс, которые реагирует на нажатие кнопи скопировать в буфер обмена
      */
     private class CopyClickHandler implements ClickHandler {
-        String id; // Простая или управляемая ссылка долна быть скопирована
+        final String id; // Простая или управляемая ссылка долна быть скопирована
 
         CopyClickHandler (String id) { // Получаем id
             this.id = id;
@@ -287,7 +287,7 @@ public class LSH implements EntryPoint {
      * Кей-хендлер, нажимающий кнопку(переданную в конструкторе) по нажатию Enter
      */
     private static class EnterKeyListener implements KeyDownHandler {
-        Button button; // Кнопка
+        final Button button; // Кнопка
 
         EnterKeyListener (Button button) {
             this.button = button;

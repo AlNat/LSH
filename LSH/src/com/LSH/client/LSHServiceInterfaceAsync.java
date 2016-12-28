@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /**
  * Интерфейс, описывающий поведения сервера
  */
-public interface LSHServiceInterfaceAsync {
+interface LSHServiceInterfaceAsync {
     void getShort(PutLinkData msg, AsyncCallback<String> async);
     void getOriginal(GetLinkData getLinkData, AsyncCallback<ReturnLinkData> async);
 }

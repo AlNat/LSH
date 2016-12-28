@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Интерфейс, оописывающий поведения сервера
  */
-public interface AdministrationServiceInterfaceAsync {
+interface AdministrationServiceInterfaceAsync {
     void getData(String login, AsyncCallback<LinkData[]> async);
     void isUser(String login, String password, AsyncCallback<Boolean> async);
 
