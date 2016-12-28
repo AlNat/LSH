@@ -15,6 +15,7 @@ public interface LSHServiceInterface extends RemoteService {
 
     String getShort(PutLinkData msg);
     ReturnLinkData getOriginal (GetLinkData getLinkData);
+    String Login(String userLogin, String userPassword);
 
     class App {
         private static LSHServiceInterfaceAsync ourInstance = GWT.create(LSHServiceInterface.class);

@@ -17,9 +17,11 @@ import java.security.MessageDigest;
  *
  * Класс, отвечающий за главную страницу UI
  */
+@SuppressWarnings("Convert2Lambda")
 public class LSH implements EntryPoint {
 
     private static final String errorCode = "Error!"; // Код ошибки
+    private String login; // Логин вошедшего пользователя
 
     /* Набор полей для простом сокращении */
     private final TextBox simpleOriginalLink = new TextBox(); // Оригинальная ссылка
@@ -48,10 +50,11 @@ public class LSH implements EntryPoint {
     private final HTML complexPasswordText = new HTML("Set password:"); // Текст перед полем для пароля ссыли
     private final TextBox complexPassword = new PasswordTextBox(); // Само поле пароля ссылки
 
-    private final HTML complexUsernameText = new HTML("Login"); // Текст перед полем для логина пользователя
-    private final TextBox complexUsername = new TextBox(); // Само поле логина пользователя
-    private final HTML complexUserPasswordText = new HTML("Password:"); // Текст перед полем для пароля пользователя
-    private final TextBox complexUserPassword = new PasswordTextBox(); // Само поле пароля пользователя
+
+    /* Набор полей для логина */
+    private final LoginDialog dialog = new LoginDialog(); // Диалог для входа пользователя
+    private final HTML loginLabel = new HTML();
+    private final Button loginButton = new Button("Login");
 
     /**
      * Основной метод в UI
@@ -103,7 +106,6 @@ public class LSH implements EntryPoint {
         final HorizontalPanel complexLinkHP = new HorizontalPanel(); // Строка с оригинальной ссылокой
         final HorizontalPanel complexDataHP = new HorizontalPanel(); // Данные
         final HorizontalPanel complexOptionalData = new HorizontalPanel(); // Опциональные данные
-        final HorizontalPanel complexUserData = new HorizontalPanel(); // Данные об пользователе
         final HorizontalPanel complexAnswerHP = new HorizontalPanel(); // Ответ
 
         final VerticalPanel complexVP = new VerticalPanel(); // Хранение того, что выше
@@ -155,13 +157,6 @@ public class LSH implements EntryPoint {
         complexOptionalData.add(complexPasswordText);
         complexOptionalData.add(complexPassword);
 
-        complexUserData.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        complexUserData.setSpacing(5);
-        complexUserData.add(complexUsernameText);
-        complexUserData.add(complexUsername);
-        complexUserData.add(complexUserPasswordText);
-        complexUserData.add(complexUserPassword);
-
         complexAnswerHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexAnswerHP.setSpacing(5);
         complexAnswerHP.add(complexShortText);
@@ -177,7 +172,6 @@ public class LSH implements EntryPoint {
         complexOptionalVP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexOptionalVP.setSpacing(5);
         complexOptionalVP.add(complexOptionalData);
-        complexOptionalVP.add(complexUserData);
         complexOptionalVP.add(complexShortButton);
         complexOptionalVP.add(complexAnswerHP);
 
@@ -185,7 +179,29 @@ public class LSH implements EntryPoint {
         complexShortText.setVisible(false);
         complexCopyButton.setVisible(false);
 
+
+        /* Настроили поля для логина */
+
+        loginButton.addClickHandler(new ClickHandler() { // При нажатии на кнопку логина показываем диалог логина
+            @Override
+            public void onClick(ClickEvent event) {
+                dialog.show();
+                dialog.center();
+            }
+        });
+
+
+        final HorizontalPanel loginHP = new HorizontalPanel();
+        loginHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        loginHP.setSpacing(5);
+        loginHP.add(loginLabel);
+        loginHP.add(loginButton);
+
+        dialog.hide(); // Диалог логина по умолчанию скрыт
+
+
         // Устанавливаем наши панель на страницу
+        RootPanel.get("Login").add(loginHP);
         RootPanel.get("SimpleShort").add(simpleVP);
         RootPanel.get("ComplexShort").add(complexVP);
         RootPanel.get("ComplexShortOptional").add(complexOptionalVP);
@@ -200,6 +216,10 @@ public class LSH implements EntryPoint {
             PutLinkData putLinkData = new PutLinkData(simpleOriginalLink.getText()); // Формируем сообщение на сервер
             putLinkData.setBrowser(Window.Navigator.getUserAgent()); // user-agent пользователя
             putLinkData.setIp(getIP()); // IP адрес пользователя
+
+            if (login != null) {
+                putLinkData.setUserLogin(login); // Если вошли под логином то пишем его
+            }
 
             LSHServiceInterface.App.getInstance().getShort(putLinkData, new AsyncCallback<String>() { // Отпраляем сообщение и получаем ответ
                 @Override
@@ -243,8 +263,7 @@ public class LSH implements EntryPoint {
                 putLinkData.setPassword(getMD5(t));
             }
 
-            putLinkData.setUserLogin(complexUsername.getText());
-            putLinkData.setUserPassword( getMD5(complexUserPassword.getText()) );
+            putLinkData.setUserLogin(login);
 
             // И отправляем его
             LSHServiceInterface.App.getInstance().getShort(putLinkData, new AsyncCallback<String>() {
@@ -299,6 +318,115 @@ public class LSH implements EntryPoint {
             if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
                 button.click(); // Нажимаем на кнопку по нажатию клавиши Enter
             }
+        }
+
+    }
+
+    /**
+     * Диалоговое окно для ввода логина и пароля
+     */
+    private class LoginDialog extends DialogBox {
+
+        LoginDialog() { // Конструктор
+            setHTML("Please, input login and password");
+            setAnimationEnabled(true);
+            setGlassEnabled(true);
+
+            // Данные
+            final HorizontalPanel panelData = new HorizontalPanel(); // Панель ввода
+            final HorizontalPanel panelButtons = new HorizontalPanel(); // Панель кнопок
+            final HTML label = new HTML(); // Место для ошибок
+
+            final Button buttonLogin = new Button("Login"); // Кнопка для входа
+            final Button buttonCancel = new Button("Cancel"); // Кнопка для отмены
+
+            final TextBox loginTextBox = new TextBox(); // Место ввода логина
+            loginTextBox.setText("Login");
+            final PasswordTextBox passwordTextBox = new PasswordTextBox(); // Место ввода пароля
+            passwordTextBox.setText("Password");
+
+
+            loginTextBox.addKeyDownHandler(new KeyDownHandler() { // Повесели хэндлер кликов
+                @Override
+                public void onKeyDown(KeyDownEvent event) {
+                    if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                        buttonLogin.click(); // Нажимаем на кнопку по нажатию клавиши Enter
+                    }
+                }
+            });
+
+            passwordTextBox.addKeyDownHandler(new KeyDownHandler() { // Повесели хэндлер кликов
+                @Override
+                public void onKeyDown(KeyDownEvent event) {
+                    if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                        buttonLogin.click(); // Нажимаем на кнопку по нажатию клавиши Enter
+                    }
+                }
+            });
+
+            // Добавили поля для ввода в панель
+            panelData.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+            panelData.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+            panelData.add(loginTextBox);
+            panelData.add(passwordTextBox);
+
+            // Добавили кнопки в панель
+            panelButtons.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+            panelButtons.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+            panelButtons.add(buttonLogin);
+            panelButtons.add(buttonCancel);
+
+            // При нажатии на кнопку логин идем на сервер
+            buttonLogin.addClickHandler(new ClickHandler() { // Повесли обработчик нажатия на кнопку
+                public void onClick(ClickEvent event) {
+
+                    final String userLogin = loginTextBox.getText(); // Получили логин
+                    final String userPassword = getMD5(passwordTextBox.getText()); // Получили хэш текст пароля
+
+                    // Пошли на сервер
+                    LSHServiceInterface.App.getInstance().Login(userLogin, userPassword, new AsyncCallback<String>() {
+                        @Override
+                        public void onFailure(Throwable caught) { // При ошибке говорим
+                            label.setHTML("<h4>Server error!</h4><br>");
+                        }
+
+                        @Override
+                        public void onSuccess(String result) { // Если есть ответ
+                            if (result.equals("OK")) { // Если зашли под этим логином и паролем, то скрыли диалог и показали, что вошли
+                                login = userLogin;
+                                loginButton.setVisible(false);
+                                loginLabel.setVisible(true);
+                                loginLabel.setHTML("You're login as <br><h6>" + login + "</h6>");
+
+                                LoginDialog.this.hide();
+                            } else { // Иначе сказали про ошибку
+                                String t = result.substring(errorCode.length());
+                                label.setHTML(t);
+                            }
+                        }
+                    });
+
+                }
+            });
+
+            // При нажатии на кнопку отменить скрываем диалог
+            buttonCancel.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    LoginDialog.this.hide();
+                }
+            });
+
+            // Создали панель для вывода всех данных и поместили туда все
+            VerticalPanel panel = new VerticalPanel();
+            panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+            panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+            panel.add(panelData);
+            panel.add(panelButtons);
+            panel.add(label);
+
+            setWidget(panel);
+
         }
 
     }

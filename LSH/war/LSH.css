@@ -8,12 +8,20 @@ h1 {
     padding: 1%;
 }
 
+h6 {
+    font-family: Verdana, Geneva, sans-serif;
+    font-style: italic;
+    font-size: 1.5em;
+    margin: 0;
+    padding: 0;
+}
+
 p {
     font-weight: bold;
     font-family: Verdana, Geneva, sans-serif;
     text-align: center;
     margin: 0;
-    padding: 10px;
+    padding: 20px;
 }
 
 body {
@@ -31,14 +39,14 @@ body {
 
 .blockSimple {
     background: #2196F3;
-    height: 20%;
+    height: 30%;
     border: none;    
     position: relative;
     text-align: center;
 }
 
 .blockComplex {
-    height: 55%;
+    height: 45%;
     border: none;
     position: relative;
     text-align: center;
@@ -49,4 +57,8 @@ body {
     border: none;
     position: relative;
     text-align: center;
+}
+
+.blockLogin {
+    margin: 0 0 0 90%;
 }

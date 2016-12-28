@@ -11,4 +11,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 interface LSHServiceInterfaceAsync {
     void getShort(PutLinkData msg, AsyncCallback<String> async);
     void getOriginal(GetLinkData getLinkData, AsyncCallback<ReturnLinkData> async);
+    void Login(String userLogin, String userPassword, AsyncCallback<String> asyncCallback);
 }
