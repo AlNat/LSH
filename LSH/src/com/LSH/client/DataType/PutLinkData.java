@@ -64,13 +64,6 @@ public class PutLinkData implements Serializable {
         this.userLogin = userLogin;
     }
 
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
 
     /* Данные */
     private String originalLink; // Оригинальный линк
@@ -81,7 +74,6 @@ public class PutLinkData implements Serializable {
     private String ip; // IP адрес пользователя
     private String password; // Пароль на ссылку
     private String userLogin; // Логин пользователя
-    private String userPassword; // Пароль пользователя
 
 
     /* Конструкторы */
@@ -118,8 +110,7 @@ public class PutLinkData implements Serializable {
                 "; IP = " + ip +
                 "; browser = " + browser +
                 "; Password(MD5) = " + password +
-                "; Username = " + userLogin +
-                "; User password = " + userPassword +
+                "; Login = " + userLogin +
                 "}";
     }
 

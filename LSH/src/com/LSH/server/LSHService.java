@@ -95,4 +95,15 @@ public class LSHService extends RemoteServiceServlet implements LSHServiceInterf
     }
 
 
+    /**
+     * Функция входа пользователя
+     * @param userLogin логин
+     * @param userPassword пароль
+     * @return OK если вошел, Error! + Текст ошибки в ином случае
+     */
+    public String Login(String userLogin, String userPassword) {
+        return DBConnect.instance.Login(userLogin, userPassword);
+    }
+
+
 }

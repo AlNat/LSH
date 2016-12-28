@@ -17,6 +17,8 @@ CREATE TABLE users (
 	password VARCHAR(32) -- Пароль на ссылку - хэш
 );
 
+INSERT INTO users(id) VALUES (0); -- Дефолтный логин - для ссылок без владельца
+
 
 -- Таблица для сокращенных ссылок
 CREATE TABLE short (
