@@ -1,8 +1,9 @@
 #TODO
 
 - Сортировка столбцов в администрировании
-- Dependacy Matix
-- Class Diagramm
-- Схема DB
+- DIV design fix (все плывет при разном разрешении)
+###v1.6
 
-#QUESTIONS
+- Dependency Matrix
+- Class Diagram
+- DB Scheme

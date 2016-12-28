@@ -29,7 +29,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 
-
 /**
  * Created by @author AlNat on 21.12.2016.
  * Licensed by Apache License, Version 2.0
@@ -111,7 +110,7 @@ public class Administration implements EntryPoint {
     private class PasswordDialog extends DialogBox {
 
         PasswordDialog() { // Конструктор
-            setHTML("<h4>Please, input login and password</h4>");
+            setHTML("Please, input login and password");
             setAnimationEnabled(true);
             setGlassEnabled(true);
 
@@ -119,7 +118,9 @@ public class Administration implements EntryPoint {
             HorizontalPanel panel = new HorizontalPanel();
             final Button button = new Button("OK");
             final TextBox loginTextBox = new TextBox();
+            loginTextBox.setText("Login");
             final PasswordTextBox passwordTextBox = new PasswordTextBox();
+            passwordTextBox.setText("Password");
 
             loginTextBox.addKeyDownHandler(new KeyDownHandler() { // Повесели хэндлер кликов
                 @Override
@@ -228,7 +229,7 @@ public class Administration implements EntryPoint {
     private void initTable() {
 
         // TODO Разобраться, почему не сортирует столбцы
-        //  Хм - при cellTable.getColumnSortList().push(codeColumn); он нормально сортирует,
+        // Хм - при cellTable.getColumnSortList().push(codeColumn); он нормально сортирует,
         // Но не дает нажать для сортировки
 
         // Колонка с коротким кодом
