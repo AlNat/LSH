@@ -115,7 +115,7 @@ public class Administration implements EntryPoint {
             setGlassEnabled(true);
 
             // Данные
-            HorizontalPanel panel = new HorizontalPanel();
+            final HorizontalPanel panel = new HorizontalPanel();
             final Button button = new Button("OK");
             final TextBox loginTextBox = new TextBox();
             loginTextBox.setText("Login");
