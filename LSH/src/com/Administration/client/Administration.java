@@ -162,7 +162,7 @@ public class Administration implements EntryPoint {
                         @Override
                         public void onSuccess(Boolean result) { // Если есть ответ
                             if (result) { // Если зашли под этим логином и паролем, то скрыли диалог и пошли за данными
-                                dialog.hide();
+                                PasswordDialog.this.hide();
                                 GetData();
                             } else { // Иначе сказали про ошибку
                                 label.setHTML("<h3>Incorrect username or password!</h3><br>");
