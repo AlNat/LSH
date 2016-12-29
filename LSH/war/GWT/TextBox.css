@@ -1,0 +1,18 @@
+.gwt-TextBox {
+    padding: 5px 4px;
+    border: 1px solid #ccc;
+    border-top: 1px solid #999;
+    font-size: small;
+    font-family: Arial Unicode MS, Arial, sans-serif;
+}
+
+.gwt-TextBox-readonly {
+    color: #888;
+}
+
+.gwt-PasswordTextBox {
+    padding: 5px 4px;
+    border: 1px solid #ccc;
+    border-top: 1px solid #999;
+    font-size: 100%;
+}
