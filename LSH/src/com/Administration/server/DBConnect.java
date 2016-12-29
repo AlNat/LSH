@@ -45,7 +45,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect");
+            l.setClassName("Admin.DBConnect");
             l.setType("Connection");
             l.setMessage("Cannot connect to DB");
             Log.instance.WriteEvent(l);
@@ -57,7 +57,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect");
+            l.setClassName("Admin.DBConnect");
             l.setType("Connection");
             l.setMessage("Cannot find jdbc driver");
             Log.instance.WriteEvent(l);
@@ -88,7 +88,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.isUser");
+            l.setClassName("Admin.DBConnect.isUser");
             l.setType("Login");
             l.setMessage("Login = " + login + "; Password = " + password);
             Log.instance.WriteEvent(l);
@@ -104,7 +104,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.isUser");
+            l.setClassName("Admin.DBConnect.isUser");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -143,7 +143,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.getData");
+            l.setClassName("Admin.DBConnect.getData");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -170,7 +170,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.getData");
+            l.setClassName("Admin.DBConnect.getData");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -223,7 +223,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.getData");
+            l.setClassName("Admin.DBConnect.getData");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -258,8 +258,8 @@ class DBConnect {
             // Пишем в лог
             LogEvent l = new LogEvent();
             l.setClassName("DBConnect.setOriginalLink");
-            l.setType("DataError");
-            l.setMessage("Illegal link");
+            l.setType("Illegal link");
+            l.setMessage("id = " + id + "; link = " + link + ";");
             Log.instance.WriteEvent(l);
 
             return false;
@@ -277,7 +277,7 @@ class DBConnect {
             LogEvent l = new LogEvent();
             l.setClassName("DBConnect.setOriginalLink");
             l.setType("Update data");
-            l.setMessage("id = " + id + "link = " + link);
+            l.setMessage("id = " + id + "; link = " + link + ";");
             Log.instance.WriteEvent(l);
 
             return true;
@@ -289,7 +289,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.setOriginalLink");
+            l.setClassName("Admin.DBConnect.setOriginalLink");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -317,9 +317,9 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.setExpiredDate");
+            l.setClassName("Admin.DBConnect.setExpiredDate");
             l.setType("Update data");
-            l.setMessage("id = " + id + "date = " + date);
+            l.setMessage("id = " + id + "; date = " + date + ";");
             Log.instance.WriteEvent(l);
 
             return true;
@@ -331,7 +331,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.setExpiredDate");
+            l.setClassName("Admin.DBConnect.setExpiredDate");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -359,9 +359,9 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.setMaxCount");
+            l.setClassName("Admin.DBConnect.setMaxCount");
             l.setType("Update data");
-            l.setMessage("id = " + id + "count = " + count);
+            l.setMessage("id = " + id + "; count = " + count + ";");
             Log.instance.WriteEvent(l);
 
             return true;
@@ -373,7 +373,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.setMaxCount");
+            l.setClassName("Admin.DBConnect.setMaxCount");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -401,9 +401,9 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.setPassword");
+            l.setClassName("Admin.DBConnect.setPassword");
             l.setType("Update data");
-            l.setMessage("id = " + id + "password = " + password);
+            l.setMessage("id = " + id + "; password = " + password + ";");
             Log.instance.WriteEvent(l);
 
             return true;
@@ -415,7 +415,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.setPassword");
+            l.setClassName("Admin.DBConnect.setPassword");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -432,7 +432,6 @@ class DBConnect {
      */
     Boolean deleteLink (int id) {
 
-
         try {
 
             // Получили код по id
@@ -446,7 +445,6 @@ class DBConnect {
             rs.close();
             st.close();
 
-
             // Сделали код инвалидным
             st = connection.prepareStatement("UPDATE status SET valid = FALSE WHERE user_id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setInt(1, t);
@@ -455,9 +453,9 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.deleteLink");
+            l.setClassName("Admin.DBConnect.deleteLink");
             l.setType("Update data");
-            l.setMessage("id = " + id);
+            l.setMessage("id = " + id + ";");
             Log.instance.WriteEvent(l);
 
             return true;
@@ -469,7 +467,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.deleteLink");
+            l.setClassName("Admin.DBConnect.deleteLink");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -478,4 +476,6 @@ class DBConnect {
         }
 
     }
+
+
 }

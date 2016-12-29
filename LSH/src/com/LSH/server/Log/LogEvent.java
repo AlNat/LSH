@@ -53,12 +53,12 @@ public class LogEvent {
     String Write () {
 
         String date = new Date (System.currentTimeMillis() ).toString();
-        String a = "[" + date + "] Event = " + type + "; ClassName = " + className + "; Message = " + message + "; ";
+        String a = "[" + date + "] Event:" + type + "; ClassName:{" + className + "}; Message:{" + message + "}; ";
 
         if (getLinkData != null) {
-            a += "LinkData:" + getLinkData.toLog() + ";";
+            a += "LinkData:" + getLinkData.toString() + ";";
         } else if (putLinkData != null) {
-            a += "LinkData:" + putLinkData.toLog() + ";";
+            a += "LinkData:" + putLinkData.toString() + ";";
         }
         return a;
     }

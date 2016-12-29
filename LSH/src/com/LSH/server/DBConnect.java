@@ -46,7 +46,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect");
+            l.setClassName("LSH.DBConnect");
             l.setType("Connection");
             l.setMessage("Cannot connect to DB");
             Log.instance.WriteEvent(l);
@@ -58,7 +58,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect");
+            l.setClassName("LSH.DBConnect");
             l.setType("Connection");
             l.setMessage("Cannot find jdbc driver");
             Log.instance.WriteEvent(l);
@@ -108,7 +108,7 @@ class DBConnect {
 
             // Пишем лог
             LogEvent l = new LogEvent();
-            l.setClassName("DBConnect.CheckAvailability");
+            l.setClassName("LSH.DBConnect.CheckAvailability");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -140,16 +140,16 @@ class DBConnect {
             if (answer == -1) { // Если код невалидный то отвечаем ошибкой
                 // Пишем лог
                 LogEvent l = new LogEvent(in);
-                l.setClassName("DBConnect.Put");
+                l.setClassName("LSH.DBConnect.Put");
                 l.setType("InvalidCode");
-                l.setMessage("answer=-1");
+                l.setMessage("answer = -1");
                 Log.instance.WriteEvent(l);
 
                 return errorCode + "<br>Invalid code!";
             } else if (answer == -2) { // Если занят тоже
                 // Пишем лог
                 LogEvent l = new LogEvent(in);
-                l.setClassName("DBConnect.Put");
+                l.setClassName("LSH.DBConnect.Put");
                 l.setType("CodeError");
                 l.setMessage("MemoUnavailable");
                 Log.instance.WriteEvent(l);
@@ -175,7 +175,6 @@ class DBConnect {
                 statement.close();
             } catch (SQLException e) { // Отловили ошибки
                 e.printStackTrace();
-
 
                 WritePutLog(in, e);// Пишем лог
 
@@ -205,7 +204,7 @@ class DBConnect {
                 if (e.getSQLState().equals("24000")) { // Пустой ответ - нет такого логина - вернули ошибку
 
                     LogEvent l = new LogEvent(in);
-                    l.setClassName("DBConnect.Put");
+                    l.setClassName("LSH.DBConnect.Put");
                     l.setType("Login not found");
                     l.setMessage("Login = " + userLogin);
                     Log.instance.WriteEvent(l);
@@ -219,7 +218,7 @@ class DBConnect {
 
                 // Пишем лог
                 LogEvent l = new LogEvent(in);
-                l.setClassName("DBConnect.Put");
+                l.setClassName("LSH.DBConnect.Put");
                 l.setType("SQLException");
                 l.setMessage(e.getMessage());
                 Log.instance.WriteEvent(l);
@@ -291,7 +290,7 @@ class DBConnect {
 
         // Пишем лог
         LogEvent l = new LogEvent(in);
-        l.setClassName("DBConnect.Put");
+        l.setClassName("LSH.DBConnect.Put");
         l.setType("Success");
         l.setMessage("Return code:" + code);
         Log.instance.WriteEvent(l);
@@ -358,7 +357,7 @@ class DBConnect {
 
             // Пишем в лог
             LogEvent l = new LogEvent(in);
-            l.setClassName("DBConnect.Get");
+            l.setClassName("LSH.DBConnect.Get");
             l.setType("SQLException");
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
@@ -427,7 +426,7 @@ class DBConnect {
 
         // Пишем лог
         LogEvent l = new LogEvent(in);
-        l.setClassName("DBConnect.Get");
+        l.setClassName("LSH.DBConnect.Get");
         l.setType("Success");
         l.setMessage("Return link");
         Log.instance.WriteEvent(l);
@@ -463,7 +462,7 @@ class DBConnect {
             } else { // Если пароль не подошел, то возращаем ошибку
                 // Пишем лог
                 LogEvent l = new LogEvent();
-                l.setClassName("DBConnect.Login");
+                l.setClassName("LSH.DBConnect.Login");
                 l.setType("Login");
                 l.setMessage("Login = " + userLogin + "; Password = " + userPassword);
                 Log.instance.WriteEvent(l);
@@ -492,7 +491,7 @@ class DBConnect {
 
                     // Пишем лог
                     LogEvent l = new LogEvent();
-                    l.setClassName("DBConnect.Login.CreateNew");
+                    l.setClassName("LSH.DBConnect.Login.CreateNew");
                     l.setType("SQLException");
                     l.setMessage(ee.getMessage());
                     Log.instance.WriteEvent(l);
@@ -508,7 +507,7 @@ class DBConnect {
 
                 // Пишем лог
                 LogEvent l = new LogEvent();
-                l.setClassName("DBConnect.Login");
+                l.setClassName("LSH.DBConnect.Login");
                 l.setType("SQLException");
                 l.setMessage(e.getMessage());
                 Log.instance.WriteEvent(l);
@@ -530,7 +529,7 @@ class DBConnect {
      */
     private void WritePutLog (PutLinkData in, SQLException e) {
         LogEvent l = new LogEvent(in);
-        l.setClassName("DBConnect.Put");
+        l.setClassName("LSH.DBConnect.Put");
         l.setType("SQLException");
         l.setMessage(e.getMessage());
         Log.instance.WriteEvent(l);
@@ -543,7 +542,7 @@ class DBConnect {
      */
     private void WriteGetLog (GetLinkData in) {
         LogEvent l = new LogEvent(in);
-        l.setClassName("DBConnect.Get");
+        l.setClassName("LSH.DBConnect.Get");
         l.setType("CodeError");
         l.setMessage("Invalid code!");
         Log.instance.WriteEvent(l);
@@ -557,7 +556,7 @@ class DBConnect {
      */
     private void WriteGetELog (GetLinkData in, SQLException e) {
         LogEvent l = new LogEvent(in);
-        l.setClassName("DBConnect.Get");
+        l.setClassName("LSH.DBConnect.Get");
         l.setType("SQLException");
         l.setMessage(e.getMessage());
         Log.instance.WriteEvent(l);

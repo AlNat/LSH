@@ -27,6 +27,7 @@ public class LSH implements EntryPoint {
     private static final String cookieName = "LSHLogin"; // Имя куки для логина
     private String login; // Логин вошедшего пользователя
 
+
     /* Набор полей для простом сокращении */
     private final TextBox simpleOriginalLink = new TextBox(); // Оригинальная ссылка
     private final Button simpleShortButton = new Button("Get Short Link"); // Кнопка получить короткую ссылку
@@ -60,6 +61,7 @@ public class LSH implements EntryPoint {
     private final HTML loginLabel = new HTML(); // Поле для выода информации
     private final Button loginButton = new Button("Login"); // Кнопка логина
     private final Button logoutButton = new Button("Log out"); // Кнопка выхода
+
 
     /**
      * Основной метод в UI

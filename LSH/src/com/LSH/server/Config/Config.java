@@ -73,7 +73,7 @@ public class Config {
         try {
 
             //filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml"; // TODO delete in release version
-            File file = new File(filename); //tt
+            File file = new File(filename);
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -109,12 +109,14 @@ public class Config {
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println("Config File Error!");
+            System.out.println("Config File Not Found!");
             System.out.println("Please, sure that config file placed in:");
             System.out.println(filename);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
 }

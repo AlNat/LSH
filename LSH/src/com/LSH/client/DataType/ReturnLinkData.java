@@ -54,7 +54,8 @@ public class ReturnLinkData implements Serializable {
         this.errorCode = errorCode;
     }
 
-    public String toLog () {
+    @Override
+    public String toString () {
         return "{originalLink = " + originalLink +
                 "; Password(MD5) = " + password +
                 "; ErrorCode = " + errorCode +
