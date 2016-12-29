@@ -121,6 +121,7 @@ public class Administration implements EntryPoint {
                 // И востанавливаем изначальное состояние
                 loginLabel.setHTML("");
                 loginLabel.setVisible(false);
+                label.setHTML("");
                 cellTable.setVisible(false);
                 pager.setVisible(false);
                 logoutButton.setVisible(false);
@@ -235,6 +236,7 @@ public class Administration implements EntryPoint {
 
             // Обновли интерфейс и скрыли диалог
             loginLabel.setHTML("You're login as <br><h6>" + userLogin + "</h6>");
+            label.setHTML("");
             logoutButton.setVisible(true);
 
             PasswordDialog.this.hide();

@@ -72,7 +72,7 @@ public class Config {
 
         try {
 
-            //filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml"; // TODO delete in release version
+            //filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml"; // TODO delete - debug
             File file = new File(filename);
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
