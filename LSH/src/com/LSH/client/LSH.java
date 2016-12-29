@@ -21,11 +21,10 @@ import java.util.Date;
  */
 @SuppressWarnings("Convert2Lambda")
 public class LSH implements EntryPoint {
-    // TODO Комментарии
 
     private static final String errorCode = "Error!"; // Код ошибки
     private static final int COOKIE_TIMEOUT = 1000 * 60 * 60 * 24; // Время жизни кук - 1000 миллиисекунд, 60 секунд, 60 минут, 24 часа - сутки
-    private final String cookieName = "LSHLogin"; // Имя куки для логина
+    private static final String cookieName = "LSHLogin"; // Имя куки для логина
     private String login; // Логин вошедшего пользователя
 
     /* Набор полей для простом сокращении */
@@ -191,7 +190,7 @@ public class LSH implements EntryPoint {
         loginButton.addClickHandler(new ClickHandler() { // При нажатии на кнопку логина показываем диалог логина
             @Override
             public void onClick(ClickEvent event) {
-                dialog.init();
+                dialog.Login();
             }
         });
 
@@ -200,6 +199,7 @@ public class LSH implements EntryPoint {
             public void onClick(ClickEvent event) { // При нажатии
                 Cookies.removeCookie(cookieName); // Удаляем куку об пользователе
 
+                // И возвращаем все к исходному состоянию
                 loginButton.setVisible(true);
                 loginLabel.setHTML("");
                 loginLabel.setVisible(false);
@@ -208,6 +208,7 @@ public class LSH implements EntryPoint {
         });
 
 
+        // Настроили и добавили данные в панель
         final HorizontalPanel loginHP = new HorizontalPanel();
         loginHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         loginHP.setSpacing(5);
@@ -217,6 +218,8 @@ public class LSH implements EntryPoint {
 
         logoutButton.setVisible(false);
         dialog.hide(); // Диалог логина по умолчанию скрыт
+
+
 
         // Устанавливаем наши панель на страницу
         RootPanel.get("Login").add(loginHP);
@@ -354,11 +357,12 @@ public class LSH implements EntryPoint {
             setAnimationEnabled(true);
             setGlassEnabled(true);
 
-            // Данные
+            // Панели
             final HorizontalPanel panelData = new HorizontalPanel(); // Панель ввода
             final HorizontalPanel panelButtons = new HorizontalPanel(); // Панель кнопок
             final HTML label = new HTML(); // Место для ошибок
 
+            // Данные
             final Button buttonLogin = new Button("Login"); // Кнопка для входа
             final Button buttonCancel = new Button("Cancel"); // Кнопка для отмены
 
@@ -436,6 +440,7 @@ public class LSH implements EntryPoint {
                 }
             });
 
+
             // Создали панель для вывода всех данных и поместили туда все
             VerticalPanel panel = new VerticalPanel();
             panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -444,7 +449,7 @@ public class LSH implements EntryPoint {
             panel.add(panelButtons);
             panel.add(label);
 
-            setWidget(panel);
+            setWidget(panel); // Устанавили панель в этот виджет
 
         }
 
@@ -453,6 +458,8 @@ public class LSH implements EntryPoint {
          * @param userLogin логин пользователя
          */
         void GoodLogin(String userLogin) {
+
+            // Изменили интерфейс
             login = userLogin;
             loginButton.setVisible(false);
             loginLabel.setVisible(true);
@@ -461,7 +468,7 @@ public class LSH implements EntryPoint {
 
             PutLoginCookie (userLogin); // Положили куку о том, что мы вошли
 
-            LoginDialog.this.hide();
+            LoginDialog.this.hide(); // Скрыли диалог
         }
 
         /**
@@ -493,11 +500,11 @@ public class LSH implements EntryPoint {
         /**
          * Функция инициализации входа
          */
-        void init () {
+        void Login() {
 
             if (isLogin()) { // Если мы уже вошли
                 GoodLogin(getCookieLogin()); // То обновили куку об этом
-            } else {
+            } else { // Иначе показали диалог входа
                 LoginDialog.this.show();
                 LoginDialog.this.center();
             }

@@ -38,7 +38,6 @@ import java.util.LinkedList;
  */
 @SuppressWarnings("Convert2Lambda")
 public class Administration implements EntryPoint {
-    // TODO Комментарии
 
     private static final int COOKIE_TIMEOUT = 1000 * 60 * 60 * 24; // Время жизни кук - 1000 миллиисекунд, 60 секунд, 60 минут, 24 часа - сутки
     private final String cookieName = "LSHLogin"; // Имя куки для логина - аналогично той, что при создании
@@ -97,7 +96,8 @@ public class Administration implements EntryPoint {
         cellTable.setAutoHeaderRefreshDisabled(true);
         cellTable.setAutoFooterRefreshDisabled(true);
 
-        VerticalPanel VP = new VerticalPanel(); // Панель для вывода
+        // Панель для вывода данных
+        VerticalPanel VP = new VerticalPanel();
         VP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         VP.add(cellTable);
         VP.add(pager);
@@ -105,7 +105,8 @@ public class Administration implements EntryPoint {
 
         logoutButton = new Button("Logout");
 
-        HorizontalPanel loginHP = new HorizontalPanel(); // Панель для логина
+        // Панель для логина
+        HorizontalPanel loginHP = new HorizontalPanel();
         loginHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         loginHP.setSpacing(5);
         loginHP.add(loginLabel);
@@ -131,17 +132,17 @@ public class Administration implements EntryPoint {
 
             }
         });
-
         logoutButton.setVisible(false);
 
+
+        // Показываем панели
         RootPanel.get("Login").add(loginHP);
-        RootPanel.get("Data").add(VP); // Вывели панель
+        RootPanel.get("Data").add(VP);
 
         // Показали диалог и скрыли таблицу
         cellTable.setVisible(false);
         pager.setVisible(false);
-
-        dialog.init();
+        dialog.Login();
     }
 
 
@@ -161,9 +162,11 @@ public class Administration implements EntryPoint {
 
             // Данные
             final HorizontalPanel panel = new HorizontalPanel();
-            final Button button = new Button("OK");
+            final Button button = new Button("Let me in");
+
             final TextBox loginTextBox = new TextBox();
             loginTextBox.setText("Login");
+
             final PasswordTextBox passwordTextBox = new PasswordTextBox();
             passwordTextBox.setText("Password");
 
@@ -227,12 +230,17 @@ public class Administration implements EntryPoint {
          * @param userLogin логин пользователя
          */
         void GoodLogin(String userLogin) {
+
             PutLoginCookie (userLogin); // Положили куку о том, что мы вошли
+
+            // Обновли интерфейс и скрыли диалог
             loginLabel.setHTML("You're login as <br><h6>" + userLogin + "</h6>");
             logoutButton.setVisible(true);
 
             PasswordDialog.this.hide();
             login = userLogin;
+
+            // И пошли за данными на сервер
             GetData();
         }
 
@@ -264,14 +272,15 @@ public class Administration implements EntryPoint {
         /**
          * Функция инициализации логина
          */
-        void init () {
+        void Login() {
 
             if (isLogin()) { // Если мы уже вошли
                 GoodLogin(getCookieLogin()); // То обновили куку об этом
-            } else {
+            } else { // Иначе показали окно для входа
                 PasswordDialog.this.show();
                 PasswordDialog.this.center();
             }
+
         }
 
     }
@@ -281,7 +290,8 @@ public class Administration implements EntryPoint {
      * Функция получения данных с сервера
      */
     private void GetData () {
-        // Пошли на сервер за кучей данных
+
+        // Пошли на сервер за данными о ссылках
         AdministrationServiceInterface.App.getInstance().getData(login, new AsyncCallback<LinkData[]>() {
             @Override
             public void onFailure(Throwable caught) { // Если не смогли соедениться
@@ -312,6 +322,7 @@ public class Administration implements EntryPoint {
 
         cellTable.setVisible(true); // И показываем таблицу с пейджером
         pager.setVisible(true);
+
     }
 
 
@@ -346,6 +357,7 @@ public class Administration implements EntryPoint {
         });
 
         cellTable.addColumn(codeColumn, "Short Link"); // Добавили колонку с названием к таблице
+
 
         // Оригинальная ссылка
         Column<LinkData, String> originalLinkColumn = new Column<LinkData, String>(new EditTextCell()) {
@@ -399,7 +411,6 @@ public class Administration implements EntryPoint {
         });
 
 
-
         DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd MMM yyyy"); // Формат вывода даты
 
         // Время создания
@@ -429,8 +440,7 @@ public class Administration implements EntryPoint {
         cellTable.addColumn(createDateColumn, "Create date");
 
 
-        // Настроили ячейку выбора
-        DatePickerCell cell = new DatePickerCell(dateFormat);
+        DatePickerCell cell = new DatePickerCell(dateFormat); // Настроили ячейку выбора
 
         // Срок окончания
         Column<LinkData, Date> expiredDateColumn = new Column<LinkData, Date>(cell) {
@@ -441,7 +451,6 @@ public class Administration implements EntryPoint {
         };
 
         expiredDateColumn.setSortable(true);
-        expiredDateColumn.setDefaultSortAscending(false);
         sortHandler.setComparator(expiredDateColumn, new Comparator<LinkData>() {
             @Override
             public int compare(LinkData o1, LinkData o2) {
@@ -655,6 +664,7 @@ public class Administration implements EntryPoint {
                 }
             }
         });
+
 
     }
 
