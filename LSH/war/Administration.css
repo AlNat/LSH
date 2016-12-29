@@ -9,6 +9,14 @@ h3 {
     padding: 2%;
 }
 
+h6 {
+    font-family: Verdana, Geneva, sans-serif;
+    font-style: italic;
+    font-size: 1.5em;
+    margin: 0;
+    padding: 0;
+}
+
 p {
     font-weight: bold;
     font-family: Verdana, Geneva, sans-serif;
@@ -45,4 +53,8 @@ body {
     width: 100%;
     border: none;
     text-align: center;
+}
+
+.blockLogin {
+    margin: 0 0 0 85%;
 }

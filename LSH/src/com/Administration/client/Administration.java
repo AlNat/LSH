@@ -13,6 +13,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.SimplePager;
 
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -38,11 +39,16 @@ import java.util.LinkedList;
 @SuppressWarnings("Convert2Lambda")
 public class Administration implements EntryPoint {
 
+    private static final int COOKIE_TIMEOUT = 1000 * 60 * 60 * 24; // Время жизни кук - 1000 миллиисекунд, 60 секунд, 60 минут, 24 часа - сутки
+    private final String cookieName = "LSHLogin"; // Имя куки для логина - аналогично той, что при создании
+
     private String login; // Данные логина
     private String password; // Данные пароля
     private PasswordDialog dialog; // Далоговое окно с вводом логина и пароля
 
-    private HTML label; // Лебл с ошибками
+    private HTML label; // Лейбл с ошибками
+    private HTML loginLabel; // Лейбл с ошибками
+    private Button logoutButton; // Кнопка выхода
 
     private CellTable <LinkData> cellTable; // Таблица
     private LinkedList<LinkData> list; // Данные
@@ -58,6 +64,9 @@ public class Administration implements EntryPoint {
 
         label = new HTML(); // Создали и настроили поле для вывода информации
         label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
+        loginLabel = new HTML(); // Создали и настроили поле для вывода информации о логине
+        loginLabel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
         dialog = new PasswordDialog(); // Создали диалоговое окно
         list = new LinkedList<>(); // Создали лист с данными
@@ -93,14 +102,35 @@ public class Administration implements EntryPoint {
         VP.add(pager);
         VP.add(label);
 
+        HorizontalPanel loginHP = new HorizontalPanel(); // Панель для логина
+        loginHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        loginHP.add(loginLabel);
+        loginHP.add(logoutButton);
+
+        logoutButton.addClickHandler(new ClickHandler() { // Кнопка выхода
+            @Override
+            public void onClick(ClickEvent event) { // При нажатии
+                Cookies.removeCookie(cookieName); // Удаляем куку об пользователе
+
+                loginLabel.setHTML("");
+                loginLabel.setVisible(false);
+                logoutButton.setVisible(false);
+
+                dialog.show();
+
+            }
+        });
+
+        logoutButton.setVisible(false);
+
+        RootPanel.get("Login").add(loginHP);
         RootPanel.get("Data").add(VP); // Вывели панель
 
         // Показали диалог и скрыли таблицу
-        dialog.show();
-        dialog.center();
-
         cellTable.setVisible(false);
         pager.setVisible(false);
+
+        dialog.init();
     }
 
 
@@ -109,7 +139,11 @@ public class Administration implements EntryPoint {
      */
     private class PasswordDialog extends DialogBox {
 
-        PasswordDialog() { // Конструктор
+        /**
+         * Конструктор
+         */
+        PasswordDialog() {
+
             setHTML("Please, input login and password");
             setAnimationEnabled(true);
             setGlassEnabled(true);
@@ -163,8 +197,7 @@ public class Administration implements EntryPoint {
                         @Override
                         public void onSuccess(Boolean result) { // Если есть ответ
                             if (result) { // Если зашли под этим логином и паролем, то скрыли диалог и пошли за данными
-                                PasswordDialog.this.hide();
-                                GetData();
+                                GoodLogin(login);
                             } else { // Иначе сказали про ошибку
                                 label.setHTML("<h3>Incorrect username or password!</h3><br>");
                             }
@@ -178,6 +211,56 @@ public class Administration implements EntryPoint {
 
         }
 
+        /**
+         * Если залогинились
+         * @param userLogin логин пользователя
+         */
+        void GoodLogin(String userLogin) {
+            PutLoginCookie (userLogin); // Положили куку о том, что мы вошли
+            loginLabel.setHTML("You're login as <br><h6>" + userLogin + "</h6>");
+
+            PasswordDialog.this.hide();
+            login = userLogin;
+            GetData();
+        }
+
+        /**
+         * Функция, проверяющая, залогинен ли пользователь
+         * @return true если да, false если нет
+         */
+        boolean isLogin () {
+            return getCookieLogin() != null;
+        }
+
+        /**
+         * Функция, получающая куку с логином
+         * @return Строку с логином
+         */
+        String getCookieLogin () {
+            return Cookies.getCookie(cookieName);
+        }
+
+        /**
+         * Функция, которая кладет куку с логином
+         * @param login имя пользователя
+         */
+        void PutLoginCookie (String login) {
+            Date expires = new Date((new Date()).getTime() + COOKIE_TIMEOUT);
+            Cookies.setCookie(cookieName, login, expires);
+        }
+
+        /**
+         * Функция инициализации логина
+         */
+        void init () {
+
+            if (isLogin()) { // Если мы уже вошли
+                GoodLogin(getCookieLogin()); // То обновили куку об этом
+            } else {
+                PasswordDialog.this.show();
+                PasswordDialog.this.center();
+            }
+        }
 
     }
 

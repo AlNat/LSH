@@ -4,12 +4,14 @@ import com.LSH.client.DataType.PutLinkData;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.Date;
 
 /**
  * Created by @author AlNat on 26.11.2016.
@@ -21,6 +23,8 @@ import java.security.MessageDigest;
 public class LSH implements EntryPoint {
 
     private static final String errorCode = "Error!"; // Код ошибки
+    private static final int COOKIE_TIMEOUT = 1000 * 60 * 60 * 24; // Время жизни кук - 1000 миллиисекунд, 60 секунд, 60 минут, 24 часа - сутки
+    private final String cookieName = "LSHLogin"; // Имя куки для логина
     private String login; // Логин вошедшего пользователя
 
     /* Набор полей для простом сокращении */
@@ -55,6 +59,7 @@ public class LSH implements EntryPoint {
     private final LoginDialog dialog = new LoginDialog(); // Диалог для входа пользователя
     private final HTML loginLabel = new HTML(); // Поле для выода информации
     private final Button loginButton = new Button("Login"); // Кнопка логина
+    private final Button logoutButton = new Button("Log out"); // Кнопка выхода
 
     /**
      * Основной метод в UI
@@ -185,8 +190,19 @@ public class LSH implements EntryPoint {
         loginButton.addClickHandler(new ClickHandler() { // При нажатии на кнопку логина показываем диалог логина
             @Override
             public void onClick(ClickEvent event) {
-                dialog.show();
-                dialog.center();
+                dialog.init();
+            }
+        });
+
+        logoutButton.addClickHandler(new ClickHandler() { // Кнопка выхода
+            @Override
+            public void onClick(ClickEvent event) { // При нажатии
+                Cookies.removeCookie(cookieName); // Удаляем куку об пользователе
+
+                loginButton.setVisible(true);
+                loginLabel.setHTML("");
+                loginLabel.setVisible(false);
+                logoutButton.setVisible(false);
             }
         });
 
@@ -195,10 +211,11 @@ public class LSH implements EntryPoint {
         loginHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         loginHP.setSpacing(5);
         loginHP.add(loginLabel);
+        loginHP.add(logoutButton);
         loginHP.add(loginButton);
 
+        logoutButton.setVisible(false);
         dialog.hide(); // Диалог логина по умолчанию скрыт
-
 
         // Устанавливаем наши панель на страницу
         RootPanel.get("Login").add(loginHP);
@@ -327,10 +344,11 @@ public class LSH implements EntryPoint {
      */
     private class LoginDialog extends DialogBox {
 
-        // TODO Куки
-        // TODO Текст в about
+        /**
+         * Конструктор
+         */
+        LoginDialog() {
 
-        LoginDialog() { // Конструктор
             setHTML("Please, input login and password");
             setAnimationEnabled(true);
             setGlassEnabled(true);
@@ -396,12 +414,9 @@ public class LSH implements EntryPoint {
                         @Override
                         public void onSuccess(String result) { // Если есть ответ
                             if (result.equals("OK")) { // Если зашли под этим логином и паролем, то скрыли диалог и показали, что вошли
-                                login = userLogin;
-                                loginButton.setVisible(false);
-                                loginLabel.setVisible(true);
-                                loginLabel.setHTML("You're login as <br><h6>" + login + "</h6>");
 
-                                LoginDialog.this.hide();
+                                GoodLogin(userLogin);
+
                             } else { // Иначе сказали про ошибку
                                 String t = result.substring(errorCode.length());
                                 label.setHTML(t);
@@ -430,6 +445,61 @@ public class LSH implements EntryPoint {
 
             setWidget(panel);
 
+        }
+
+        /**
+         * Если залогинились
+         * @param userLogin логин пользователя
+         */
+        void GoodLogin(String userLogin) {
+            login = userLogin;
+            loginButton.setVisible(false);
+            loginLabel.setVisible(true);
+            logoutButton.setVisible(true);
+            loginLabel.setHTML("You're login as <br><h6>" + login + "</h6>");
+
+            PutLoginCookie (userLogin); // Положили куку о том, что мы вошли
+
+            LoginDialog.this.hide();
+        }
+
+        /**
+         * Функция, проверяющая, залогинен ли пользователь
+         * @return true если да, false если нет
+         */
+        boolean isLogin () {
+            return getCookieLogin() != null;
+        }
+
+        /**
+         * Функция, получающая куку с логином
+         * @return Строку с логином
+         */
+        String getCookieLogin () {
+            return Cookies.getCookie(cookieName);
+        }
+
+        /**
+         * Функция, которая кладет куку с логином
+         * @param login имя пользователя
+         */
+        void PutLoginCookie (String login) {
+            Date expires = new Date((new Date()).getTime() + COOKIE_TIMEOUT);
+            Cookies.setCookie(cookieName, login, expires);
+        }
+
+
+        /**
+         * Функция инициализации входа
+         */
+        void init () {
+
+            if (isLogin()) { // Если мы уже вошли
+                GoodLogin(getCookieLogin()); // То обновили куку об этом
+            } else {
+                LoginDialog.this.show();
+                LoginDialog.this.center();
+            }
         }
 
     }

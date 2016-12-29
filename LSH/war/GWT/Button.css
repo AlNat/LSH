@@ -17,12 +17,3 @@
 .gwt-Button:hover {
     border-color: #939393;
 }
-
-.gwt-Button[disabled] {
-    cursor: default;
-    color: #888;
-}
-
-.gwt-Button[disabled]:hover {
-    border: 1px outset #ccc;
-}
