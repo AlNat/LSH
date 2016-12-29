@@ -23,9 +23,9 @@ public interface AdministrationServiceInterface extends RemoteService {
     Boolean deleteLink (int id);
 
     class App {
-        private static AdministrationServiceInterfaceAsync ourInstance = GWT.create(AdministrationServiceInterface.class);
+        private static AdministrationServiceInterfaceAsync instance = GWT.create(AdministrationServiceInterface.class);
         static synchronized AdministrationServiceInterfaceAsync getInstance() {
-            return ourInstance;
+            return instance;
         }
     }
 }

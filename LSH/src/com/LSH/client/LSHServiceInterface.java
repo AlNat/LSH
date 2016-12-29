@@ -18,9 +18,9 @@ public interface LSHServiceInterface extends RemoteService {
     String Login(String userLogin, String userPassword);
 
     class App {
-        private static LSHServiceInterfaceAsync ourInstance = GWT.create(LSHServiceInterface.class);
+        private static LSHServiceInterfaceAsync instance = GWT.create(LSHServiceInterface.class);
         static synchronized LSHServiceInterfaceAsync getInstance() {
-            return ourInstance;
+            return instance;
         }
     }
 }

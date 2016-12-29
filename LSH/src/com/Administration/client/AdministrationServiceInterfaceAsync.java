@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.util.Date;
 
 /**
- * Интерфейс, оописывающий поведения сервера
+ * Интерфейс, описывающий поведения сервера
  */
 interface AdministrationServiceInterfaceAsync {
     void getData(String login, AsyncCallback<LinkData[]> async);
