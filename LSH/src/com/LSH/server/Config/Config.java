@@ -7,6 +7,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.FileNotFoundException;
 
 
 /**
@@ -71,7 +72,7 @@ public class Config {
 
         try {
 
-            filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml"; // TODO delete in release version
+            //filename = "C:\\Users\\AlNat\\Source\\Studi\\Diplom\\config.xml"; // TODO delete in release version
             File file = new File(filename); //tt
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -107,10 +108,11 @@ public class Config {
 
             }
 
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
             System.out.println("Config File Error!");
             System.out.println("Please, sure that config file placed in:");
             System.out.println(filename);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

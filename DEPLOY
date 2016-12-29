@@ -1,3 +1,6 @@
-After create WAR artifact need to delete .devmode.js files from war inside folders 404 and LSH
-
-And FIX config.xml when deploy + Delete line in Config.java
+0. [Optional] Delete dubug line in Config.java (Find TODO delete commentary)
+1. Run IDEA with Release Configuration
+2. In create war need to delete .devmode.js files from war inside folders 
+3. Also delete line with devmode in compilations-mapping.txt
+4. Update confix.xml file
+5. Run this war file with your servlet-server
