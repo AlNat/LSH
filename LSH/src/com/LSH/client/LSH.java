@@ -21,6 +21,7 @@ import java.util.Date;
  */
 @SuppressWarnings("Convert2Lambda")
 public class LSH implements EntryPoint {
+    // TODO Комментарии
 
     private static final String errorCode = "Error!"; // Код ошибки
     private static final int COOKIE_TIMEOUT = 1000 * 60 * 60 * 24; // Время жизни кук - 1000 миллиисекунд, 60 секунд, 60 минут, 24 часа - сутки
@@ -456,7 +457,7 @@ public class LSH implements EntryPoint {
             loginButton.setVisible(false);
             loginLabel.setVisible(true);
             logoutButton.setVisible(true);
-            loginLabel.setHTML("You're login as <br><h6>" + login + "</h6>");
+            loginLabel.setHTML("You're login as <br><a href=\"Administration.html\">" + login + "</a>");
 
             PutLoginCookie (userLogin); // Положили куку о том, что мы вошли
 

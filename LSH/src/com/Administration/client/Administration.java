@@ -38,6 +38,7 @@ import java.util.LinkedList;
  */
 @SuppressWarnings("Convert2Lambda")
 public class Administration implements EntryPoint {
+    // TODO Комментарии
 
     private static final int COOKIE_TIMEOUT = 1000 * 60 * 60 * 24; // Время жизни кук - 1000 миллиисекунд, 60 секунд, 60 минут, 24 часа - сутки
     private final String cookieName = "LSHLogin"; // Имя куки для логина - аналогично той, что при создании
@@ -102,21 +103,31 @@ public class Administration implements EntryPoint {
         VP.add(pager);
         VP.add(label);
 
+        logoutButton = new Button("Logout");
+
         HorizontalPanel loginHP = new HorizontalPanel(); // Панель для логина
         loginHP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        loginHP.setSpacing(5);
         loginHP.add(loginLabel);
         loginHP.add(logoutButton);
 
         logoutButton.addClickHandler(new ClickHandler() { // Кнопка выхода
             @Override
             public void onClick(ClickEvent event) { // При нажатии
+
                 Cookies.removeCookie(cookieName); // Удаляем куку об пользователе
 
+                // И востанавливаем изначальное состояние
                 loginLabel.setHTML("");
                 loginLabel.setVisible(false);
+                cellTable.setVisible(false);
+                pager.setVisible(false);
                 logoutButton.setVisible(false);
 
-                dialog.show();
+                dataProvider.getList().clear(); // Чистим данные
+
+                dialog.show(); // Показываем диалог входа
+                dialog.center();
 
             }
         });
@@ -218,6 +229,7 @@ public class Administration implements EntryPoint {
         void GoodLogin(String userLogin) {
             PutLoginCookie (userLogin); // Положили куку о том, что мы вошли
             loginLabel.setHTML("You're login as <br><h6>" + userLogin + "</h6>");
+            logoutButton.setVisible(true);
 
             PasswordDialog.this.hide();
             login = userLogin;
