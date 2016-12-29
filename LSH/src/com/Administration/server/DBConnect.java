@@ -122,15 +122,40 @@ class DBConnect {
     LinkData[] getData (String login) {
 
         LinkedList<LinkData> list = new LinkedList<>(); // Лист с данными
-        Integer id;
+        Integer id; // id огина пользователя
 
-        // Получаем id пользователя с таким логином
+        ResultSet rs;
+        PreparedStatement st;
 
         try {
+
+            // Инвалидируем ссылки
+            st = connection.prepareStatement("SELECT invalidate()");
+            rs = st.executeQuery();
+
+            // Закрыли соединение
+            rs.close();
+            st.close();
+
+        } catch (SQLException e) { // Ловим ошибки
+            System.out.println("Connection Failed! Check output console");
+            e.printStackTrace();
+
+            // Пишем лог
+            LogEvent l = new LogEvent();
+            l.setClassName("DBConnect.getData");
+            l.setType("SQLException");
+            l.setMessage(e.getMessage());
+            Log.instance.WriteEvent(l);
+        }
+
+
+        // Получаем id пользователя с таким логином
+        try {
             // Создаем запрос и выполняем его
-            PreparedStatement st = connection.prepareStatement("SELECT id FROM users WHERE login = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
+            st = connection.prepareStatement("SELECT id FROM users WHERE login = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setString(1, login);
-            ResultSet rs = st.executeQuery();
+            rs = st.executeQuery();
 
             rs.next();
             id = rs.getInt("id"); // Получаем id
@@ -157,7 +182,7 @@ class DBConnect {
 
         try {
             // Создаем запрос и выполняем его
-            PreparedStatement st = connection.prepareStatement(
+            st = connection.prepareStatement(
                     // Этим запросом мы выбираем все валдиные ссылки у некоторого пользователя - см функцию invalidate,
                     // там подробнее про этот запрос
                     "SELECT * FROM short WHERE id IN (SELECT id FROM (" +
@@ -165,7 +190,7 @@ class DBConnect {
                     "WHERE owner = ? AND user_id IN (SELECT user_id FROM status WHERE valid = TRUE) ) t WHERE c = 1)",
                     ResultSet.TYPE_SCROLL_INSENSITIVE);
             st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
+            rs = st.executeQuery();
 
             // Получаем данные
             while (rs.next()) { // Заполняем лист данными
@@ -358,7 +383,7 @@ class DBConnect {
     }
 
     /**
-     * Функция, устанавливающая пароль на ссылку
+      * Функция, устанавливающая пароль на ссылку
      * @param id записи
      * @param password новый пароль
      * @return true если запись успешна, иначе false
