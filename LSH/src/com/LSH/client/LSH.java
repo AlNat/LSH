@@ -466,7 +466,7 @@ public class LSH implements EntryPoint {
             loginButton.setVisible(false);
             loginLabel.setVisible(true);
             logoutButton.setVisible(true);
-            loginLabel.setHTML("You're login as <br><a href=\"Administration.html\">" + login + "</a>");
+            loginLabel.setHTML("You're login as <br><a href=\"Administration.html\" color=lightseagreen;>" + login + "</a>");
 
             PutLoginCookie (userLogin); // Положили куку о том, что мы вошли
 
