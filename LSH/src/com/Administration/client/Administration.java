@@ -38,7 +38,6 @@ import java.util.LinkedList;
 @SuppressWarnings("Convert2Lambda")
 public class Administration implements EntryPoint {
 
-    // Данные для логина
     private String login; // Данные логина
     private String password; // Данные пароля
     private PasswordDialog dialog; // Далоговое окно с вводом логина и пароля
@@ -57,10 +56,10 @@ public class Administration implements EntryPoint {
      */
     public void onModuleLoad() {
 
-        label = new HTML();
+        label = new HTML(); // Создали и настроили поле для вывода информации
         label.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 
-        dialog = new PasswordDialog();
+        dialog = new PasswordDialog(); // Создали диалоговое окно
         list = new LinkedList<>(); // Создали лист с данными
 
         ProvidesKey<LinkData> KEY_PROVIDER = new ProvidesKey<LinkData>() { // Создали провайдер ключей - как будут браться ключи у объекта
@@ -71,29 +70,30 @@ public class Administration implements EntryPoint {
         };
         cellTable = new CellTable<>(KEY_PROVIDER); // Создали саму таблицу
 
-        sortHandler = new ListHandler<>(list);
-        cellTable.addColumnSortHandler(sortHandler);
+        dataProvider = new ListDataProvider<>(); // Провайдер данных в таблице
+        dataProvider.addDataDisplay(cellTable); // Установили, что данные относяться именно к этой таблице
+
+        sortHandler = new ListHandler<>(list); // Создали сортировщик
+        cellTable.addColumnSortHandler(sortHandler); // И привязали его к таблице
 
         SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
         pager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true); // Создали pager - управление страницами
         pager.setDisplay(cellTable); // Установили, что pager правляет имеенно этой таблицей
 
-        dataProvider = new ListDataProvider<>(); // Провайдер данных в таблице
-        dataProvider.addDataDisplay(cellTable); // Установили, что данные относяться именно к этой таблице
 
-
-        initTable(); // Создаем таблицу
+        initTable(); // Создаем и настраиваем таблицу
         cellTable.setWidth("100%");
         cellTable.setHeight("80%");
         cellTable.setAutoHeaderRefreshDisabled(true);
         cellTable.setAutoFooterRefreshDisabled(true);
 
-        VerticalPanel VP = new VerticalPanel();
+        VerticalPanel VP = new VerticalPanel(); // Панель для вывода
         VP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         VP.add(cellTable);
         VP.add(pager);
         VP.add(label);
-        RootPanel.get("Data").add(VP);
+
+        RootPanel.get("Data").add(VP); // Вывели панель
 
         // Показали диалог и скрыли таблицу
         dialog.show();
@@ -174,7 +174,7 @@ public class Administration implements EntryPoint {
                 }
             });
 
-            setWidget(panel);
+            setWidget(panel); // Установили виджет
 
         }
 
@@ -208,17 +208,14 @@ public class Administration implements EntryPoint {
      */
     private void AddData (LinkData[] linksData) {
 
-        label.setHTML("");
+        label.setHTML(""); // Очистили ошибки
 
         Collections.addAll(list, linksData); // Добавили данные
         dataProvider.setList(list); // Засовываем данные в таблицу
 
-        //sortHandler = new ListHandler<>(list);
-        //cellTable.addColumnSortHandler(sortHandler);
-        sortHandler.setList(list); // Обновли сортировщик
+        sortHandler.setList(dataProvider.getList()); // Обновли сортировщик
 
-
-        cellTable.setVisible(true); // И показываем ее
+        cellTable.setVisible(true); // И показываем таблицу с пейджером
         pager.setVisible(true);
     }
 
@@ -227,10 +224,6 @@ public class Administration implements EntryPoint {
      * Инициализация столбцов таблицы
      */
     private void initTable() {
-
-        // TODO Разобраться, почему не сортирует столбцы
-        // Хм - при cellTable.getColumnSortList().push(codeColumn); он нормально сортирует,
-        // Но не дает нажать для сортировки
 
         // Колонка с коротким кодом
         Column<LinkData, String> codeColumn = new Column<LinkData, String>(new TextCell()) { // C видом ячеек - просто текст
@@ -245,7 +238,15 @@ public class Administration implements EntryPoint {
             // Это то, что будет сортировать объекты
             @Override
             public int compare(LinkData o1, LinkData o2) { // Функция сравнения
-                return o1.getCode().compareTo(o2.getCode());
+                if (o1 == o2) {
+                    return 0;
+                }
+
+                if (o1 != null) {
+                    return (o2 != null) ? o1.getCode().compareTo(o2.getCode()) : 1;
+                }
+
+                return -1;
             }
         });
 
@@ -263,7 +264,15 @@ public class Administration implements EntryPoint {
         sortHandler.setComparator(originalLinkColumn, new Comparator<LinkData>() {
             @Override
             public int compare(LinkData o1, LinkData o2) {
-                return o1.getLink().compareTo(o2.getLink());
+                if (o1 == o2) {
+                    return 0;
+                }
+
+                if (o1 != null) {
+                    return (o2 != null) ? o1.getLink().compareTo(o2.getLink()) : 1;
+                }
+
+                return -1;
             }
         });
 
@@ -310,7 +319,15 @@ public class Administration implements EntryPoint {
         sortHandler.setComparator(createDateColumn, new Comparator<LinkData>() {
             @Override
             public int compare(LinkData o1, LinkData o2) {
-                return o1.getCreateDate().compareTo(o2.getCreateDate());
+                if (o1 == o2) {
+                    return 0;
+                }
+
+                if (o1 != null) {
+                    return (o2 != null) ? o1.getCreateDate().compareTo(o2.getCreateDate()) : 1;
+                }
+
+                return -1;
             }
         });
 
@@ -333,7 +350,15 @@ public class Administration implements EntryPoint {
         sortHandler.setComparator(expiredDateColumn, new Comparator<LinkData>() {
             @Override
             public int compare(LinkData o1, LinkData o2) {
-                return o1.getExpiredDate().compareTo(o2.getExpiredDate());
+                if (o1 == o2) {
+                    return 0;
+                }
+
+                if (o1 != null) {
+                    return (o2 != null) ? o1.getExpiredDate().compareTo(o2.getExpiredDate()) : 1;
+                }
+
+                return -1;
             }
         });
 
@@ -374,8 +399,15 @@ public class Administration implements EntryPoint {
         sortHandler.setComparator(currentCountColumn, new Comparator<LinkData>() {
             @Override
             public int compare(LinkData o1, LinkData o2) {
-                return o1.getCurrentCount() > o2.getCurrentCount() ? 1 : 0;
-                //return o1.getCurrentCount().compareTo(o2.getCurrentCount());
+                if (o1 == o2) {
+                    return 0;
+                }
+
+                if (o1 != null) {
+                    return (o2 != null) ? o1.getCurrentCount().compareTo(o2.getCurrentCount()) : 1;
+                }
+
+                return -1;
             }
         });
 
@@ -405,7 +437,15 @@ public class Administration implements EntryPoint {
         sortHandler.setComparator(maxCountColumn, new Comparator<LinkData>() {
             @Override
             public int compare(LinkData o1, LinkData o2) {
-                return o1.getMaxCount().compareTo(o2.getMaxCount());
+                if (o1 == o2) {
+                    return 0;
+                }
+
+                if (o1 != null) {
+                    return (o2 != null) ? o1.getMaxCount().compareTo(o2.getMaxCount()) : 1;
+                }
+
+                return -1;
             }
         });
 

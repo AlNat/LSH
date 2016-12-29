@@ -53,8 +53,8 @@ public class LSH implements EntryPoint {
 
     /* Набор полей для логина */
     private final LoginDialog dialog = new LoginDialog(); // Диалог для входа пользователя
-    private final HTML loginLabel = new HTML();
-    private final Button loginButton = new Button("Login");
+    private final HTML loginLabel = new HTML(); // Поле для выода информации
+    private final Button loginButton = new Button("Login"); // Кнопка логина
 
     /**
      * Основной метод в UI
@@ -326,6 +326,9 @@ public class LSH implements EntryPoint {
      * Диалоговое окно для ввода логина и пароля
      */
     private class LoginDialog extends DialogBox {
+
+        // TODO Куки
+        // TODO Текст в about
 
         LoginDialog() { // Конструктор
             setHTML("Please, input login and password");
