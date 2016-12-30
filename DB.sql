@@ -55,7 +55,7 @@ CREATE TABLE status (
 
 
 -- Триггерная функция, обновляющая таблицу статуса, при вставке нового значения в таблицу short
-CREATE FUNCTION shortTGFUNC () 
+CREATE FUNCTION shortTGSetStatus () 
 RETURNS trigger AS
 $$
 	BEGIN
@@ -72,7 +72,7 @@ LANGUAGE plpgsql;
 
 
 -- Триггер на вставку данных в таблицу short
-CREATE TRIGGER shortTG AFTER INSERT ON short FOR EACH ROW EXECUTE PROCEDURE shortTGFUNC();
+CREATE TRIGGER shortTG AFTER INSERT ON short FOR EACH ROW EXECUTE PROCEDURE shortTGSetStatus();
 
 
 -- Индекс на user_id
@@ -161,14 +161,14 @@ LANGUAGE plpgsql;
 CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf' VALID UNTIL 'infinity' CONNECTION LIMIT 2;
 
 
--- Разрешения. Владелец - POSTGRES, но LSH может SELECT, INSERT, EXECUTE
+-- Разрешения. Владелец - POSTGRES, но LSH может SELECT, INSERT, EXECUTE, UPDATE
 GRANT EXECUTE ON FUNCTION invalidate() to "LSH";
 GRANT EXECUTE ON FUNCTION get_next_id() to "LSH";
 
 GRANT SELECT, INSERT ON users TO "LSH";
 GRANT SELECT, INSERT ON short TO "LSH";
 GRANT SELECT, INSERT ON analitics TO "LSH";
-GRANT SELECT ON status TO "LSH";
+GRANT SELECT, UPDATE ON status TO "LSH";
 
 
 -- Заполнение тестовыми данными

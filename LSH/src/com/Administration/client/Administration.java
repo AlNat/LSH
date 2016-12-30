@@ -244,6 +244,7 @@ public class Administration implements EntryPoint {
 
             // И пошли за данными на сервер
             GetData();
+            
         }
 
         /**

@@ -510,6 +510,7 @@ public class LSH implements EntryPoint {
                 LoginDialog.this.show();
                 LoginDialog.this.center();
             }
+
         }
 
     }
