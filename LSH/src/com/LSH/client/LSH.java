@@ -157,6 +157,9 @@ public class LSH implements EntryPoint {
         complexDataHP.add(complexCountText);
         complexDataHP.add(complexCount);
 
+        complexCount.setAlignment(ValueBoxBase.TextAlignment.CENTER); // Выровняли число переходов
+        complexCount.setMaxLength(5); // Настроили кол-во символов
+
         complexOptionalData.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         complexOptionalData.setSpacing(5);
         complexOptionalData.add(complexNameText);
@@ -222,12 +225,12 @@ public class LSH implements EntryPoint {
         dialog.hide(); // Диалог логина по умолчанию скрыт
 
 
-
         // Устанавливаем наши панель на страницу
         RootPanel.get("Login").add(loginHP);
         RootPanel.get("SimpleShort").add(simpleVP);
         RootPanel.get("ComplexShort").add(complexVP);
         RootPanel.get("ComplexShortOptional").add(complexOptionalVP);
+
     }
 
     /**
@@ -460,7 +463,6 @@ public class LSH implements EntryPoint {
          * @param userLogin логин пользователя
          */
         void GoodLogin(String userLogin) {
-
             // Изменили интерфейс
             login = userLogin;
             loginButton.setVisible(false);
@@ -512,6 +514,7 @@ public class LSH implements EntryPoint {
             }
 
         }
+
 
     }
 

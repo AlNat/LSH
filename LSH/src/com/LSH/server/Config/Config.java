@@ -23,22 +23,47 @@ public class Config {
 
     // Геттеры
     public String getSiteLink() {
+
+        if (SiteLink == null) { // Проверили, что мы считали конфигурацию
+            ReadConfig();
+        }
+
         return SiteLink;
     }
 
     public String getLogFile() {
+
+        if (SiteLink == null) { // Проверили, что мы считали конфигурацию
+            ReadConfig();
+        }
+
         return LogFile;
     }
 
     public String getLogin() {
+
+        if (SiteLink == null) { // Проверили, что мы считали конфигурацию
+            ReadConfig();
+        }
+
         return Login;
     }
 
     public String getPassword() {
+
+        if (SiteLink == null) { // Проверили, что мы считали конфигурацию
+            ReadConfig();
+        }
+
         return Password;
     }
 
     public String getURL() {
+
+        if (SiteLink == null) { // Проверили, что мы считали конфигурацию
+            ReadConfig();
+        }
+
         return URL;
     }
 

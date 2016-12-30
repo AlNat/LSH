@@ -71,7 +71,6 @@ public class Error404 implements EntryPoint {
      * @param link данные ссылки
      */
     private void PrintError (ReturnLinkData link) {
-
         String result = link.getErrorCode();
 
         Window.setTitle("404 - Page Not Found");
@@ -94,6 +93,7 @@ public class Error404 implements EntryPoint {
     private class PasswordDialog extends DialogBox {
 
         PasswordDialog(final ReturnLinkData link) {
+
             setHTML("<h4>Please, input password</h4>");
             setAnimationEnabled(true);
             setGlassEnabled(true);
@@ -133,6 +133,8 @@ public class Error404 implements EntryPoint {
             setWidget(panel);
 
         }
+
+
     }
 
     /**

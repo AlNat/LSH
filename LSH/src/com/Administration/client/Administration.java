@@ -101,7 +101,6 @@ public class Administration implements EntryPoint {
         VP.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         VP.add(cellTable);
         VP.add(pager);
-        VP.add(label);
 
         logoutButton = new Button("Logout");
 
@@ -139,10 +138,12 @@ public class Administration implements EntryPoint {
         // Показываем панели
         RootPanel.get("Login").add(loginHP);
         RootPanel.get("Data").add(VP);
+        RootPanel.get("Data").add(label);
 
         // Показали диалог и скрыли таблицу
         cellTable.setVisible(false);
         pager.setVisible(false);
+
         dialog.Login();
     }
 
@@ -231,12 +232,12 @@ public class Administration implements EntryPoint {
          * @param userLogin логин пользователя
          */
         void GoodLogin(String userLogin) {
-
             PutLoginCookie (userLogin); // Положили куку о том, что мы вошли
 
             // Обновли интерфейс и скрыли диалог
             loginLabel.setHTML("You're login as <br><h6>" + userLogin + "</h6>");
             label.setHTML("");
+            loginLabel.setVisible(true);
             logoutButton.setVisible(true);
 
             PasswordDialog.this.hide();
@@ -244,7 +245,6 @@ public class Administration implements EntryPoint {
 
             // И пошли за данными на сервер
             GetData();
-            
         }
 
         /**
@@ -285,6 +285,7 @@ public class Administration implements EntryPoint {
             }
 
         }
+
 
     }
 
