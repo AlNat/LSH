@@ -519,6 +519,8 @@ public class Administration implements EntryPoint {
             }
         });
 
+        currentCountColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+
         cellTable.addColumn(currentCountColumn, "Current visits");
 
 
@@ -556,6 +558,8 @@ public class Administration implements EntryPoint {
                 return -1;
             }
         });
+
+        maxCountColumn.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 
         cellTable.addColumn(maxCountColumn, "Max Visits");
 

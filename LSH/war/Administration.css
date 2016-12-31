@@ -62,6 +62,7 @@ body {
 }
 
 .blockData {
+    align-content: center;
     padding-top: 10px;
     height: 450px;
     width: 70%;
@@ -75,4 +76,8 @@ body {
     width: 100%;
     border: none;
     text-align: center;
+}
+
+.Table {
+    align-content: center;
 }

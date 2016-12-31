@@ -130,10 +130,8 @@ public class Error404 implements EntryPoint {
                 }
             });
 
-            setWidget(panel);
-
+            setWidget(panel); // Установили панел в виджет
         }
-
 
     }
 
