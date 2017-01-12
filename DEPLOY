@@ -3,5 +3,5 @@
 2. In create war need to delete *.devmode.js and nocache.js files from war inside folders 
 3. Also delete line with Devmode:devmode.js in compilations-mapping.txt in all folders
 4. Update confix.xml file
-5. Run init.sh script or do it by yourself
+5. Run init.sh script or do instratcion by yourself
 6. Run this war file with your servlet-server

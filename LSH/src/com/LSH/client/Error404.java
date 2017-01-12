@@ -134,8 +134,8 @@ public class Error404 implements EntryPoint {
             setWidget(panel); // Установили панел в виджет
         }
 
-
     }
+
 
     /**
      * Функция получающая ip пользователя

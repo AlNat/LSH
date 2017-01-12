@@ -455,7 +455,7 @@ public class LSH implements EntryPoint {
             panel.add(panelButtons);
             panel.add(label);
 
-            setWidget(panel); // Устанавили панель в этот виджет
+            setWidget(panel); // Установили панель в этот виджет
 
         }
 

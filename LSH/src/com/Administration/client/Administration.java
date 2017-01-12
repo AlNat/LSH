@@ -684,9 +684,7 @@ public class Administration implements EntryPoint {
             }
         });
 
-
     }
-
 
     /**
      * Функция, получения MD5 хэша от строки + соль
@@ -719,5 +717,6 @@ public class Administration implements EntryPoint {
         }
 
     }
+
 
 }
