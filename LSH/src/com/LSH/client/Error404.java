@@ -74,7 +74,8 @@ public class Error404 implements EntryPoint {
         String result = link.getErrorCode();
 
         Window.setTitle("404 - Page Not Found");
-        label.setHTML("<h1>404 Page!</h1><br>" + result);
+        label.setHTML("<h1>404 Page!</h1><br>" + result + "<br><br> But, maybe, you want <br> to create a " +
+                "<a href=\"LSH.html\">shortlink</a> ?");
     }
 
     /**
@@ -132,6 +133,7 @@ public class Error404 implements EntryPoint {
 
             setWidget(panel); // Установили панел в виджет
         }
+
 
     }
 

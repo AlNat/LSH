@@ -335,6 +335,7 @@ public class Administration implements EntryPoint {
      */
     private void initTable() {
 
+
         // Колонка с коротким кодом
         Column<LinkData, String> codeColumn = new Column<LinkData, String>(new TextCell()) { // C видом ячеек - просто текст
             @Override
@@ -618,7 +619,16 @@ public class Administration implements EntryPoint {
             @Override
             public void update(int index, final LinkData object, final String value) {
 
-                AdministrationServiceInterface.App.getInstance().setPassword(object.getId(), getMD5(value), new AsyncCallback<Boolean>() {
+                final String pass;
+
+                if (value.isEmpty() || value.contains(" ")) { // Если есть пробелы или просто пустая строка то пароля нет
+                    pass = null;
+                } else {
+                    pass = value;
+                }
+
+
+                AdministrationServiceInterface.App.getInstance().setPassword(object.getId(), getMD5(pass), new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         label.setHTML("<h4>Connection error!<br>Can't update data!<h4>");
@@ -629,11 +639,12 @@ public class Administration implements EntryPoint {
                         if (!result) {
                             label.setHTML("<h4>Server error!<h4>");
                         } else {
-                            object.setPassword(getMD5(value));
+                            object.setPassword(getMD5(pass));
                             dataProvider.refresh();
                         }
                     }
                 });
+
             }
         });
 

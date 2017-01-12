@@ -1,5 +1,4 @@
 #TODO
 
-- Dependency Matrix
+- Развернуть на сервере!!!
 - Class Diagram
-- DB Scheme

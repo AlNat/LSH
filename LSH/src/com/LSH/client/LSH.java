@@ -358,7 +358,7 @@ public class LSH implements EntryPoint {
          */
         LoginDialog() {
 
-            setHTML("Please, input login and password");
+            setHTML("Please, input login and password<br>If you aren't registered, new user will be created");
             setAnimationEnabled(true);
             setGlassEnabled(true);
 
@@ -394,6 +394,7 @@ public class LSH implements EntryPoint {
                     }
                 }
             });
+
 
             // Добавили поля для ввода в панель
             panelData.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -571,5 +572,6 @@ public class LSH implements EntryPoint {
     private native String getIP () /*-{
         return $wnd.userip;
     }-*/;
+
 
 }
