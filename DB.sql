@@ -7,7 +7,7 @@
 -- Создали БД
 CREATE DATABASE "LSH" WITH ENCODING='UTF8' CONNECTION LIMIT=2; 
 -- Одно подключение для сервера Администрирования
--- Дургое для самого приложения
+-- Другое для самого приложения
 
 
 -- Таблица пользователей
@@ -165,19 +165,12 @@ CREATE ROLE "LSH" LOGIN ENCRYPTED PASSWORD 'md5db253021ec23d154c76e692c9d5f0abf'
 GRANT EXECUTE ON FUNCTION invalidate() to "LSH";
 GRANT EXECUTE ON FUNCTION get_next_id() to "LSH";
 
+GRANT USAGE, SELECT ON SEQUENCE analitics_id_seq TO "LSH";
+GRANT USAGE, SELECT ON SEQUENCE short_id_seq TO "LSH";
+GRANT USAGE, SELECT ON SEQUENCE users_id_seq TO "LSH";
+GRANT USAGE, SELECT ON SEQUENCE usr TO "LSH";
+
 GRANT SELECT, INSERT ON users TO "LSH";
-GRANT SELECT, INSERT ON short TO "LSH";
+GRANT SELECT, INSERT, UPDATE ON short TO "LSH";
 GRANT SELECT, INSERT ON analitics TO "LSH";
-GRANT SELECT, UPDATE ON status TO "LSH";
-
-
--- Заполнение тестовыми данными
-/*
-SELECT 
-	generate_series(1, 1000),
-	generate_series(1, 1000),
-	genRandText(20) || '.' || genRandText(3),
-	( now() + interval '1 day' * round(random()*200) )::timestamp,
-	(random()*20)::int,
-	(random()*20)::int;
-*/
+GRANT SELECT, INSERT, UPDATE ON status TO "LSH";
