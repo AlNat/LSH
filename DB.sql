@@ -111,7 +111,7 @@ BEGIN
 
 		) AND ( -- и где
 			max_count != 0 -- кол-во переходов не бесконечно
-			AND current_count > max_count -- и кол-во переходов превышена
+			AND current_count >= max_count -- и кол-во переходов превышена
 			OR expired_date < current_timestamp -- или где дата уже истекла
 		) 
 	);

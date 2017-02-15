@@ -353,6 +353,9 @@ public class LSH implements EntryPoint {
      */
     private class LoginDialog extends DialogBox {
 
+        boolean textFlag = false; // Флаг 1 входа для очистки
+        boolean passFlag = false;
+
         /**
          * Конструктор
          */
@@ -386,11 +389,31 @@ public class LSH implements EntryPoint {
                 }
             });
 
+            loginTextBox.addClickHandler(new ClickHandler() { // Чистим поле по первому клику по нему
+                @Override
+                public void onClick(ClickEvent event) {
+                    if (!textFlag) {
+                        loginTextBox.setText("");
+                        textFlag = true;
+                    }
+                }
+            });
+
             passwordTextBox.addKeyDownHandler(new KeyDownHandler() { // Повесели хэндлер кликов
                 @Override
                 public void onKeyDown(KeyDownEvent event) {
                     if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
                         buttonLogin.click(); // Нажимаем на кнопку по нажатию клавиши Enter
+                    }
+                }
+            });
+
+            passwordTextBox.addClickHandler(new ClickHandler() { // Чистим поле по первому клику по нему
+                @Override
+                public void onClick(ClickEvent event) {
+                    if (!passFlag) {
+                        loginTextBox.setText("");
+                        passFlag = true;
                     }
                 }
             });
