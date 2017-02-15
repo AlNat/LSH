@@ -153,6 +153,9 @@ public class Administration implements EntryPoint {
      */
     private class PasswordDialog extends DialogBox {
 
+        boolean textFlag = false; // Флаг 1 входа для очистки
+        boolean passFlag = false;
+
         /**
          * Конструктор
          */
@@ -181,11 +184,31 @@ public class Administration implements EntryPoint {
                 }
             });
 
+            loginTextBox.addClickHandler(new ClickHandler() { // Чистим поле по первому клику по нему
+                @Override
+                public void onClick(ClickEvent event) {
+                    if (!textFlag) {
+                        loginTextBox.setText("");
+                        textFlag = true;
+                    }
+                }
+            });
+
             passwordTextBox.addKeyDownHandler(new KeyDownHandler() { // Повесели хэндлер кликов
                 @Override
                 public void onKeyDown(KeyDownEvent event) {
                     if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
                         button.click(); // Нажимаем на кнопку по нажатию клавиши Enter
+                    }
+                }
+            });
+
+            passwordTextBox.addClickHandler(new ClickHandler() { // Читсим поле по первому клику по нему
+                @Override
+                public void onClick(ClickEvent event) {
+                    if (!passFlag) {
+                        passwordTextBox.setText("");
+                        passFlag = true;
                     }
                 }
             });

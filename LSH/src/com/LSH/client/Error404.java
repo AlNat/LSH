@@ -2,6 +2,7 @@ package com.LSH.client;
 
 import com.LSH.client.DataType.GetLinkData;
 import com.LSH.client.DataType.ReturnLinkData;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -46,7 +47,15 @@ public class Error404 implements EntryPoint {
                     if (link.getPassword() == null) { // Если пароля нет, то редиректим
                         Window.Location.assign(link.getOriginalLink());
                     } else { // Иначе просим ввести пароль
-                        PasswordDialog d = new PasswordDialog(link);
+                        final PasswordDialog d = new PasswordDialog(link);
+
+                        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() { // Центрируем курсор
+                            @Override
+                            public void execute() {
+                                d.textBox.setFocus(true);
+                            }
+                        });
+
                         d.show();
                         d.center();
                     }
@@ -91,7 +100,9 @@ public class Error404 implements EntryPoint {
      * Диалоговое окно для ввода пароля
      */
     @SuppressWarnings("Convert2Lambda")
-    private class PasswordDialog extends DialogBox {
+    class PasswordDialog extends DialogBox {
+
+        final PasswordTextBox textBox;
 
         PasswordDialog(final ReturnLinkData link) {
 
@@ -102,7 +113,7 @@ public class Error404 implements EntryPoint {
             // Данные
             HorizontalPanel panel = new HorizontalPanel();
             final Button button = new Button("OK");
-            final TextBox textBox = new TextBox();
+            textBox = new PasswordTextBox();
 
             textBox.addKeyDownHandler(new KeyDownHandler() { // Повесели хэндлер кликов
                 @Override
@@ -132,6 +143,7 @@ public class Error404 implements EntryPoint {
             });
 
             setWidget(panel); // Установили панел в виджет
+            textBox.setFocus(true);
         }
 
     }
