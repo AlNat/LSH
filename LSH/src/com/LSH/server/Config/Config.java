@@ -47,7 +47,7 @@ public class Config {
     private String SiteLink;
     private String LogFile;
     private String Login;
-    private String Password; // TODO Подумать, как брать пароль в зашифрованном виде
+    private String Password;
     private String URL;
 
     // Конструктор, вызывающий чтение конфигурационного файла
