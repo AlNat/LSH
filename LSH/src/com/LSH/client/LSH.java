@@ -399,6 +399,8 @@ public class LSH implements EntryPoint {
                 }
             });
 
+
+
             passwordTextBox.addKeyDownHandler(new KeyDownHandler() { // Повесели хэндлер кликов
                 @Override
                 public void onKeyDown(KeyDownEvent event) {

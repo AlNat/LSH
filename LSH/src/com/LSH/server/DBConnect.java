@@ -261,6 +261,7 @@ class DBConnect {
 
 
         try { // Пишем в базу
+
             // Создали соединение
             preparedStatement = connection.prepareStatement(
                     "INSERT INTO short(user_id, link, expired_date, max_count, current_count, ip, user_agent, password, owner) VALUES (?, ?, ?, ?, ?, ?::cidr, ?, ?, ?)"
@@ -365,11 +366,14 @@ class DBConnect {
             return new ReturnLinkData("<br>SQL Error!");
         }
 
+
         Integer tableID; // id в таблице для foreign key в аналитике
         Integer curCount; // Текущее кол-во переходов
         String link; // Сам линк
         String password; // Хэш от пароля
         try { // Получили оригинальную ссылку
+
+            connection.setAutoCommit(false); // Запретили автоматический коммит
 
             preparedStatement = connection.prepareStatement("SELECT id, link, password, current_count FROM short WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
             preparedStatement.setInt(1, id);
@@ -397,6 +401,9 @@ class DBConnect {
             preparedStatement.setInt(2, tableID);
             preparedStatement.execute();
             preparedStatement.close();
+
+            connection.commit(); // Закомитили изменений
+
         } catch (SQLException e) {
             e.printStackTrace();
 

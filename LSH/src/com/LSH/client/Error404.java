@@ -64,7 +64,6 @@ public class Error404 implements EntryPoint {
         });
 
         RootPanel.get().add(label); // Добавили label на страницу
-
     }
 
     /**
@@ -147,6 +146,7 @@ public class Error404 implements EntryPoint {
         }
 
     }
+
 
 
     /**
