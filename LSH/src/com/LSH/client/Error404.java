@@ -66,6 +66,7 @@ public class Error404 implements EntryPoint {
         RootPanel.get().add(label); // Добавили label на страницу
     }
 
+
     /**
      * Функция вывода 404 страницы
      */
