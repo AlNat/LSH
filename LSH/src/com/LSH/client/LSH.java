@@ -419,7 +419,6 @@ public class LSH implements EntryPoint {
                 }
             });
 
-
             // Добавили поля для ввода в панель
             panelData.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
             panelData.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
@@ -480,7 +479,6 @@ public class LSH implements EntryPoint {
             panel.add(label);
 
             setWidget(panel); // Установили панель в этот виджет
-
         }
 
         /**

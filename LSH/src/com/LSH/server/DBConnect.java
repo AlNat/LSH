@@ -322,6 +322,13 @@ class DBConnect {
 
         try { // Проверили, что этот id вообще есть
 
+            // Инвалидируем ссылки
+            preparedStatement = connection.prepareStatement("SELECT invalidate()");
+            resultSet = preparedStatement.executeQuery();
+
+            resultSet.close();
+
+
             // Создали и выполнили запрос
             preparedStatement = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ?");
             preparedStatement.setInt(1, id);
@@ -332,16 +339,11 @@ class DBConnect {
             boolean t = resultSet.getBoolean(1);
 
             if (!t) { // Если этот id false = свободен, то выдаем ошибку
-
                 // Пишем в лог
                 WriteGetLog(in);
 
                 return new ReturnLinkData("<br>Invalid code!");
             }
-
-            // Инвалидируем ссылки
-            preparedStatement = connection.prepareStatement("SELECT invalidate()");
-            resultSet = preparedStatement.executeQuery();
 
             // Закрыли соединение
             resultSet.close();
@@ -373,7 +375,7 @@ class DBConnect {
         String password; // Хэш от пароля
         try { // Получили оригинальную ссылку
 
-            connection.setAutoCommit(false); // Запретили автоматический коммит
+            //connection.setAutoCommit(false); // Запретили автоматический коммит
 
             preparedStatement = connection.prepareStatement("SELECT id, link, password, current_count FROM short WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
             preparedStatement.setInt(1, id);
@@ -402,7 +404,7 @@ class DBConnect {
             preparedStatement.execute();
             preparedStatement.close();
 
-            connection.commit(); // Закомитили изменений
+            //connection.commit(); // Закомитили изменений
 
         } catch (SQLException e) {
             e.printStackTrace();
