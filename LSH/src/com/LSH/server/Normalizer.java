@@ -98,7 +98,7 @@ public final class Normalizer {
         }
         return false; // Выдаем false если нет
 
-        // Почем- то, это работало не всегда. Ну вот такие регулярки
+        // Почему-то, это работало не всегда. Ну вот такие регулярки
         /*
         Pattern p = Pattern.compile(stopSymbols);
         Matcher m = p.matcher(in);
