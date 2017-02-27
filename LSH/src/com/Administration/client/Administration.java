@@ -56,6 +56,7 @@ public class Administration implements EntryPoint {
     private ListHandler<LinkData> sortHandler; // Сортировщик
     private SimplePager pager; // Pager - управление страницами данных
 
+
     /**
      * Основной метод в UI
      */
@@ -132,7 +133,6 @@ public class Administration implements EntryPoint {
             }
         });
         logoutButton.setVisible(false);
-
 
         // Показываем панели
         RootPanel.get("Login").add(loginHP);

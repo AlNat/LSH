@@ -75,7 +75,6 @@ public class Error404 implements EntryPoint {
         label.setHTML("<h1>404 Page!</h1><br>");
     }
 
-
     /**
      * Функция вывода ошибок
      * @param link данные ссылки
@@ -96,6 +95,7 @@ public class Error404 implements EntryPoint {
     private String getMD5(String in) {
         return LSH.getMD5(in);
     }
+
 
     /**
      * Диалоговое окно для ввода пароля

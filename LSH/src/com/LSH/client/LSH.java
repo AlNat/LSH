@@ -50,7 +50,7 @@ public class LSH implements EntryPoint {
     private final HTML complexCountText = new HTML("Set count of visits:<br>(0 for unlimited)"); // Текст перед полем для кол-во переходов
     private final IntegerBox complexCount = new IntegerBox(); // Поле ввода кол-во переходов
 
-    private final HTML complexNameText = new HTML("Customize link:<br>(i, l, o, 1, 0 - illegal)"); // Текст перед полем для кастомизации ссыли
+    private final HTML complexNameText = new HTML("Customize link:<br>(i, l, o, 1, 0, _(1-st) - illegal)"); // Текст перед полем для кастомизации ссыли
     private final TextBox complexName = new TextBox(); // Само поле кастомизации ссылки
     private final HTML complexPasswordText = new HTML("Set password:"); // Текст перед полем для пароля ссыли
     private final TextBox complexPassword = new PasswordTextBox(); // Само поле пароля ссылки
@@ -61,6 +61,7 @@ public class LSH implements EntryPoint {
     private final HTML loginLabel = new HTML(); // Поле для выода информации
     private final Button loginButton = new Button("Login"); // Кнопка логина
     private final Button logoutButton = new Button("Log out"); // Кнопка выхода
+
 
 
     /**
@@ -230,8 +231,8 @@ public class LSH implements EntryPoint {
         RootPanel.get("SimpleShort").add(simpleVP);
         RootPanel.get("ComplexShort").add(complexVP);
         RootPanel.get("ComplexShortOptional").add(complexOptionalVP);
-
     }
+
 
     /**
      * Класс, который реагирует на клик на кнопку получить простую короткую ссылку
