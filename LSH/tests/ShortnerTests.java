@@ -13,23 +13,23 @@ public class ShortnerTests {
     @SuppressWarnings("FieldCanBeLocal")
     private static final String errorCode = "Error!";
 
+    //TODO redu
+
     @Test(timeOut = 100)
     public void TestEncode() throws Exception {
-        Assert.assertEquals ( Shortner.GetShort(123456789), "pgK8p" );
-        Assert.assertEquals ( Shortner.GetShort(123456788), "pgK8n" );
         Assert.assertEquals ( Shortner.GetShort(0), "" );
         Assert.assertEquals( Shortner.GetShort(-1), errorCode);
-        Assert.assertEquals( Shortner.GetShort(2498), "Z_");
+        Assert.assertEquals( Shortner.GetShort(Long.MAX_VALUE), "BDjzUwjfke9");
+        Assert.assertEquals( Shortner.GetShort(Long.MAX_VALUE-2), "BDjzUwjfke7");
+
     }
 
     @Test(timeOut = 100)
     public void TestCode() throws Exception {
-        Assert.assertEquals ( Shortner.GetID("pgK8p"), 123456789 );
-        Assert.assertEquals ( Shortner.GetID("pgK8n"), 123456788 );
         Assert.assertEquals ( Shortner.GetID(""), 0);
-        Assert.assertEquals ( Shortner.GetID("2"), 0);
         Assert.assertEquals ( Shortner.GetID("-1"), -1);
-        Assert.assertEquals ( Shortner.GetID("Z_"), 2498);
+        Assert.assertEquals ( Shortner.GetID("BDjzUwjfke9"), Long.MAX_VALUE);
+
     }
 
 }

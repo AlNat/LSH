@@ -23,7 +23,7 @@ INSERT INTO users(id) VALUES (0); -- Дефолтный логин - для сс
 -- Таблица для сокращенных ссылок
 CREATE TABLE short (
 	id SERIAL CONSTRAINT short_pk PRIMARY KEY, -- Внутрениий id
-	user_id INT NOT NULL, -- id записи пользователя - повторяемый. Выдаеться заново, после того как запись становиться не валидной
+	user_id BIGINT NOT NULL, -- id записи пользователя - повторяемый. Выдаеться заново, после того как запись становиться не валидной
 	-- когда действие ссылки кончилось, И\ИЛИ колво переходов превышено
 	link VARCHAR(1024), -- Оригинальная ссылка, приведенная к виду www.site.zone
 	create_date TIMESTAMP WITH TIME ZONE DEFAULT current_timestamp, -- Время создания
@@ -49,7 +49,7 @@ CREATE TABLE analitics (
 
 -- Таблица статусов user_id - простейшая Key-Value. Может в редис вынести?
 CREATE TABLE status (
-	user_id INT CONSTRAINT status_pk PRIMARY KEY, -- id пользователя
+	user_id BIGINT CONSTRAINT status_pk PRIMARY KEY, -- id пользователя
 	valid BOOLEAN -- Его статус
 );
 

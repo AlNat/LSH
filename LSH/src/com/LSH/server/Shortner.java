@@ -14,15 +14,17 @@ import static com.LSH.server.LSHService.errorCode;
  */
 public final class Shortner {
 
-    private static final String ALPHABET = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789-_";
+    private static final String ALPHABET = "_abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789-";
     private static final int BASE = ALPHABET.length();
+
 
     /**
      * Фунция принимает id записи в БД и возвращает его коротий код
+     * Она считает все _ слева незначащими как 0100 = 100, так и __20 = 20
      * @param id целочисленное > 0
      * @return короткий цифробуквенный код или пусто если ошибка
      */
-    public static String GetShort(int id) {
+    public static String GetShort(long id) {
 
         if (id < 0) {
             return errorCode;
@@ -31,8 +33,9 @@ public final class Shortner {
         StringBuilder str = new StringBuilder();
         while (id > 0) {
             // Переводим число в код по разрядам
-            str.insert(0, ALPHABET.charAt(id % BASE));
-            id = id / BASE;
+            Long t = id % BASE;
+            str.insert(0, ALPHABET.charAt(t.intValue()));
+            id /= BASE;
         }
         return str.toString();
 
@@ -43,9 +46,9 @@ public final class Shortner {
      * @param code цифробуквенный код (короткая ссылка)
      * @return id записи в БД или -1 если ошибка
      */
-    public static int GetID(String code) {
+    public static long GetID(String code) {
 
-        int link = 0;
+        long link = 0;
         for (int t = 0; t < code.length(); t++) { // Идем по разрядам
 
             char c = code.charAt(t);

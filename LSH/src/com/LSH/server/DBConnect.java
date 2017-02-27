@@ -70,18 +70,18 @@ class DBConnect {
      * @param code мнемноничесая ссылки
      * @return -2 если занят. -1 при ошибке кода. id от кода в другом случае
      */
-    private Integer CheckAvailability (String code) {
+    private Long CheckAvailability (String code) {
 
-        Integer id = Shortner.GetID(code); // Получили id по коду
+        Long id = Shortner.GetID(code); // Получили id по коду
 
         if (id == -1) { // Если код ошибочный то вернули ошибку -1
-            return -1;
+            return -1L;
         }
 
         try {
             // Создаем запрос и выполняем его
             PreparedStatement st = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ?", ResultSet.TYPE_SCROLL_INSENSITIVE);
-            st.setInt(1, id);
+            st.setLong(1, id);
             ResultSet rs = st.executeQuery();
 
             // Получаем ответ
@@ -94,7 +94,7 @@ class DBConnect {
 
             // Парсим ответ
             if (answer) { // Если занят то возращаем код занятости
-                return -2;
+                return -2L;
             } else { // Иначе сам id
                 return id;
             }
@@ -113,7 +113,7 @@ class DBConnect {
             l.setMessage(e.getMessage());
             Log.instance.WriteEvent(l);
 
-            return -1; // И говорим про ошибку
+            return -1L; // И говорим про ошибку
         }
 
     }
@@ -125,7 +125,7 @@ class DBConnect {
      */
     String Put(PutLinkData in) {
 
-        int id; // id Ссылки
+        long id; // id Ссылки
         String code; // Короткий код
 
         Statement statement;
@@ -135,7 +135,7 @@ class DBConnect {
         if (!in.getShortLink().equals("NULL")) { // Если есть желаемый короткий код
 
             code = in.getShortLink(); // Получаем его
-            Integer answer = CheckAvailability(code); // И проверяем его наличие в БД
+            Long answer = CheckAvailability(code); // И проверяем его наличие в БД
 
             if (answer == -1) { // Если код невалидный то отвечаем ошибкой
                 // Пишем лог
@@ -266,7 +266,7 @@ class DBConnect {
             preparedStatement = connection.prepareStatement(
                     "INSERT INTO short(user_id, link, expired_date, max_count, current_count, ip, user_agent, password, owner) VALUES (?, ?, ?, ?, ?, ?::cidr, ?, ?, ?)"
             );
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
             preparedStatement.setString(2, in.getOriginalLink());
             preparedStatement.setTimestamp(3, date);
             preparedStatement.setInt(4, in.getMaxVisits());
@@ -308,7 +308,7 @@ class DBConnect {
 
         String code = in.getCode(); // Получили код
 
-        int id = Shortner.GetID(code); // Попытались код преобразовать к id
+        long id = Shortner.GetID(code); // Попытались код преобразовать к id
 
         if (id == -1 || code.equals("ERROR")) { // Если ошибка то вернули
 
@@ -331,7 +331,7 @@ class DBConnect {
 
             // Создали и выполнили запрос
             preparedStatement = connection.prepareStatement("SELECT valid FROM status WHERE user_id = ?");
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
             resultSet = preparedStatement.executeQuery();
 
             // Получили ответ
@@ -378,7 +378,7 @@ class DBConnect {
             //connection.setAutoCommit(false); // Запретили автоматический коммит
 
             preparedStatement = connection.prepareStatement("SELECT id, link, password, current_count FROM short WHERE user_id = ? ORDER BY user_id DESC LIMIT 1");
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
             resultSet = preparedStatement.executeQuery();
 
             resultSet.next();
