@@ -123,10 +123,10 @@ LANGUAGE plpgsql;
 
 -- Функция возвращая новый user_id
 CREATE FUNCTION get_next_id () 
-RETURNS INT AS 
+RETURNS BIGINT AS 
 $$
-DECLARE ret INT;
-DECLARE rett INT;
+DECLARE ret BIGINT;
+DECLARE rett BIGINT;
 BEGIN
 
 	-- Вызвали функцию инвалидации
