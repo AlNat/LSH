@@ -232,7 +232,6 @@ public class LSH implements EntryPoint {
         RootPanel.get("ComplexShortOptional").add(complexOptionalVP);
     }
 
-
     /**
      * Класс, который реагирует на клик на кнопку получить простую короткую ссылку
      */

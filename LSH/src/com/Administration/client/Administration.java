@@ -143,7 +143,6 @@ public class Administration implements EntryPoint {
         pager.setVisible(false);
 
         dialog.Login();
-
     }
 
 

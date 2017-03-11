@@ -149,7 +149,6 @@ public class Error404 implements EntryPoint {
 
     }
 
-
     /**
      * Функция получающая ip пользователя
      * @return ip
